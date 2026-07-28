@@ -1,43 +1,31 @@
-import Card from "../components/ui/Card";
+import RecentDocuments from "../components/dashboard/RecentDocuments";
+import UploadCard from "../components/dashboard/UploadCard";
+import LearningAnalytics from "../components/workspace/widgets/LearningAnalytics";
+import WorkspaceHeader from "../components/workspace/WorkspaceHeader";
+import ContinueLearning from "../components/workspace/widgets/ContinueLearning";
+import AISuggestions from "../components/workspace/widgets/AISuggestions";
+import ActivityTimeline from "../components/workspace/widgets/ActivityTimeline";
+
+
 
 export default function DashboardPage() {
   return (
-    <div>
-      <h1 className="mb-8 text-4xl font-bold">
-        Welcome back 👋
-      </h1>
+    <div className="space-y-8">
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card>
-          <h2 className="text-lg font-semibold">
-            PDFs
-          </h2>
+      <WorkspaceHeader />
 
-          <p className="mt-3 text-4xl font-bold">
-            0
-          </p>
-        </Card>
+      <ContinueLearning />
 
-        <Card>
-          <h2 className="text-lg font-semibold">
-            AI Chats
-          </h2>
+      <AISuggestions />
 
-          <p className="mt-3 text-4xl font-bold">
-            0
-          </p>
-        </Card>
+      <LearningAnalytics />
 
-        <Card>
-          <h2 className="text-lg font-semibold">
-            Notes
-          </h2>
+      <ActivityTimeline />
 
-          <p className="mt-3 text-4xl font-bold">
-            0
-          </p>
-        </Card>
-      </div>
+      <UploadCard />
+
+      <RecentDocuments />
+
     </div>
   );
 }
