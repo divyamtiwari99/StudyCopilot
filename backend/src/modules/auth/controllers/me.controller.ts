@@ -1,14 +1,23 @@
 import { Request, Response } from "express";
-import { UserModel } from "../models/user.model.js";
+
+import { userService } from "../services/user.service.js";
 
 class MeController {
   async me(
     req: Request,
     res: Response
   ) {
-    const user = await UserModel.findById(
-      req.user?.id
-    ).select("-password");
+    const user =
+      await userService.findById(
+        req.user!.id
+      );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
     return res.json({
       success: true,

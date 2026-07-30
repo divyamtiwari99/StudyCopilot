@@ -39,6 +39,10 @@ class AuthService {
       password: hashedPassword,
     });
 
+    const safeUser = await UserModel.findById(
+      user._id
+    ).select("-password");
+
     const accessToken = generateAccessToken(
       user.id
     );
@@ -48,7 +52,7 @@ class AuthService {
     );
 
     return {
-      user,
+      user: safeUser,
       accessToken,
       refreshToken,
     };
@@ -73,6 +77,10 @@ class AuthService {
       throw new Error("Invalid credentials");
     }
 
+    const safeUser = await UserModel.findById(
+      user._id
+    ).select("-password");
+
     const accessToken = generateAccessToken(
       user.id
     );
@@ -82,7 +90,7 @@ class AuthService {
     );
 
     return {
-      user,
+      user: safeUser,
       accessToken,
       refreshToken,
     };
