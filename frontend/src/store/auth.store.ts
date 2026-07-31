@@ -22,6 +22,8 @@ interface AuthState {
 
   loading: boolean;
 
+  initialized: boolean;
+
   login: (
     payload: LoginPayload
   ) => Promise<void>;
@@ -35,99 +37,111 @@ interface AuthState {
   loadUser: () => Promise<void>;
 }
 
-export const useAuthStore =
-  create<AuthState>((set) => ({
-    user: null,
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
 
-    isAuthenticated: false,
+  isAuthenticated: false,
 
-    loading: false,
+  loading: false,
 
-    async login(payload) {
+  initialized: false,
+
+  async login(payload) {
+    set({
+      loading: true,
+    });
+
+    try {
+      const response = await authService.login(payload);
+
+      storage.setTokens(
+        response.data.accessToken,
+        response.data.refreshToken
+      );
+
       set({
-        loading: true,
+        user: response.data.user,
+        isAuthenticated: true,
+        loading: false,
+        initialized: true,
       });
-
-      try {
-        const response =
-          await authService.login(
-            payload
-          );
-
-        storage.setTokens(
-          response.data.accessToken,
-          response.data.refreshToken
-        );
-
-        set({
-          user: response.data.user,
-          isAuthenticated: true,
-          loading: false,
-        });
-      } catch (error) {
-        set({
-          loading: false,
-        });
-
-        throw error;
-      }
-    },
-
-    async register(payload) {
-      set({
-        loading: true,
-      });
-
-      try {
-        const response =
-          await authService.register(
-            payload
-          );
-
-        storage.setTokens(
-          response.data.accessToken,
-          response.data.refreshToken
-        );
-
-        set({
-          user: response.data.user,
-          isAuthenticated: true,
-          loading: false,
-        });
-      } catch (error) {
-        set({
-          loading: false,
-        });
-
-        throw error;
-      }
-    },
-
-    async loadUser() {
-      try {
-        const response =
-          await authService.me();
-
-        set({
-          user: response.data,
-          isAuthenticated: true,
-        });
-      } catch {
-        storage.clear();
-
-        set({
-          user: null,
-          isAuthenticated: false,
-        });
-      }
-    },
-
-    logout() {
+    } catch (error) {
       storage.clear();
 
       set({
         user: null,
         isAuthenticated: false,
+        loading: false,
+        initialized: true,
       });
-    },
-  }));
+
+      throw error;
+    }
+  },
+
+  async register(payload) {
+    set({
+      loading: true,
+    });
+
+    try {
+      const response = await authService.register(payload);
+
+      storage.setTokens(
+        response.data.accessToken,
+        response.data.refreshToken
+      );
+
+      set({
+        user: response.data.user,
+        isAuthenticated: true,
+        loading: false,
+        initialized: true,
+      });
+    } catch (error) {
+      storage.clear();
+
+      set({
+        user: null,
+        isAuthenticated: false,
+        loading: false,
+        initialized: true,
+      });
+
+      throw error;
+    }
+  },
+
+  async loadUser() {
+    try {
+      const response = await authService.me();
+
+      set({
+        user: response.data,
+        isAuthenticated: true,
+        initialized: true,
+      });
+    } catch {
+      storage.clear();
+
+      set({
+        user: null,
+        isAuthenticated: false,
+        initialized: true,
+      });
+    }
+  },
+
+  logout() {
+    storage.clear();
+
+    authService.logout();
+
+    set({
+      user: null,
+      isAuthenticated: false,
+      loading: false,
+      initialized: true,
+    });
+  },
+}));

@@ -1,4 +1,18 @@
-import { api } from "../../../lib/api";
+import { api } from "@/lib/api";
+
+export interface UploadedDocument {
+  id: string;
+  title: string;
+  originalName: string;
+  status:
+    | "uploading"
+    | "processing"
+    | "ready"
+    | "failed";
+  size: number;
+  mimeType: string;
+  createdAt: string;
+}
 
 export async function uploadDocument(
   file: File,
@@ -6,10 +20,14 @@ export async function uploadDocument(
 ) {
   const formData = new FormData();
 
+  // Upload file
   formData.append("file", file);
 
-  const response = await api.post(
-    "/documents/upload",
+  // Backend Zod validation ke liye required
+  formData.append("title", file.name);
+
+  const { data } = await api.post(
+    "/content/upload",
     formData,
     {
       headers: {
@@ -17,18 +35,31 @@ export async function uploadDocument(
       },
 
       onUploadProgress(event) {
-        if (!event.total) {
-          return;
-        }
+        if (!event.total) return;
 
-        const progress = Math.round(
-          (event.loaded * 100) / event.total,
+        onProgress?.(
+          Math.round(
+            (event.loaded * 100) / event.total,
+          ),
         );
-
-        onProgress?.(progress);
       },
     },
   );
 
-  return response.data;
+  return data;
+}
+
+export async function getDocuments() {
+  const { data } =
+    await api.get<UploadedDocument[]>(
+      "/content",
+    );
+
+  return data;
+}
+
+export async function deleteDocument(
+  id: string,
+) {
+  await api.delete(`/content/${id}`);
 }

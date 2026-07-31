@@ -1,44 +1,41 @@
-const ACCESS_TOKEN =
-  "studycopilot_access_token";
+const ACCESS_TOKEN_KEY = "studycopilot_access_token";
+const REFRESH_TOKEN_KEY = "studycopilot_refresh_token";
 
-const REFRESH_TOKEN =
-  "studycopilot_refresh_token";
-
-export const storage = {
+const storage = {
   setTokens(
     accessToken: string,
     refreshToken: string
   ) {
     localStorage.setItem(
-      ACCESS_TOKEN,
+      ACCESS_TOKEN_KEY,
       accessToken
     );
 
     localStorage.setItem(
-      REFRESH_TOKEN,
+      REFRESH_TOKEN_KEY,
       refreshToken
     );
   },
 
   getAccessToken() {
     return localStorage.getItem(
-      ACCESS_TOKEN
+      ACCESS_TOKEN_KEY
     );
   },
 
   getRefreshToken() {
     return localStorage.getItem(
-      REFRESH_TOKEN
+      REFRESH_TOKEN_KEY
     );
   },
 
   clear() {
     localStorage.removeItem(
-      ACCESS_TOKEN
+      ACCESS_TOKEN_KEY
     );
 
     localStorage.removeItem(
-      REFRESH_TOKEN
+      REFRESH_TOKEN_KEY
     );
   },
 };

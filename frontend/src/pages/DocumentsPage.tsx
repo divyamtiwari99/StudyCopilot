@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import UploadZone from "../components/documents/UploadZone";
-import DocumentGrid from "../components/documents/DocumentGrid";
-import type { Document } from "../components/documents/DocumentCard";
+import UploadZone from "@/features/dashboard/components/UploadZone";
+import DocumentGrid from "@/components/documents/DocumentGrid";
+import type { Document } from "@/components/documents/DocumentCard";
 
 const initialDocuments: Document[] = [
   {
@@ -32,25 +32,24 @@ const initialDocuments: Document[] = [
 ];
 
 export default function DocumentsPage() {
-  const [documents] =
-    useState<Document[]>(initialDocuments);
+  const [documents] = useState<Document[]>(initialDocuments);
 
   return (
-    <div className="space-y-8 p-8">
-      <div>
-        <h1 className="text-4xl font-bold text-white">
+    <main className="mx-auto w-full max-w-7xl space-y-8 px-8 py-8">
+      <section>
+        <h1 className="text-4xl font-bold tracking-tight text-white">
           Documents
         </h1>
 
-        <p className="mt-2 text-white/50">
-          Upload PDFs and prepare them for AI chat,
-          notes, quizzes and flashcards.
+        <p className="mt-2 text-zinc-400">
+          Upload your study material and prepare it for AI Chat,
+          Notes, Flashcards and Quiz generation.
         </p>
-      </div>
+      </section>
 
       <UploadZone />
 
       <DocumentGrid documents={documents} />
-    </div>
+    </main>
   );
 }

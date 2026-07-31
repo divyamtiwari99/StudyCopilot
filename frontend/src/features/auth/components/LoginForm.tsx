@@ -33,13 +33,34 @@ export default function LoginForm() {
     try {
       setServerError("");
 
+      console.log("========== LOGIN START ==========");
+      console.log("Current Path:", window.location.pathname);
+
       await login({
         email: data.email,
         password: data.password,
       });
 
-      navigate("/dashboard");
+      console.log("✅ Login Success");
+      console.log(
+        "Current Path Before Navigate:",
+        window.location.pathname
+      );
+
+      navigate("/dashboard", {
+        replace: true,
+      });
+
+      setTimeout(() => {
+        console.log(
+          "Current Path After Navigate:",
+          window.location.pathname
+        );
+        console.log("========== LOGIN END ==========");
+      }, 100);
     } catch (error: any) {
+      console.error("❌ Login Error:", error);
+
       setServerError(
         error?.response?.data?.message ??
           "Invalid email or password."

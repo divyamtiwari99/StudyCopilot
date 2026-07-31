@@ -46,7 +46,9 @@ export default function LoginForm() {
         password: data.password,
       });
 
-      navigate("/");
+      navigate("/dashboard", {
+        replace: true,
+      });
     } catch (error: any) {
       setServerError(
         error?.response?.data?.message ??
