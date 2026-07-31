@@ -14,24 +14,29 @@ export interface UploadedDocument {
   createdAt: string;
 }
 
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+}
+
 export async function uploadDocument(
   file: File,
   onProgress?: (progress: number) => void,
 ) {
   const formData = new FormData();
 
-  // Upload file
   formData.append("file", file);
-
-  // Backend Zod validation ke liye required
   formData.append("title", file.name);
 
-  const { data } = await api.post(
+  const response = await api.post<
+    ApiResponse<UploadedDocument>
+  >(
     "/content/upload",
     formData,
     {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type":
+          "multipart/form-data",
       },
 
       onUploadProgress(event) {
@@ -39,23 +44,23 @@ export async function uploadDocument(
 
         onProgress?.(
           Math.round(
-            (event.loaded * 100) / event.total,
+            (event.loaded * 100) /
+              event.total,
           ),
         );
       },
     },
   );
 
-  return data;
+  return response.data.data;
 }
 
 export async function getDocuments() {
-  const { data } =
-    await api.get<UploadedDocument[]>(
-      "/content",
-    );
+  const response = await api.get<
+    ApiResponse<UploadedDocument[]>
+  >("/content");
 
-  return data;
+  return response.data.data;
 }
 
 export async function deleteDocument(

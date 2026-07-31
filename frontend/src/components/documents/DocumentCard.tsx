@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
 import {
+  CheckCircle2,
   Clock3,
   FileText,
   MoreVertical,
-  Sparkles,
-  Trash2,
   Pencil,
+  Trash2,
+  UploadCloud,
+  XCircle,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -15,15 +17,65 @@ export interface Document {
   pages: number;
   size: string;
   uploadedAt: string;
-  status: "processing" | "ready";
+
+  status:
+    | "uploading"
+    | "processing"
+    | "ready"
+    | "failed";
 }
 
 interface Props {
   document: Document;
 }
 
-export default function DocumentCard({ document }: Props) {
-  const [menuOpen, setMenuOpen] = useState(false);
+export default function DocumentCard({
+  document,
+}: Props) {
+  const [menuOpen, setMenuOpen] =
+    useState(false);
+
+  function renderStatus() {
+    switch (document.status) {
+      case "uploading":
+        return (
+          <div className="inline-flex items-center gap-2 rounded-full border border-sky-500/20 bg-sky-500/10 px-3 py-1 text-xs font-medium text-sky-400">
+            <UploadCloud
+              size={14}
+              className="animate-pulse"
+            />
+            Uploading...
+          </div>
+        );
+
+      case "processing":
+        return (
+          <div className="inline-flex items-center gap-2 rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1 text-xs font-medium text-yellow-400">
+            <Clock3
+              size={14}
+              className="animate-spin"
+            />
+            Processing...
+          </div>
+        );
+
+      case "failed":
+        return (
+          <div className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-xs font-medium text-red-400">
+            <XCircle size={14} />
+            Failed
+          </div>
+        );
+
+      default:
+        return (
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
+            <CheckCircle2 size={14} />
+            AI Ready
+          </div>
+        );
+    }
+  }
 
   return (
     <motion.div
@@ -31,10 +83,8 @@ export default function DocumentCard({ document }: Props) {
       transition={{ duration: 0.25 }}
       className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl"
     >
-      {/* Glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-cyan-500/0 to-cyan-500/5 opacity-0 transition group-hover:opacity-100" />
 
-      {/* Header */}
       <div className="flex items-start justify-between p-5">
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400">
           <FileText size={28} />
@@ -42,7 +92,9 @@ export default function DocumentCard({ document }: Props) {
 
         <div className="relative">
           <button
-            onClick={() => setMenuOpen(!menuOpen)}
+            onClick={() =>
+              setMenuOpen(!menuOpen)
+            }
             className="rounded-xl p-2 transition hover:bg-white/10"
           >
             <MoreVertical size={18} />
@@ -64,7 +116,6 @@ export default function DocumentCard({ document }: Props) {
         </div>
       </div>
 
-      {/* Body */}
       <div className="space-y-4 px-5 pb-5">
         <div>
           <h3 className="line-clamp-1 text-lg font-semibold">
@@ -72,28 +123,21 @@ export default function DocumentCard({ document }: Props) {
           </h3>
 
           <p className="mt-1 text-sm text-white/50">
-            {document.pages} Pages • {document.size}
+            {document.pages} Pages •{" "}
+            {document.size}
           </p>
         </div>
 
-        {document.status === "ready" ? (
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
-            <Sparkles size={14} />
-            AI Ready
-          </div>
-        ) : (
-          <div className="inline-flex items-center gap-2 rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1 text-xs font-medium text-yellow-400">
-            <Clock3 size={14} className="animate-spin" />
-            Processing...
-          </div>
-        )}
+        {renderStatus()}
 
         <div className="h-px bg-white/10" />
 
         <div className="flex items-center justify-between text-xs text-white/40">
           <span>Uploaded</span>
 
-          <span>{document.uploadedAt}</span>
+          <span>
+            {document.uploadedAt}
+          </span>
         </div>
       </div>
     </motion.div>

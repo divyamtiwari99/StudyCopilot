@@ -6,10 +6,15 @@ import {
   Loader2,
 } from "lucide-react";
 
+import { useQueryClient } from "@tanstack/react-query";
+
 import { uploadDocument } from "../services/document.service";
 
 export default function UploadZone() {
-  const [progress, setProgress] = useState(0);
+  const queryClient = useQueryClient();
+
+  const [progress, setProgress] =
+    useState(0);
 
   const [uploading, setUploading] =
     useState(false);
@@ -29,16 +34,22 @@ export default function UploadZone() {
           setProgress,
         );
 
-        alert("Upload Successful");
+        // Refresh documents automatically
+        await queryClient.invalidateQueries({
+          queryKey: ["documents"],
+        });
+
+        alert("Document uploaded successfully.");
       } catch (error) {
         console.error(error);
 
-        alert("Upload Failed");
+        alert("Upload failed.");
       } finally {
         setUploading(false);
+        setProgress(0);
       }
     },
-    [],
+    [queryClient],
   );
 
   const {
@@ -47,13 +58,18 @@ export default function UploadZone() {
     isDragActive,
   } = useDropzone({
     onDrop,
+
     multiple: false,
+
     accept: {
       "application/pdf": [".pdf"],
+
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
         [".docx"],
+
       "application/vnd.openxmlformats-officedocument.presentationml.presentation":
         [".pptx"],
+
       "text/plain": [".txt"],
     },
   });
@@ -70,6 +86,7 @@ export default function UploadZone() {
       <input {...getInputProps()} />
 
       <div className="flex flex-col items-center text-center">
+
         <CloudUpload className="mb-6 h-14 w-14 text-violet-400" />
 
         <h2 className="text-3xl font-bold text-white">
@@ -85,31 +102,38 @@ export default function UploadZone() {
         {uploading && (
           <>
             <div className="mt-8 h-3 w-full overflow-hidden rounded-full bg-zinc-800">
+
               <div
                 className="h-full bg-violet-500 transition-all"
                 style={{
                   width: `${progress}%`,
                 }}
               />
+
             </div>
 
             <div className="mt-4 flex items-center gap-3 text-violet-400">
+
               <Loader2 className="animate-spin" />
 
-              {progress}%
+              <span>{progress}%</span>
+
             </div>
           </>
         )}
 
         {!uploading && (
           <div className="mt-10 flex items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-5 py-3">
+
             <FileText className="text-violet-400" />
 
             <span className="text-white">
               PDF · DOCX · PPTX · TXT
             </span>
+
           </div>
         )}
+
       </div>
     </div>
   );
