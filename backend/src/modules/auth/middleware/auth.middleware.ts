@@ -1,4 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import {
+  NextFunction,
+  Request,
+  Response,
+} from "express";
+
 import { verifyAccessToken } from "../utils/jwt.js";
 import { UserModel } from "../models/user.model.js";
 
@@ -21,11 +26,10 @@ export async function authMiddleware(
       });
     }
 
-    const token =
-      header.replace(
-        "Bearer ",
-        ""
-      );
+    const token = header.replace(
+      "Bearer ",
+      ""
+    );
 
     const payload =
       verifyAccessToken(token);

@@ -21,64 +21,46 @@ export class ContentService {
 
     const content = await ContentModel.create({
       userId,
-
       title,
-
       kind,
-
       status: "uploaded",
 
       storage: {
         originalName: file.originalname,
-
         storedName: file.filename,
-
         mimeType: file.mimetype,
-
-        extension: path.extname(
-          file.originalname
-        ),
-
+        extension: path.extname(file.originalname),
         size: file.size,
-
         path: file.path,
       },
 
       processing: {
         parser: false,
-
         normalized: false,
-
         embeddings: false,
-
         knowledgeGraph: false,
-
         summary: false,
-
         flashcards: false,
-
         quiz: false,
-
         notes: false,
       },
     });
 
-    await queueService.dispatch(
-      "content.process",
-      {
-        contentId: content.id,
-
-        filePath: file.path,
-
-        mimeType: file.mimetype,
-
-        stage: "uploaded",
-      }
-    );
+    await queueService.dispatch("content.process", {
+      contentId: content.id,
+      filePath: file.path,
+      mimeType: file.mimetype,
+      stage: "uploaded",
+    });
 
     return content;
   }
+
+  async getAll(userId: string) {
+    return ContentModel.find({ userId })
+      .sort({ createdAt: -1 })
+      .lean();
+  }
 }
 
-export const contentService =
-  new ContentService();
+export const contentService = new ContentService();

@@ -1,4 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import {
+  Request,
+  Response,
+  NextFunction,
+} from "express";
 
 import { uploadContentSchema } from "../validation/content.validation.js";
 import { contentService } from "../services/content.service.js";
@@ -7,7 +11,7 @@ export class ContentController {
   async upload(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       if (!req.user) {
@@ -24,17 +28,45 @@ export class ContentController {
         });
       }
 
-      const payload = uploadContentSchema.parse(req.body);
+      const payload = uploadContentSchema.parse(
+        req.body,
+      );
 
-      const content = await contentService.create({
-        userId: req.user.id,
-        title: payload.title,
-        file: req.file,
-      });
+      const content =
+        await contentService.create({
+          userId: req.user.id,
+          title: payload.title,
+          file: req.file,
+        });
 
       return res.status(201).json({
         success: true,
         data: content,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getAll(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized",
+        });
+      }
+
+      const documents =
+        await contentService.getAll(req.user.id);
+
+      return res.json({
+        success: true,
+        data: documents,
       });
     } catch (error) {
       next(error);

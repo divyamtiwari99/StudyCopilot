@@ -56,6 +56,37 @@ class AuthController {
       });
     }
   }
+
+  async me(
+    req: Request,
+    res: Response
+  ) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized",
+        });
+      }
+
+      const user =
+        await authService.getCurrentUser(
+          req.user.id
+        );
+
+      return res.json({
+        success: true,
+        data: user,
+      });
+    } catch (error: any) {
+      return res.status(401).json({
+        success: false,
+        message:
+          error.message ??
+          "Unauthorized",
+      });
+    }
+  }
 }
 
 export const authController =
