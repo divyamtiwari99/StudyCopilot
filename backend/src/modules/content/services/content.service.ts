@@ -17,50 +17,78 @@ export class ContentService {
     title,
     file,
   }: CreateContentInput) {
-    const kind = detectContentKind(file.mimetype);
+    const kind = detectContentKind(
+      file.mimetype,
+    );
 
-    const content = await ContentModel.create({
-      userId,
-      title,
-      kind,
-      status: "uploaded",
+    const content =
+      await ContentModel.create({
+        userId,
 
-      storage: {
-        originalName: file.originalname,
-        storedName: file.filename,
+        title,
+
+        kind,
+
+        // Future AI Pipeline
+        status: "processing",
+
+        storage: {
+          originalName:
+            file.originalname,
+
+          storedName:
+            file.filename,
+
+          mimeType:
+            file.mimetype,
+
+          extension: path.extname(
+            file.originalname,
+          ),
+
+          size: file.size,
+
+          path: file.path,
+        },
+
+        processing: {
+          parser: false,
+          normalized: false,
+          embeddings: false,
+          knowledgeGraph: false,
+          summary: false,
+          flashcards: false,
+          quiz: false,
+          notes: false,
+        },
+      });
+
+    await queueService.dispatch(
+      "content.process",
+      {
+        contentId: content.id,
+
+        filePath: file.path,
+
         mimeType: file.mimetype,
-        extension: path.extname(file.originalname),
-        size: file.size,
-        path: file.path,
-      },
 
-      processing: {
-        parser: false,
-        normalized: false,
-        embeddings: false,
-        knowledgeGraph: false,
-        summary: false,
-        flashcards: false,
-        quiz: false,
-        notes: false,
+        stage: "processing",
       },
-    });
-
-    await queueService.dispatch("content.process", {
-      contentId: content.id,
-      filePath: file.path,
-      mimeType: file.mimetype,
-      stage: "uploaded",
-    });
+    );
 
     return content;
   }
 
   async getAll(userId: string) {
-    return ContentModel.find({ userId })
-      .sort({ createdAt: -1 })
+    return ContentModel.find({
+      userId,
+    })
+      .sort({
+        createdAt: -1,
+      })
       .lean();
   }
 }
 
-export const contentService = new ContentService();
+export const contentService =
+  new ContentService();

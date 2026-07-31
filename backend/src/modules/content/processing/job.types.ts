@@ -5,11 +5,14 @@ export type ProcessingStage =
   | "chunking"
   | "knowledge"
   | "embedding"
+  | "summarizing"
+  | "flashcards"
+  | "quiz"
+  | "notes"
   | "completed"
   | "failed";
 
 export interface ProcessingJob {
-
   contentId: string;
 
   filePath: string;
@@ -17,5 +20,4 @@ export interface ProcessingJob {
   mimeType: string;
 
   stage: ProcessingStage;
-
 }
