@@ -1,0 +1,14 @@
+export { default as Navbar } from "./components/Navbar";
+export { default as Hero } from "./components/Hero";
+export { default as Stats } from "./components/Stats";
+export { default as WorkspacePreview } from "./components/WorkspacePreview";
+export { default as HowItWorks } from "./components/HowItWorks";
+export { default as AIDashboard } from "./components/AIDashboard";
+export { default as KnowledgeGraph } from "./components/KnowledgeGraph";
+export { default as LearningTimeline } from "./components/LearningTimeline";
+export { default as Features } from "./components/Features";
+export { default as Testimonials } from "./components/Testimonials";
+export { default as Pricing } from "./components/Pricing";
+export { default as Faq } from "./components/Faq";
+export { default as Cta } from "./components/Cta";
+export { default as Footer } from "./components/Footer";
