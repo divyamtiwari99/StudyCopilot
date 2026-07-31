@@ -6,18 +6,22 @@ import { detectContentKind } from "../storage/content-detector.js";
 import { queueService } from "../../../core/queue/queue.service.js";
 
 export interface CreateContentInput {
+  userId: string;
   title: string;
   file: Express.Multer.File;
 }
 
 export class ContentService {
   async create({
+    userId,
     title,
     file,
   }: CreateContentInput) {
     const kind = detectContentKind(file.mimetype);
 
     const content = await ContentModel.create({
+      userId,
+
       title,
 
       kind,

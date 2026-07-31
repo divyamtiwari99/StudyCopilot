@@ -10,6 +10,13 @@ export class ContentController {
     next: NextFunction
   ) {
     try {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized",
+        });
+      }
+
       if (!req.file) {
         return res.status(400).json({
           success: false,
@@ -20,6 +27,7 @@ export class ContentController {
       const payload = uploadContentSchema.parse(req.body);
 
       const content = await contentService.create({
+        userId: req.user.id,
         title: payload.title,
         file: req.file,
       });
