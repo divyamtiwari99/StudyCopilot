@@ -11,20 +11,25 @@ import { ProcessingJob } from "./job.types.js";
 export class PipelineService {
   async process(job: ProcessingJob) {
     try {
-      await statusService.update(
-        job.contentId,
-        "parsing"
-      );
+      console.log("🚀 Pipeline Started");
+
+      await statusService.update(job.contentId, "parsing");
+
+      console.log("📄 Getting parser...");
 
       const parser =
-        parserFactory.getParser(
-          job.mimeType
-        );
+        parserFactory.getParser(job.mimeType);
+
+      console.log("📄 Parsing file...");
 
       const parsed =
-        await parser.parse(
-          job.filePath
-        );
+        await parser.parse(job.filePath);
+
+      console.log("✅ Parse Complete");
+      console.log(
+        "Characters:",
+        parsed.text.length
+      );
 
       await statusService.update(
         job.contentId,
@@ -32,9 +37,9 @@ export class PipelineService {
       );
 
       const normalized =
-        normalizeText(
-          parsed.text
-        );
+        normalizeText(parsed.text);
+
+      console.log("✅ Normalize Complete");
 
       await statusService.update(
         job.contentId,
@@ -42,13 +47,51 @@ export class PipelineService {
       );
 
       const chunks =
-        createChunks(
-          normalized
-        );
+        createChunks(normalized);
+
+      console.log(
+        "✅ Chunks Created:",
+        chunks.length
+      );
+
+      // ==========================
+      // DEBUG START
+      // ==========================
+
+      console.log("========== CHUNKS ==========");
+
+      chunks.forEach((chunk, index) => {
+        console.log({
+          index,
+
+          title: chunk.title,
+
+          textType: typeof chunk.text,
+
+          textLength:
+            chunk.text?.length,
+
+          preview:
+            chunk.text?.substring(
+              0,
+              100
+            ),
+        });
+      });
+
+      console.log("============================");
+
+      // ==========================
+      // DEBUG END
+      // ==========================
 
       await chunkService.saveChunks(
         job.contentId,
         chunks
+      );
+
+      console.log(
+        "✅ Chunks Saved"
       );
 
       await statusService.update(
@@ -60,11 +103,23 @@ export class PipelineService {
         job.contentId
       );
 
+      console.log(
+        "✅ Embeddings Complete"
+      );
+
       await statusService.update(
         job.contentId,
         "completed"
       );
+
+      console.log(
+        "🎉 Pipeline Finished"
+      );
     } catch (error) {
+      console.error(
+        "❌ PIPELINE ERROR"
+      );
+
       console.error(error);
 
       await statusService.update(

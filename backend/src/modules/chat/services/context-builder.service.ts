@@ -1,8 +1,12 @@
 export class ContextBuilderService {
-  build(chunks: { text: string }[]) {
+  build(
+    chunks: { text: string }[]
+  ) {
     return chunks
       .map((chunk) => chunk.text)
-      .join("\n\n----------------------\n\n");
+      .join(
+        "\n\n----------------------\n\n"
+      );
   }
 }
 

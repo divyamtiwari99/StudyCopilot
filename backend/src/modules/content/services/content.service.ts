@@ -29,7 +29,6 @@ export class ContentService {
 
         kind,
 
-        // Future AI Pipeline
         status: "processing",
 
         storage: {
@@ -80,13 +79,32 @@ export class ContentService {
   }
 
   async getAll(userId: string) {
-    return ContentModel.find({
-      userId,
-    })
-      .sort({
-        createdAt: -1,
+    const documents =
+      await ContentModel.find({
+        userId,
       })
-      .lean();
+        .sort({
+          createdAt: -1,
+        })
+        .lean();
+
+    return documents.map((doc: any) => ({
+      id: doc._id.toString(),
+
+      title: doc.title,
+
+      originalName:
+        doc.storage.originalName,
+
+      status: doc.status,
+
+      size: doc.storage.size,
+
+      mimeType:
+        doc.storage.mimeType,
+
+      createdAt: doc.createdAt,
+    }));
   }
 }
 

@@ -2,6 +2,13 @@ import { Schema, model } from "mongoose";
 
 const EmbeddingSchema = new Schema(
   {
+    contentId: {
+      type: Schema.Types.ObjectId,
+      ref: "Content",
+      required: true,
+      index: true,
+    },
+
     chunkId: {
       type: Schema.Types.ObjectId,
       ref: "Chunk",
@@ -29,6 +36,11 @@ const EmbeddingSchema = new Schema(
     timestamps: true,
   }
 );
+
+EmbeddingSchema.index({
+  contentId: 1,
+  chunkId: 1,
+});
 
 export const EmbeddingModel = model(
   "Embedding",
