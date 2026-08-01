@@ -8,14 +8,16 @@ import PublicRoute from "./guards/PublicRoute";
 
 import DashboardPage from "../pages/DashboardPage";
 import DocumentsPage from "../pages/DocumentsPage";
+import WorkspacePage from "../pages/WorkspacePage";
+
 import ChatPage from "../pages/ChatPage";
 import NotesPage from "../pages/NotesPage";
 import QuizPage from "../pages/QuizPage";
 import FlashcardsPage from "../pages/FlashcardsPage";
+
 import SettingsPage from "../pages/SettingsPage";
 import NotFoundPage from "../pages/NotFoundPage";
 
-/* Landing */
 import LandingPage from "../pages/LandingPage";
 
 import {
@@ -23,85 +25,95 @@ import {
   RegisterPage,
 } from "../features/auth";
 
-export const router = createBrowserRouter([
-  /* ===========================
-        PUBLIC WEBSITE
-     =========================== */
+export const router =
+  createBrowserRouter([
+    {
+      path: "/",
+      element: <LandingPage />,
+    },
 
-  {
-    path: "/",
-    element: <LandingPage />,
-  },
+    {
+      element: (
+        <PublicRoute>
+          <AuthLayout />
+        </PublicRoute>
+      ),
 
-  {
-    element: (
-      <PublicRoute>
-        <AuthLayout />
-      </PublicRoute>
-    ),
-    children: [
-      {
-        path: "/login",
-        element: <LoginPage />,
-      },
-      {
-        path: "/register",
-        element: <RegisterPage />,
-      },
-    ],
-  },
+      children: [
+        {
+          path: "/login",
+          element: <LoginPage />,
+        },
 
-  /* ===========================
-        APP
-     =========================== */
+        {
+          path: "/register",
+          element: <RegisterPage />,
+        },
+      ],
+    },
 
-  {
-    path: "/dashboard",
-    element: (
-      <ProtectedRoute>
-        <WorkspaceLayout />
-      </ProtectedRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: <DashboardPage />,
-      },
+    {
+      path: "/dashboard",
 
-      {
-        path: "documents",
-        element: <DocumentsPage />,
-      },
+      element: (
+        <ProtectedRoute>
+          <WorkspaceLayout />
+        </ProtectedRoute>
+      ),
 
-      {
-        path: "chat",
-        element: <ChatPage />,
-      },
+      children: [
+        {
+          index: true,
+          element: <DashboardPage />,
+        },
 
-      {
-        path: "notes",
-        element: <NotesPage />,
-      },
+        {
+          path: "documents",
 
-      {
-        path: "quiz",
-        element: <QuizPage />,
-      },
+          element: <DocumentsPage />,
+        },
 
-      {
-        path: "flashcards",
-        element: <FlashcardsPage />,
-      },
+        {
+          path: "workspace/:contentId",
 
-      {
-        path: "settings",
-        element: <SettingsPage />,
-      },
-    ],
-  },
+          element: <WorkspacePage />,
+        },
 
-  {
-    path: "*",
-    element: <NotFoundPage />,
-  },
-]);
+        {
+          path: "chat",
+
+          element: <ChatPage />,
+        },
+
+        {
+          path: "notes",
+
+          element: <NotesPage />,
+        },
+
+        {
+          path: "quiz",
+
+          element: <QuizPage />,
+        },
+
+        {
+          path: "flashcards",
+
+          element: <FlashcardsPage />,
+        },
+
+        {
+          path: "settings",
+
+          element: <SettingsPage />,
+        },
+      ],
+    },
+
+    {
+      path: "*",
+
+      element: <NotFoundPage />,
+    },
+  ]);
