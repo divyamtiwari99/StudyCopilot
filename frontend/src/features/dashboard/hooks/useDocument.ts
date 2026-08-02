@@ -20,11 +20,19 @@ export function useDocument(
       ),
 
     enabled:
-      !!contentId,
+      Boolean(contentId),
 
-    staleTime: 1000 * 60 * 5,
+    staleTime:
+      1000 * 60,
+
+    gcTime:
+      1000 * 60 * 10,
 
     retry: 1,
+
+    refetchOnMount: true,
+
+    refetchOnReconnect: true,
 
     refetchOnWindowFocus: false,
   });

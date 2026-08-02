@@ -16,8 +16,26 @@ import { useGenerateFlashcards } from "../hooks/useGenerateFlashcards";
 import { useGenerateQuiz } from "../hooks/useGenerateQuiz";
 import { useGenerateSummary } from "../hooks/useGenerateSummary";
 
-export default function AICommandCenter() {
-  const { contentId } = useParams();
+import { useWorkspaceArtifacts } from "../hooks/useWorkspaceArtifacts";
+
+interface Props {
+  onOpenTab: (
+    tab:
+      | "notes"
+      | "summary"
+      | "flashcards"
+      | "quiz"
+  ) => void;
+}
+
+export default function AICommandCenter({
+  onOpenTab,
+}: Props) {
+  const { contentId } =
+    useParams();
+
+  const artifacts =
+    useWorkspaceArtifacts();
 
   const notesMutation =
     useGenerateNotes();
@@ -36,57 +54,19 @@ export default function AICommandCenter() {
 
     try {
       await notesMutation.mutateAsync(
-        contentId,
+        contentId
       );
 
       toast.success(
-        "Notes generated successfully!",
+        artifacts.notes
+          ? "Notes regenerated successfully!"
+          : "Notes generated successfully!"
       );
     } catch (error) {
       console.error(error);
 
       toast.error(
-        "Failed to generate notes.",
-      );
-    }
-  }
-
-  async function handleGenerateFlashcards() {
-    if (!contentId) return;
-
-    try {
-      await flashcardsMutation.mutateAsync(
-        contentId,
-      );
-
-      toast.success(
-        "Flashcards generated successfully!",
-      );
-    } catch (error) {
-      console.error(error);
-
-      toast.error(
-        "Failed to generate flashcards.",
-      );
-    }
-  }
-
-  async function handleGenerateQuiz() {
-    if (!contentId) return;
-
-    try {
-      await quizMutation.mutateAsync(
-        contentId,
-      );
-
-      toast.success(
-        "Quiz generated successfully!",
-      );
-    } catch (error) {
-      console.error(error);
-
-      toast.error(
-        "Failed to generate quiz.",
+        "Failed to generate notes."
       );
     }
   }
@@ -96,24 +76,72 @@ export default function AICommandCenter() {
 
     try {
       await summaryMutation.mutateAsync(
-        contentId,
+        contentId
       );
 
       toast.success(
-        "Summary generated successfully!",
+        artifacts.summary
+          ? "Summary regenerated successfully!"
+          : "Summary generated successfully!"
       );
     } catch (error) {
       console.error(error);
 
       toast.error(
-        "Failed to generate summary.",
+        "Failed to generate summary."
+      );
+    }
+  }
+
+  async function handleGenerateFlashcards() {
+    if (!contentId) return;
+
+    try {
+      await flashcardsMutation.mutateAsync(
+        contentId
+      );
+
+      toast.success(
+        artifacts.flashcards
+          ? "Flashcards regenerated successfully!"
+          : "Flashcards generated successfully!"
+      );
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        "Failed to generate flashcards."
+      );
+    }
+  }
+
+  async function handleGenerateQuiz() {
+    if (!contentId) return;
+
+    try {
+      await quizMutation.mutateAsync(
+        contentId
+      );
+
+      toast.success(
+        artifacts.quiz
+          ? "Quiz regenerated successfully!"
+          : "Quiz generated successfully!"
+      );
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        "Failed to generate quiz."
       );
     }
   }
 
   return (
     <section className="space-y-6">
+
       <div>
+
         <h2 className="text-2xl font-bold text-white">
           AI Command Center
         </h2>
@@ -122,6 +150,7 @@ export default function AICommandCenter() {
           Generate premium learning resources
           from your uploaded document.
         </p>
+
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -130,11 +159,11 @@ export default function AICommandCenter() {
           icon={FileText}
           title="Notes"
           description="Generate structured study notes."
-          loading={
-            notesMutation.isPending
-          }
-          onClick={
-            handleGenerateNotes
+          loading={notesMutation.isPending}
+          generated={artifacts.notes}
+          onClick={handleGenerateNotes}
+          onOpen={() =>
+            onOpenTab("notes")
           }
         />
 
@@ -142,11 +171,13 @@ export default function AICommandCenter() {
           icon={Sparkles}
           title="Summary"
           description="Create a concise document summary."
-          loading={
-            summaryMutation.isPending
-          }
+          loading={summaryMutation.isPending}
+          generated={artifacts.summary}
           onClick={
             handleGenerateSummary
+          }
+          onOpen={() =>
+            onOpenTab("summary")
           }
         />
 
@@ -157,8 +188,16 @@ export default function AICommandCenter() {
           loading={
             flashcardsMutation.isPending
           }
+          generated={
+            artifacts.flashcards
+          }
           onClick={
             handleGenerateFlashcards
+          }
+          onOpen={() =>
+            onOpenTab(
+              "flashcards"
+            )
           }
         />
 
@@ -166,15 +205,16 @@ export default function AICommandCenter() {
           icon={GraduationCap}
           title="Quiz"
           description="Generate an exam-style quiz."
-          loading={
-            quizMutation.isPending
-          }
-          onClick={
-            handleGenerateQuiz
+          loading={quizMutation.isPending}
+          generated={artifacts.quiz}
+          onClick={handleGenerateQuiz}
+          onOpen={() =>
+            onOpenTab("quiz")
           }
         />
 
       </div>
+
     </section>
   );
 }

@@ -1,6 +1,7 @@
 import { SendHorizontal } from "lucide-react";
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -25,29 +26,37 @@ export default function ChatWindow() {
   const [messages, setMessages] =
     useState<Message[]>([]);
 
-  const bottomRef =
+  const messageContainerRef =
     useRef<HTMLDivElement>(null);
 
+  const textareaRef =
+    useRef<HTMLTextAreaElement>(null);
+
+  const isFirstRender =
+    useRef(true);
+
+  useLayoutEffect(() => {
+    // Prevent browser restoring focus/scroll
+    textareaRef.current?.blur();
+  }, []);
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    messageContainerRef.current?.scrollTo({
+      top:
+        messageContainerRef.current.scrollHeight,
       behavior: "smooth",
     });
   }, [messages]);
 
   async function sendMessage() {
-    console.log("========== CHAT ==========");
-    console.log("contentId:", contentId);
-    console.log("question:", question);
+    if (!question.trim()) return;
 
-    if (!question.trim()) {
-      console.log("Question Empty");
-      return;
-    }
-
-    if (!contentId) {
-      console.log("ContentId Missing");
-      return;
-    }
+    if (!contentId) return;
 
     const current = question;
 
@@ -63,15 +72,11 @@ export default function ChatWindow() {
     ]);
 
     try {
-      console.log("Sending Request...");
-
       const response =
         await chat.mutateAsync({
           contentId,
           question: current,
         });
-
-      console.log("Response:", response);
 
       setMessages((prev) => [
         ...prev,
@@ -81,9 +86,7 @@ export default function ChatWindow() {
           content: response.answer,
         },
       ]);
-    } catch (error) {
-      console.error("CHAT ERROR:", error);
-
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
@@ -98,6 +101,7 @@ export default function ChatWindow() {
 
   return (
     <div className="flex h-[700px] flex-col rounded-3xl border border-white/10 bg-[#090d18]">
+
       <div className="border-b border-white/10 px-8 py-6">
         <h2 className="text-2xl font-bold text-white">
           AI Study Chat
@@ -109,7 +113,10 @@ export default function ChatWindow() {
         </p>
       </div>
 
-      <div className="flex-1 space-y-6 overflow-y-auto p-8">
+      <div
+        ref={messageContainerRef}
+        className="flex-1 space-y-6 overflow-y-auto p-8"
+      >
         {messages.length === 0 && (
           <div className="rounded-3xl border border-cyan-500/20 bg-cyan-500/10 p-6">
             <p className="text-zinc-300">
@@ -136,14 +143,19 @@ export default function ChatWindow() {
             Thinking...
           </div>
         )}
-
-        <div ref={bottomRef} />
       </div>
 
       <div className="border-t border-white/10 p-6">
+
         <div className="flex gap-4">
+
           <textarea
+            ref={textareaRef}
             rows={1}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
             value={question}
             onChange={(e) =>
               setQuestion(e.target.value)
@@ -169,8 +181,11 @@ export default function ChatWindow() {
           >
             <SendHorizontal size={22} />
           </button>
+
         </div>
+
       </div>
+
     </div>
   );
 }

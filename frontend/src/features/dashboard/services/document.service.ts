@@ -1,5 +1,23 @@
 import { api } from "@/lib/api";
 
+export interface ProcessingState {
+  parser: boolean;
+
+  normalized: boolean;
+
+  embeddings: boolean;
+
+  knowledgeGraph: boolean;
+
+  summary: boolean;
+
+  flashcards: boolean;
+
+  quiz: boolean;
+
+  notes: boolean;
+}
+
 export interface UploadedDocument {
   id: string;
 
@@ -18,6 +36,8 @@ export interface UploadedDocument {
   mimeType: string;
 
   createdAt: string;
+
+  processing?: ProcessingState;
 }
 
 interface ApiResponse<T> {
@@ -28,7 +48,7 @@ interface ApiResponse<T> {
 export async function uploadDocument(
   file: File,
   onProgress?: (
-    progress: number
+    progress: number,
   ) => void,
 ) {
   const formData =

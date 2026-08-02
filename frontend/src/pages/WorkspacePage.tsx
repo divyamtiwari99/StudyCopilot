@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {
@@ -58,10 +58,31 @@ export default function WorkspacePage() {
   const [activeTab, setActiveTab] =
     useState<Tab>("chat");
 
+  const contentRef =
+    useRef<HTMLDivElement>(null);
+
   const {
     data: document,
     isLoading,
   } = useDocument(contentId);
+
+  function handleOpenTab(tab: Tab) {
+    setActiveTab(tab);
+
+    setTimeout(() => {
+      if (!contentRef.current) return;
+
+      const top =
+        contentRef.current.getBoundingClientRect().top +
+        window.scrollY -
+        20;
+
+      window.scrollTo({
+        top,
+        behavior: "smooth",
+      });
+    }, 50);
+  }
 
   return (
     <div className="space-y-8">
@@ -73,26 +94,21 @@ export default function WorkspacePage() {
         <div className="flex items-start gap-6">
 
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400">
-
             <FileText size={30} />
-
           </div>
 
           <div className="flex-1">
 
             <h1 className="text-3xl font-bold text-white">
-
               {isLoading
                 ? "Loading..."
                 : document?.originalName ??
                   "AI Workspace"}
-
             </h1>
 
             <div className="mt-4 flex flex-wrap gap-6 text-sm text-zinc-400">
 
               <div className="flex items-center gap-2">
-
                 <HardDrive size={16} />
 
                 {document
@@ -102,11 +118,9 @@ export default function WorkspacePage() {
                       1024
                     ).toFixed(2)} MB`
                   : "--"}
-
               </div>
 
               <div className="flex items-center gap-2">
-
                 <Calendar size={16} />
 
                 {document
@@ -114,7 +128,6 @@ export default function WorkspacePage() {
                       document.createdAt
                     ).toLocaleDateString()
                   : "--"}
-
               </div>
 
               <div className="flex items-center gap-2">
@@ -145,7 +158,9 @@ export default function WorkspacePage() {
 
       {/* AI Command Center */}
 
-      <AICommandCenter />
+      <AICommandCenter
+        onOpenTab={handleOpenTab}
+      />
 
       {/* Tabs */}
 
@@ -156,6 +171,7 @@ export default function WorkspacePage() {
           const Icon = tab.icon;
 
           return (
+
             <button
               key={tab.id}
               onClick={() =>
@@ -167,11 +183,13 @@ export default function WorkspacePage() {
                   : "border border-white/10 bg-white/5 text-zinc-400 hover:bg-white/10"
               }`}
             >
+
               <Icon size={18} />
 
               {tab.label}
 
             </button>
+
           );
 
         })}
@@ -180,7 +198,10 @@ export default function WorkspacePage() {
 
       {/* Content */}
 
-      <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-8">
+      <div
+        ref={contentRef}
+        className="rounded-3xl border border-white/10 bg-white/[0.04] p-8"
+      >
 
         {activeTab === "chat" && (
           <ChatWindow />
