@@ -7,10 +7,14 @@ import {
 
 import { useParams } from "react-router-dom";
 
+import { toast } from "sonner";
+
 import CommandCard from "./CommandCard";
 
 import { useGenerateNotes } from "../hooks/useGenerateNotes";
 import { useGenerateFlashcards } from "../hooks/useGenerateFlashcards";
+import { useGenerateQuiz } from "../hooks/useGenerateQuiz";
+import { useGenerateSummary } from "../hooks/useGenerateSummary";
 
 export default function AICommandCenter() {
   const { contentId } = useParams();
@@ -21,6 +25,12 @@ export default function AICommandCenter() {
   const flashcardsMutation =
     useGenerateFlashcards();
 
+  const quizMutation =
+    useGenerateQuiz();
+
+  const summaryMutation =
+    useGenerateSummary();
+
   async function handleGenerateNotes() {
     if (!contentId) return;
 
@@ -29,14 +39,14 @@ export default function AICommandCenter() {
         contentId,
       );
 
-      alert(
-        "✅ Notes generated successfully!",
+      toast.success(
+        "Notes generated successfully!",
       );
     } catch (error) {
       console.error(error);
 
-      alert(
-        "❌ Failed to generate notes.",
+      toast.error(
+        "Failed to generate notes.",
       );
     }
   }
@@ -49,23 +59,61 @@ export default function AICommandCenter() {
         contentId,
       );
 
-      alert(
-        "✅ Flashcards generated successfully!",
+      toast.success(
+        "Flashcards generated successfully!",
       );
     } catch (error) {
       console.error(error);
 
-      alert(
-        "❌ Failed to generate flashcards.",
+      toast.error(
+        "Failed to generate flashcards.",
+      );
+    }
+  }
+
+  async function handleGenerateQuiz() {
+    if (!contentId) return;
+
+    try {
+      await quizMutation.mutateAsync(
+        contentId,
+      );
+
+      toast.success(
+        "Quiz generated successfully!",
+      );
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        "Failed to generate quiz.",
+      );
+    }
+  }
+
+  async function handleGenerateSummary() {
+    if (!contentId) return;
+
+    try {
+      await summaryMutation.mutateAsync(
+        contentId,
+      );
+
+      toast.success(
+        "Summary generated successfully!",
+      );
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        "Failed to generate summary.",
       );
     }
   }
 
   return (
     <section className="space-y-6">
-
       <div>
-
         <h2 className="text-2xl font-bold text-white">
           AI Command Center
         </h2>
@@ -74,7 +122,6 @@ export default function AICommandCenter() {
           Generate premium learning resources
           from your uploaded document.
         </p>
-
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -95,11 +142,12 @@ export default function AICommandCenter() {
           icon={Sparkles}
           title="Summary"
           description="Create a concise document summary."
-          onClick={() => {
-            alert(
-              "Coming Soon 🚀",
-            );
-          }}
+          loading={
+            summaryMutation.isPending
+          }
+          onClick={
+            handleGenerateSummary
+          }
         />
 
         <CommandCard
@@ -118,15 +166,15 @@ export default function AICommandCenter() {
           icon={GraduationCap}
           title="Quiz"
           description="Generate an exam-style quiz."
-          onClick={() => {
-            alert(
-              "Coming Soon 🚀",
-            );
-          }}
+          loading={
+            quizMutation.isPending
+          }
+          onClick={
+            handleGenerateQuiz
+          }
         />
 
       </div>
-
     </section>
   );
 }

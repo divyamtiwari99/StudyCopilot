@@ -9,12 +9,14 @@ import {
   GraduationCap,
   Calendar,
   HardDrive,
+  Sparkles,
 } from "lucide-react";
 
 import ChatWindow from "@/features/workspace/components/ChatWindow";
 import AICommandCenter from "@/features/workspace/components/AICommandCenter";
 
 import NotesPage from "./NotesPage";
+import SummaryPage from "./SummaryPage";
 import FlashcardsPage from "./FlashcardsPage";
 import QuizPage from "./QuizPage";
 
@@ -30,6 +32,11 @@ const tabs = [
     id: "notes",
     label: "Notes",
     icon: NotebookPen,
+  },
+  {
+    id: "summary",
+    label: "Summary",
+    icon: Sparkles,
   },
   {
     id: "flashcards",
@@ -181,6 +188,10 @@ export default function WorkspacePage() {
 
         {activeTab === "notes" && (
           <NotesPage />
+        )}
+
+        {activeTab === "summary" && (
+          <SummaryPage />
         )}
 
         {activeTab === "flashcards" && (

@@ -1,22 +1,23 @@
 import { useParams } from "react-router-dom";
 
-import QuizViewer from "@/features/quiz/components/QuizViewer";
-import { useQuiz } from "@/features/quiz/hooks/useQuiz";
+import { useSummary } from "@/features/summary/hooks/useSummary";
 
-export default function QuizPage() {
+import SummaryViewer from "@/features/summary/components/SummaryViewer";
+
+export default function SummaryPage() {
   const { contentId } = useParams();
 
   const {
     data,
     isLoading,
     isError,
-  } = useQuiz(contentId);
+  } = useSummary(contentId);
 
   if (isLoading) {
     return (
       <div className="flex h-80 items-center justify-center">
         <p className="text-zinc-400">
-          Loading quiz...
+          Loading summary...
         </p>
       </div>
     );
@@ -26,34 +27,32 @@ export default function QuizPage() {
     return (
       <div className="flex h-80 items-center justify-center">
         <p className="text-red-400">
-          Failed to load quiz.
+          Failed to load summary.
         </p>
       </div>
     );
   }
 
-  if (
-    !data ||
-    !Array.isArray(data.json) ||
-    data.json.length === 0
-  ) {
+  if (!data?.markdown) {
     return (
       <div className="flex h-80 flex-col items-center justify-center space-y-4 rounded-3xl border border-dashed border-white/10">
+
         <h2 className="text-2xl font-semibold text-white">
-          No Quiz Found
+          No Summary Found
         </h2>
 
         <p className="max-w-md text-center text-zinc-400">
-          Generate a quiz from the AI Command Center
-          above to start practicing.
+          Generate a summary from the AI Command
+          Center above.
         </p>
+
       </div>
     );
   }
 
   return (
-    <QuizViewer
-      questions={data.json}
+    <SummaryViewer
+      markdown={data.markdown}
     />
   );
 }
