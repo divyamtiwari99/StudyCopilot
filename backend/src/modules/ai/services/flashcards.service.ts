@@ -25,16 +25,6 @@ export class FlashcardsService {
       throw new Error("Content not found.");
     }
 
-    const existing =
-      await aiArtifactService.get(
-        contentId,
-        "flashcards"
-      );
-
-    if (existing) {
-      return existing;
-    }
-
     const chunks =
       await ChunkModel.find({
         contentId,

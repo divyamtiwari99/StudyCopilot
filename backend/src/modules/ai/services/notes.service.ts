@@ -19,20 +19,14 @@ export class NotesService {
     userId,
   }: GenerateNotesInput) {
     const content =
-      await ContentModel.findById(contentId);
-
-    if (!content) {
-      throw new Error("Content not found.");
-    }
-
-    const existing =
-      await aiArtifactService.get(
+      await ContentModel.findById(
         contentId,
-        "notes"
       );
 
-    if (existing) {
-      return existing;
+    if (!content) {
+      throw new Error(
+        "Content not found.",
+      );
     }
 
     const chunks =
@@ -46,13 +40,15 @@ export class NotesService {
 
     if (chunks.length === 0) {
       throw new Error(
-        "Document has not been processed yet."
+        "Document has not been processed yet.",
       );
     }
 
     const documentText =
       chunks
-        .map((chunk) => chunk.text)
+        .map(
+          (chunk) => chunk.text,
+        )
         .join("\n\n");
 
     const prompt =
@@ -73,7 +69,7 @@ export class NotesService {
     const generationTime =
       Math.round(
         performance.now() -
-          started
+          started,
       );
 
     const artifact =
@@ -87,7 +83,8 @@ export class NotesService {
 
         markdown,
 
-        model: "gemini-3.6-flash",
+        model:
+          "gemini-3.6-flash",
 
         generationTime,
       });
@@ -98,29 +95,18 @@ export class NotesService {
         $set: {
           "processing.notes": true,
         },
-      }
+      },
     );
 
     return artifact;
   }
 
-  async regenerate(
-    input: GenerateNotesInput
-  ) {
-    await aiArtifactService.deleteByContent(
-      input.contentId,
-      "notes"
-    );
-
-    return this.generate(input);
-  }
-
   async get(
-    contentId: string
+    contentId: string,
   ) {
     return aiArtifactService.get(
       contentId,
-      "notes"
+      "notes",
     );
   }
 }

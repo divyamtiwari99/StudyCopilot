@@ -1,4 +1,9 @@
-import { Schema, model, Types } from "mongoose";
+import {
+  Schema,
+  model,
+  Types,
+  InferSchemaType,
+} from "mongoose";
 
 const ContentSchema = new Schema(
   {
@@ -26,12 +31,35 @@ const ContentSchema = new Schema(
     },
 
     storage: {
-      originalName: String,
-      storedName: String,
-      mimeType: String,
-      extension: String,
-      size: Number,
-      path: String,
+      originalName: {
+        type: String,
+        required: true,
+      },
+
+      storedName: {
+        type: String,
+        required: true,
+      },
+
+      mimeType: {
+        type: String,
+        required: true,
+      },
+
+      extension: {
+        type: String,
+        required: true,
+      },
+
+      size: {
+        type: Number,
+        required: true,
+      },
+
+      path: {
+        type: String,
+        required: true,
+      },
     },
 
     processing: {
@@ -78,10 +106,13 @@ const ContentSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
+
+export type ContentDocument =
+  InferSchemaType<typeof ContentSchema>;
 
 export const ContentModel = model(
   "Content",
-  ContentSchema
+  ContentSchema,
 );

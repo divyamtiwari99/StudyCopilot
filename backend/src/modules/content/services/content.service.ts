@@ -106,6 +106,45 @@ export class ContentService {
       createdAt: doc.createdAt,
     }));
   }
+
+  async getById(
+    userId: string,
+    contentId: string,
+  ) {
+    const doc =
+      await ContentModel.findOne({
+        _id: contentId,
+        userId,
+      });
+
+    if (!doc) {
+      return null;
+    }
+
+    if (!doc.storage) {
+      return null;
+    }
+
+    return {
+      id: doc.id,
+
+      title: doc.title,
+
+      originalName:
+        doc.storage.originalName,
+
+      status: doc.status,
+
+      size: doc.storage.size,
+
+      mimeType:
+        doc.storage.mimeType,
+
+      createdAt: doc.createdAt,
+
+      processing: doc.processing,
+    };
+  }
 }
 
 export const contentService =

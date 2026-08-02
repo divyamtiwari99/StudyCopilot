@@ -9,14 +9,26 @@ const router = Router();
 router.get(
   "/",
   authMiddleware,
-  contentController.getAll.bind(contentController),
+  contentController.getAll.bind(
+    contentController,
+  ),
+);
+
+router.get(
+  "/:id",
+  authMiddleware,
+  contentController.getById.bind(
+    contentController,
+  ),
 );
 
 router.post(
   "/upload",
   authMiddleware,
   uploadMiddleware.single("file"),
-  contentController.upload.bind(contentController),
+  contentController.upload.bind(
+    contentController,
+  ),
 );
 
 export default router;

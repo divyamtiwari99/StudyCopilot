@@ -28,9 +28,10 @@ export class ContentController {
         });
       }
 
-      const payload = uploadContentSchema.parse(
-        req.body,
-      );
+      const payload =
+        uploadContentSchema.parse(
+          req.body,
+        );
 
       const content =
         await contentService.create({
@@ -62,11 +63,51 @@ export class ContentController {
       }
 
       const documents =
-        await contentService.getAll(req.user.id);
+        await contentService.getAll(
+          req.user.id,
+        );
 
       return res.json({
         success: true,
         data: documents,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized",
+        });
+      }
+
+      const contentId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+
+      const document =
+        await contentService.getById(
+          req.user.id,
+          contentId,
+        );
+      if (!document) {
+        return res.status(404).json({
+          success: false,
+          message: "Document not found.",
+        });
+      }
+
+      return res.json({
+        success: true,
+        data: document,
       });
     } catch (error) {
       next(error);
