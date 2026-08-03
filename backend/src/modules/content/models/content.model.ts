@@ -83,6 +83,11 @@ const ContentSchema = new Schema(
         default: false,
       },
 
+      roadmap: {
+        type: Boolean,
+        default: false,
+      },
+
       summary: {
         type: Boolean,
         default: false,

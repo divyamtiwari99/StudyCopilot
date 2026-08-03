@@ -2,13 +2,16 @@ import { AIArtifactModel } from "../models/ai-artifact.model.js";
 
 export interface SaveArtifactInput {
   contentId: string;
+
   userId: string;
+
   type:
     | "notes"
     | "summary"
     | "flashcards"
     | "quiz"
-    | "knowledgeGraph";
+    | "knowledgeGraph"
+    | "roadmap";
 
   title: string;
 
@@ -27,18 +30,21 @@ export interface SaveArtifactInput {
 
 export class AIArtifactService {
   async save(
-    input: SaveArtifactInput
+    input: SaveArtifactInput,
   ) {
     const existing =
       await AIArtifactModel.findOne({
-        contentId: input.contentId,
+        contentId:
+          input.contentId,
+
         type: input.type,
       });
 
     if (existing) {
       existing.version += 1;
 
-      existing.title = input.title;
+      existing.title =
+        input.title;
 
       existing.markdown =
         input.markdown ?? "";
@@ -49,7 +55,8 @@ export class AIArtifactService {
       const metadata =
         existing.metadata ?? {
           model: "",
-          promptVersion: "v1",
+          promptVersion:
+            "v1",
           tokens: 0,
           generationTime: 0,
         };
@@ -78,7 +85,8 @@ export class AIArtifactService {
     }
 
     return AIArtifactModel.create({
-      contentId: input.contentId,
+      contentId:
+        input.contentId,
 
       userId: input.userId,
 
@@ -105,14 +113,15 @@ export class AIArtifactService {
           input.tokens ?? 0,
 
         generationTime:
-          input.generationTime ?? 0,
+          input.generationTime ??
+          0,
       },
     });
   }
 
   async get(
     contentId: string,
-    type: SaveArtifactInput["type"]
+    type: SaveArtifactInput["type"],
   ) {
     return AIArtifactModel.findOne({
       contentId,
@@ -121,7 +130,7 @@ export class AIArtifactService {
   }
 
   async getAll(
-    contentId: string
+    contentId: string,
   ) {
     return AIArtifactModel.find({
       contentId,
@@ -132,17 +141,15 @@ export class AIArtifactService {
       .lean();
   }
 
-  async delete(
-    id: string
-  ) {
+  async delete(id: string) {
     return AIArtifactModel.findByIdAndDelete(
-      id
+      id,
     );
   }
 
   async deleteByContent(
     contentId: string,
-    type: SaveArtifactInput["type"]
+    type: SaveArtifactInput["type"],
   ) {
     return AIArtifactModel.findOneAndDelete({
       contentId,

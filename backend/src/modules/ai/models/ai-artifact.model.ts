@@ -5,7 +5,8 @@ export type AIArtifactType =
   | "summary"
   | "flashcards"
   | "quiz"
-  | "knowledgeGraph";
+  | "knowledgeGraph"
+  | "roadmap";
 
 const AIArtifactSchema = new Schema(
   {
@@ -32,6 +33,7 @@ const AIArtifactSchema = new Schema(
         "flashcards",
         "quiz",
         "knowledgeGraph",
+        "roadmap",
       ],
       index: true,
     },

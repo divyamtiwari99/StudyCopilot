@@ -5,32 +5,38 @@ import flashcardsRoutes from "./flashcards.routes.js";
 import quizRoutes from "./quiz.routes.js";
 import summaryRoutes from "./summary.routes.js";
 import knowledgeGraphRoutes from "./knowledge-graph.routes.js";
+import roadmapRoutes from "./roadmap.routes.js";
 
 const router = Router();
 
 router.use(
   "/notes",
-  notesRoutes
+  notesRoutes,
 );
 
 router.use(
   "/flashcards",
-  flashcardsRoutes
+  flashcardsRoutes,
 );
 
 router.use(
   "/quiz",
-  quizRoutes
+  quizRoutes,
 );
 
 router.use(
   "/summary",
-  summaryRoutes
+  summaryRoutes,
 );
 
 router.use(
   "/knowledge-graph",
-  knowledgeGraphRoutes
+  knowledgeGraphRoutes,
+);
+
+router.use(
+  "/roadmap",
+  roadmapRoutes,
 );
 
 export default router;
