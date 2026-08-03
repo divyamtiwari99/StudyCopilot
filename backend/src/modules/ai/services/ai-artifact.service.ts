@@ -11,7 +11,9 @@ export interface SaveArtifactInput {
     | "flashcards"
     | "quiz"
     | "knowledgeGraph"
-    | "roadmap";
+    | "roadmap"
+    | "studyPlanner"
+    ;
 
   title: string;
 

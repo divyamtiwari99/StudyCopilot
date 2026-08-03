@@ -107,6 +107,12 @@ const ContentSchema = new Schema(
         type: Boolean,
         default: false,
       },
+
+      studyPlanner: {
+        type: Boolean,
+        default: false,
+      },
+
     },
   },
   {

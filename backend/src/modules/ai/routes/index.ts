@@ -6,6 +6,7 @@ import quizRoutes from "./quiz.routes.js";
 import summaryRoutes from "./summary.routes.js";
 import knowledgeGraphRoutes from "./knowledge-graph.routes.js";
 import roadmapRoutes from "./roadmap.routes.js";
+import studyPlannerRoutes from "./study-planner.routes.js";
 
 const router = Router();
 
@@ -37,6 +38,11 @@ router.use(
 router.use(
   "/roadmap",
   roadmapRoutes,
+);
+
+router.use(
+  "/study-planner",
+  studyPlannerRoutes,
 );
 
 export default router;
