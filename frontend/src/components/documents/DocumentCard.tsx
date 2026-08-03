@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+
 import {
   CheckCircle2,
   Clock3,
@@ -8,14 +10,21 @@ import {
   Trash2,
   UploadCloud,
   XCircle,
+  Sparkles,
+  ArrowRight,
 } from "lucide-react";
+
 import { useState } from "react";
 
 export interface Document {
   id: string;
+
   name: string;
+
   pages: number;
+
   size: string;
+
   uploadedAt: string;
 
   status:
@@ -83,14 +92,16 @@ export default function DocumentCard({
       transition={{ duration: 0.25 }}
       className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-cyan-500/0 to-cyan-500/5 opacity-0 transition group-hover:opacity-100" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-cyan-500/0 to-cyan-500/5 opacity-0 transition group-hover:opacity-100" />
 
       <div className="flex items-start justify-between p-5">
+
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400">
           <FileText size={28} />
         </div>
 
         <div className="relative">
+
           <button
             onClick={() =>
               setMenuOpen(!menuOpen)
@@ -102,6 +113,7 @@ export default function DocumentCard({
 
           {menuOpen && (
             <div className="absolute right-0 top-12 z-20 w-44 rounded-2xl border border-white/10 bg-[#101319] p-2 shadow-2xl">
+
               <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm hover:bg-white/5">
                 <Pencil size={16} />
                 Rename
@@ -111,21 +123,26 @@ export default function DocumentCard({
                 <Trash2 size={16} />
                 Delete
               </button>
+
             </div>
           )}
+
         </div>
+
       </div>
 
       <div className="space-y-4 px-5 pb-5">
+
         <div>
-          <h3 className="line-clamp-1 text-lg font-semibold">
+
+          <h3 className="line-clamp-1 text-lg font-semibold text-white">
             {document.name}
           </h3>
 
           <p className="mt-1 text-sm text-white/50">
-            {document.pages} Pages •{" "}
-            {document.size}
+            {document.pages} Pages • {document.size}
           </p>
+
         </div>
 
         {renderStatus()}
@@ -133,13 +150,37 @@ export default function DocumentCard({
         <div className="h-px bg-white/10" />
 
         <div className="flex items-center justify-between text-xs text-white/40">
+
           <span>Uploaded</span>
 
-          <span>
-            {document.uploadedAt}
-          </span>
+          <span>{document.uploadedAt}</span>
+
         </div>
+
+        <div className="grid gap-3 pt-2">
+
+          <Link
+            to={`/dashboard/workspace/${document.id}`}
+            className="flex items-center justify-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-semibold text-white transition hover:bg-cyan-400"
+          >
+            Workspace
+
+            <ArrowRight size={18} />
+          </Link>
+
+          <Link
+            to={`/dashboard/study-planner/${document.id}`}
+            className="flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 font-medium text-white transition hover:bg-white/10"
+          >
+            <Sparkles size={18} />
+
+            Study Planner
+          </Link>
+
+        </div>
+
       </div>
+
     </motion.div>
   );
 }

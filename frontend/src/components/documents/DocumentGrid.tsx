@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 import DocumentCard, {
   type Document,
 } from "./DocumentCard";
@@ -13,9 +11,6 @@ interface DocumentGridProps {
 export default function DocumentGrid({
   documents,
 }: DocumentGridProps) {
-  const navigate =
-    useNavigate();
-
   if (documents.length === 0) {
     return <EmptyState />;
   }
@@ -25,19 +20,10 @@ export default function DocumentGrid({
 
       {documents.map((document) => (
 
-        <div
+        <DocumentCard
           key={document.id}
-          className="cursor-pointer"
-          onClick={() =>
-            navigate(
-              `/dashboard/workspace/${document.id}`
-            )
-          }
-        >
-          <DocumentCard
-            document={document}
-          />
-        </div>
+          document={document}
+        />
 
       ))}
 

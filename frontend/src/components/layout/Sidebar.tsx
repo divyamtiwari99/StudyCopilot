@@ -11,42 +11,48 @@ import {
   HardDrive,
   Flame,
   ChevronRight,
+  CalendarDays,
 } from "lucide-react";
 
 const navigation = [
   {
     title: "Workspace",
-    path: "/",
+    path: "/dashboard",
     icon: LayoutDashboard,
   },
   {
     title: "Library",
-    path: "/documents",
+    path: "/dashboard/documents",
     icon: FileText,
   },
   {
     title: "AI Tutor",
-    path: "/chat",
+    path: "/dashboard/chat",
     icon: BrainCircuit,
   },
   {
+    title: "Study Planner",
+    path: "/dashboard/study-planner",
+    icon: CalendarDays,
+  },
+  {
     title: "Notes",
-    path: "/notes",
+    path: "/dashboard/notes",
     icon: NotebookPen,
   },
   {
     title: "Quiz",
-    path: "/quiz",
+    path: "/dashboard/quiz",
     icon: Brain,
   },
   {
     title: "Flashcards",
-    path: "/flashcards",
+    path: "/dashboard/flashcards",
     icon: Layers3,
   },
   {
     title: "Settings",
-    path: "/settings",
+    path: "/dashboard/settings",
     icon: Settings,
   },
 ];
@@ -62,7 +68,10 @@ export default function Sidebar() {
         <div className="flex items-center gap-3">
 
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 shadow-lg shadow-indigo-600/30">
-            <Sparkles className="text-white" size={22} />
+            <Sparkles
+              className="text-white"
+              size={22}
+            />
           </div>
 
           <div>
@@ -106,6 +115,7 @@ export default function Sidebar() {
                 }`
               }
             >
+
               <div className="flex items-center gap-3">
 
                 <Icon size={20} />
@@ -138,7 +148,10 @@ export default function Sidebar() {
           <div className="mb-3 flex items-center gap-3">
 
             <div className="rounded-xl bg-orange-500/20 p-2">
-              <Flame className="text-orange-400" size={18} />
+              <Flame
+                className="text-orange-400"
+                size={18}
+              />
             </div>
 
             <div>

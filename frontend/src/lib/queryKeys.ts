@@ -19,4 +19,7 @@ export const queryKeys = {
 
   roadmap: (id: string) =>
     ["roadmap", id] as const,
+
+  studyPlanner: (id: string) =>
+  ["studyPlanner", id] as const,
 };

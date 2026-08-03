@@ -18,6 +18,8 @@ export interface ProcessingState {
   quiz: boolean;
 
   notes: boolean;
+
+  studyPlanner: boolean;
 }
 
 export interface UploadedDocument {

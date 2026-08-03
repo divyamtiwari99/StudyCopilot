@@ -15,6 +15,9 @@ import NotesPage from "../pages/NotesPage";
 import QuizPage from "../pages/QuizPage";
 import FlashcardsPage from "../pages/FlashcardsPage";
 
+import StudyPlannerDashboardPage from "../pages/StudyPlannerDashboardPage";
+import StudyPlannerPage from "../pages/StudyPlannerPage";
+
 import SettingsPage from "../pages/SettingsPage";
 import NotFoundPage from "../pages/NotFoundPage";
 
@@ -69,43 +72,58 @@ export const router =
 
         {
           path: "documents",
-
           element: <DocumentsPage />,
         },
 
         {
           path: "workspace/:contentId",
-
           element: <WorkspacePage />,
         },
 
         {
           path: "chat",
-
           element: <ChatPage />,
+        },
+
+        // ==========================
+        // Study Planner Dashboard
+        // ==========================
+
+        {
+          path: "study-planner",
+          element: (
+            <StudyPlannerDashboardPage />
+          ),
+        },
+
+        // ==========================
+        // Single Study Planner
+        // ==========================
+
+        {
+          path: "study-planner/:contentId",
+          element: (
+            <StudyPlannerPage />
+          ),
         },
 
         {
           path: "notes",
-
           element: <NotesPage />,
         },
 
         {
           path: "quiz",
-
           element: <QuizPage />,
         },
 
         {
           path: "flashcards",
-
           element: <FlashcardsPage />,
         },
 
         {
           path: "settings",
-
           element: <SettingsPage />,
         },
       ],
@@ -113,7 +131,6 @@ export const router =
 
     {
       path: "*",
-
       element: <NotFoundPage />,
     },
   ]);

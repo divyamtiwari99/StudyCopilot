@@ -35,5 +35,10 @@ export function useWorkspaceArtifacts() {
       data?.processing
         ?.roadmap ??
       false,
+
+    studyPlanner:
+      data?.processing
+        ?.studyPlanner ??
+      false,
   };
 }
