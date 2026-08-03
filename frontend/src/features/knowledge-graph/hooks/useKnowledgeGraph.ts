@@ -2,21 +2,18 @@ import { useQuery } from "@tanstack/react-query";
 
 import { queryKeys } from "@/lib/queryKeys";
 
-import {
-  getNotes,
-  type NotesArtifact,
-} from "../services/notes.service";
+import { getKnowledgeGraph } from "../services/knowledge-graph.service";
 
-export function useNotes(
+export function useKnowledgeGraph(
   contentId?: string,
 ) {
-  return useQuery<NotesArtifact>({
+  return useQuery({
     queryKey: contentId
-      ? queryKeys.notes(contentId)
-      : ["notes"],
+      ? queryKeys.knowledgeGraph(contentId)
+      : ["knowledgeGraph"],
 
     queryFn: () =>
-      getNotes(contentId!),
+      getKnowledgeGraph(contentId!),
 
     enabled: Boolean(contentId),
 

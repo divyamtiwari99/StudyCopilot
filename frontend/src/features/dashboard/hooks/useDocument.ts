@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { queryKeys } from "@/lib/queryKeys";
+
 import {
   getDocument,
   type UploadedDocument,
@@ -9,24 +11,18 @@ export function useDocument(
   contentId?: string,
 ) {
   return useQuery<UploadedDocument>({
-    queryKey: [
-      "document",
-      contentId,
-    ],
+    queryKey: contentId
+      ? queryKeys.document(contentId)
+      : ["document"],
 
     queryFn: () =>
-      getDocument(
-        contentId!,
-      ),
+      getDocument(contentId!),
 
-    enabled:
-      Boolean(contentId),
+    enabled: Boolean(contentId),
 
-    staleTime:
-      1000 * 60,
+    staleTime: 1000 * 60,
 
-    gcTime:
-      1000 * 60 * 10,
+    gcTime: 1000 * 60 * 10,
 
     retry: 1,
 

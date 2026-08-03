@@ -10,6 +10,7 @@ import {
   Calendar,
   HardDrive,
   Sparkles,
+  Network,
 } from "lucide-react";
 
 import ChatWindow from "@/features/workspace/components/ChatWindow";
@@ -19,6 +20,7 @@ import NotesPage from "./NotesPage";
 import SummaryPage from "./SummaryPage";
 import FlashcardsPage from "./FlashcardsPage";
 import QuizPage from "./QuizPage";
+import KnowledgeGraphPage from "./KnowledgeGraphPage";
 
 import { useDocument } from "@/features/dashboard/hooks/useDocument";
 
@@ -48,12 +50,19 @@ const tabs = [
     label: "Quiz",
     icon: GraduationCap,
   },
+  {
+    id: "knowledgeGraph",
+    label: "Knowledge Graph",
+    icon: Network,
+  },
 ] as const;
 
-type Tab = (typeof tabs)[number]["id"];
+type Tab =
+  (typeof tabs)[number]["id"];
 
 export default function WorkspacePage() {
-  const { contentId } = useParams();
+  const { contentId } =
+    useParams();
 
   const [activeTab, setActiveTab] =
     useState<Tab>("chat");
@@ -73,7 +82,8 @@ export default function WorkspacePage() {
       if (!contentRef.current) return;
 
       const top =
-        contentRef.current.getBoundingClientRect().top +
+        contentRef.current.getBoundingClientRect()
+          .top +
         window.scrollY -
         20;
 
@@ -134,7 +144,8 @@ export default function WorkspacePage() {
 
                 <div
                   className={`h-2 w-2 rounded-full ${
-                    document?.status === "ready"
+                    document?.status ===
+                    "ready"
                       ? "bg-emerald-400"
                       : document?.status ===
                           "processing"
@@ -171,7 +182,6 @@ export default function WorkspacePage() {
           const Icon = tab.icon;
 
           return (
-
             <button
               key={tab.id}
               onClick={() =>
@@ -189,7 +199,6 @@ export default function WorkspacePage() {
               {tab.label}
 
             </button>
-
           );
 
         })}
@@ -221,6 +230,11 @@ export default function WorkspacePage() {
 
         {activeTab === "quiz" && (
           <QuizPage />
+        )}
+
+        {activeTab ===
+          "knowledgeGraph" && (
+          <KnowledgeGraphPage />
         )}
 
       </div>

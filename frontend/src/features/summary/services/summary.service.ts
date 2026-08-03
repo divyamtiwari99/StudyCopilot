@@ -1,29 +1,17 @@
 import { api } from "@/lib/api";
 
-interface ArtifactResponse {
-  _id: string;
+import type { ApiResponse } from "@/types/api";
+import type { Artifact } from "@/types/artifact";
 
-  title: string;
-
-  markdown: string;
-
-  createdAt: string;
-
-  updatedAt: string;
-}
-
-interface ApiResponse<T> {
-  success: boolean;
-
-  data: T;
-}
+export type SummaryArtifact =
+  Artifact;
 
 export async function generateSummary(
   contentId: string,
 ) {
   const response =
     await api.post<
-      ApiResponse<ArtifactResponse>
+      ApiResponse<SummaryArtifact>
     >(
       "/ai/summary/generate",
       {
@@ -39,7 +27,7 @@ export async function getSummary(
 ) {
   const response =
     await api.get<
-      ApiResponse<ArtifactResponse>
+      ApiResponse<SummaryArtifact>
     >(
       `/ai/summary/${contentId}`,
     );

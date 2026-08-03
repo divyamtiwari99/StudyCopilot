@@ -2,6 +2,7 @@ import {
   Brain,
   FileText,
   GraduationCap,
+  Network,
   Sparkles,
 } from "lucide-react";
 
@@ -15,6 +16,7 @@ import { useGenerateNotes } from "../hooks/useGenerateNotes";
 import { useGenerateFlashcards } from "../hooks/useGenerateFlashcards";
 import { useGenerateQuiz } from "../hooks/useGenerateQuiz";
 import { useGenerateSummary } from "../hooks/useGenerateSummary";
+import { useGenerateKnowledgeGraph } from "../hooks/useGenerateKnowledgeGraph";
 
 import { useWorkspaceArtifacts } from "../hooks/useWorkspaceArtifacts";
 
@@ -25,6 +27,7 @@ interface Props {
       | "summary"
       | "flashcards"
       | "quiz"
+      | "knowledgeGraph"
   ) => void;
 }
 
@@ -40,33 +43,36 @@ export default function AICommandCenter({
   const notesMutation =
     useGenerateNotes();
 
+  const summaryMutation =
+    useGenerateSummary();
+
   const flashcardsMutation =
     useGenerateFlashcards();
 
   const quizMutation =
     useGenerateQuiz();
 
-  const summaryMutation =
-    useGenerateSummary();
+  const knowledgeGraphMutation =
+    useGenerateKnowledgeGraph();
 
   async function handleGenerateNotes() {
     if (!contentId) return;
 
     try {
       await notesMutation.mutateAsync(
-        contentId
+        contentId,
       );
 
       toast.success(
         artifacts.notes
           ? "Notes regenerated successfully!"
-          : "Notes generated successfully!"
+          : "Notes generated successfully!",
       );
     } catch (error) {
       console.error(error);
 
       toast.error(
-        "Failed to generate notes."
+        "Failed to generate notes.",
       );
     }
   }
@@ -76,19 +82,19 @@ export default function AICommandCenter({
 
     try {
       await summaryMutation.mutateAsync(
-        contentId
+        contentId,
       );
 
       toast.success(
         artifacts.summary
           ? "Summary regenerated successfully!"
-          : "Summary generated successfully!"
+          : "Summary generated successfully!",
       );
     } catch (error) {
       console.error(error);
 
       toast.error(
-        "Failed to generate summary."
+        "Failed to generate summary.",
       );
     }
   }
@@ -98,19 +104,19 @@ export default function AICommandCenter({
 
     try {
       await flashcardsMutation.mutateAsync(
-        contentId
+        contentId,
       );
 
       toast.success(
         artifacts.flashcards
           ? "Flashcards regenerated successfully!"
-          : "Flashcards generated successfully!"
+          : "Flashcards generated successfully!",
       );
     } catch (error) {
       console.error(error);
 
       toast.error(
-        "Failed to generate flashcards."
+        "Failed to generate flashcards.",
       );
     }
   }
@@ -120,40 +126,63 @@ export default function AICommandCenter({
 
     try {
       await quizMutation.mutateAsync(
-        contentId
+        contentId,
       );
 
       toast.success(
         artifacts.quiz
           ? "Quiz regenerated successfully!"
-          : "Quiz generated successfully!"
+          : "Quiz generated successfully!",
       );
     } catch (error) {
       console.error(error);
 
       toast.error(
-        "Failed to generate quiz."
+        "Failed to generate quiz.",
+      );
+    }
+  }
+
+  async function handleGenerateKnowledgeGraph() {
+    if (!contentId) return;
+
+    try {
+      await knowledgeGraphMutation.mutateAsync({
+        contentId,
+
+        regenerate:
+          artifacts.knowledgeGraph,
+      });
+
+      toast.success(
+        artifacts.knowledgeGraph
+          ? "Knowledge Graph regenerated successfully!"
+          : "Knowledge Graph generated successfully!",
+      );
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        "Failed to generate Knowledge Graph.",
       );
     }
   }
 
   return (
     <section className="space-y-6">
-
       <div>
-
         <h2 className="text-2xl font-bold text-white">
           AI Command Center
         </h2>
 
         <p className="mt-2 text-zinc-400">
-          Generate premium learning resources
-          from your uploaded document.
+          Generate premium learning
+          resources from your uploaded
+          document.
         </p>
-
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
 
         <CommandCard
           icon={FileText}
@@ -173,9 +202,7 @@ export default function AICommandCenter({
           description="Create a concise document summary."
           loading={summaryMutation.isPending}
           generated={artifacts.summary}
-          onClick={
-            handleGenerateSummary
-          }
+          onClick={handleGenerateSummary}
           onOpen={() =>
             onOpenTab("summary")
           }
@@ -196,7 +223,7 @@ export default function AICommandCenter({
           }
           onOpen={() =>
             onOpenTab(
-              "flashcards"
+              "flashcards",
             )
           }
         />
@@ -213,8 +240,27 @@ export default function AICommandCenter({
           }
         />
 
-      </div>
+        <CommandCard
+          icon={Network}
+          title="Knowledge Graph"
+          description="Generate an interactive AI knowledge graph."
+          loading={
+            knowledgeGraphMutation.isPending
+          }
+          generated={
+            artifacts.knowledgeGraph
+          }
+          onClick={
+            handleGenerateKnowledgeGraph
+          }
+          onOpen={() =>
+            onOpenTab(
+              "knowledgeGraph",
+            )
+          }
+        />
 
+      </div>
     </section>
   );
 }
