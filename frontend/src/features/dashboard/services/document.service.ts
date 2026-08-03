@@ -9,6 +9,8 @@ export interface ProcessingState {
 
   knowledgeGraph: boolean;
 
+  roadmap: boolean;
+
   summary: boolean;
 
   flashcards: boolean;

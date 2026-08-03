@@ -11,7 +11,10 @@ import {
   HardDrive,
   Sparkles,
   Network,
+  Route,
 } from "lucide-react";
+
+import RoadmapPage from "./RoadmapPage";
 
 import ChatWindow from "@/features/workspace/components/ChatWindow";
 import AICommandCenter from "@/features/workspace/components/AICommandCenter";
@@ -54,6 +57,11 @@ const tabs = [
     id: "knowledgeGraph",
     label: "Knowledge Graph",
     icon: Network,
+  },
+  {
+    id: "roadmap",
+    label: "Roadmap",
+    icon: Route,
   },
 ] as const;
 
@@ -235,6 +243,10 @@ export default function WorkspacePage() {
         {activeTab ===
           "knowledgeGraph" && (
           <KnowledgeGraphPage />
+        )}
+
+        {activeTab === "roadmap" && (
+          <RoadmapPage />
         )}
 
       </div>

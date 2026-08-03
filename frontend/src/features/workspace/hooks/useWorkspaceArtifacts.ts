@@ -30,5 +30,10 @@ export function useWorkspaceArtifacts() {
       data?.processing
         ?.knowledgeGraph ??
       false,
+
+    roadmap:
+      data?.processing
+        ?.roadmap ??
+      false,
   };
 }

@@ -3,6 +3,7 @@ import {
   FileText,
   GraduationCap,
   Network,
+  Route,
   Sparkles,
 } from "lucide-react";
 
@@ -17,7 +18,7 @@ import { useGenerateFlashcards } from "../hooks/useGenerateFlashcards";
 import { useGenerateQuiz } from "../hooks/useGenerateQuiz";
 import { useGenerateSummary } from "../hooks/useGenerateSummary";
 import { useGenerateKnowledgeGraph } from "../hooks/useGenerateKnowledgeGraph";
-
+import { useGenerateRoadmap } from "../hooks/useGenerateRoadmap";
 import { useWorkspaceArtifacts } from "../hooks/useWorkspaceArtifacts";
 
 interface Props {
@@ -28,6 +29,7 @@ interface Props {
       | "flashcards"
       | "quiz"
       | "knowledgeGraph"
+      | "roadmap"
   ) => void;
 }
 
@@ -54,6 +56,9 @@ export default function AICommandCenter({
 
   const knowledgeGraphMutation =
     useGenerateKnowledgeGraph();
+
+  const roadmapMutation =
+  useGenerateRoadmap();
 
   async function handleGenerateNotes() {
     if (!contentId) return;
@@ -168,6 +173,31 @@ export default function AICommandCenter({
     }
   }
 
+  async function handleGenerateRoadmap() {
+  if (!contentId) return;
+
+  try {
+    await roadmapMutation.mutateAsync({
+      contentId,
+
+      regenerate:
+        artifacts.roadmap,
+    });
+
+    toast.success(
+      artifacts.roadmap
+        ? "Roadmap regenerated successfully!"
+        : "Roadmap generated successfully!",
+    );
+  } catch (error) {
+    console.error(error);
+
+    toast.error(
+      "Failed to generate Roadmap.",
+    );
+  }
+ }
+
   return (
     <section className="space-y-6">
       <div>
@@ -182,7 +212,7 @@ export default function AICommandCenter({
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-6">
 
         <CommandCard
           icon={FileText}
@@ -259,6 +289,24 @@ export default function AICommandCenter({
             )
           }
         />
+
+          <CommandCard
+  icon={Route}
+  title="Roadmap"
+  description="Generate a personalized AI learning roadmap."
+  loading={
+    roadmapMutation.isPending
+  }
+  generated={
+    artifacts.roadmap
+  }
+  onClick={
+    handleGenerateRoadmap
+  }
+  onOpen={() =>
+    onOpenTab("roadmap")
+  }
+/>
 
       </div>
     </section>

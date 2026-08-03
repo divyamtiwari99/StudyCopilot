@@ -16,4 +16,7 @@ export const queryKeys = {
 
   knowledgeGraph: (id: string) =>
     ["knowledgeGraph", id] as const,
+
+  roadmap: (id: string) =>
+    ["roadmap", id] as const,
 };
