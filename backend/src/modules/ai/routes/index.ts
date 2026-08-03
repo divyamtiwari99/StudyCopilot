@@ -4,6 +4,7 @@ import notesRoutes from "./notes.routes.js";
 import flashcardsRoutes from "./flashcards.routes.js";
 import quizRoutes from "./quiz.routes.js";
 import summaryRoutes from "./summary.routes.js";
+import knowledgeGraphRoutes from "./knowledge-graph.routes.js";
 
 const router = Router();
 
@@ -25,6 +26,11 @@ router.use(
 router.use(
   "/summary",
   summaryRoutes
+);
+
+router.use(
+  "/knowledge-graph",
+  knowledgeGraphRoutes
 );
 
 export default router;
