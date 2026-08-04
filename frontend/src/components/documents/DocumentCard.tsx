@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
+import { useDeleteDocument } from "@/features/dashboard/hooks/useDeleteDocument";
+import { useRenameDocument } from "@/features/dashboard/hooks/useRenameDocument";
 import {
   CheckCircle2,
   Clock3,
@@ -28,10 +31,10 @@ export interface Document {
   uploadedAt: string;
 
   status:
-    | "uploading"
-    | "processing"
-    | "ready"
-    | "failed";
+  | "uploading"
+  | "processing"
+  | "ready"
+  | "failed";
 }
 
 interface Props {
@@ -43,6 +46,73 @@ export default function DocumentCard({
 }: Props) {
   const [menuOpen, setMenuOpen] =
     useState(false);
+
+
+  const deleteMutation =
+    useDeleteDocument();
+
+  const renameMutation =
+    useRenameDocument();
+
+  const [
+    renameOpen,
+    setRenameOpen,
+  ] = useState(false);
+
+  const [
+    confirmDelete,
+    setConfirmDelete,
+  ] = useState(false);
+
+  const [
+    title,
+    setTitle,
+  ] = useState(document.name);
+
+  const [
+    deleting,
+    setDeleting,
+  ] = useState(false);
+
+  async function handleRename() {
+    if (!title.trim()) {
+      toast.error(
+        "Document title is required.",
+      );
+
+      return;
+    }
+
+    try {
+      await renameMutation.mutateAsync({
+        id: document.id,
+        title: title.trim(),
+      });
+
+      setRenameOpen(false);
+
+      setMenuOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleDelete() {
+    try {
+      setDeleting(true);
+
+      await deleteMutation.mutateAsync(
+        document.id,
+      );
+
+      setConfirmDelete(false);
+
+      setMenuOpen(false);
+    } finally {
+      setDeleting(false);
+    }
+  }
+
 
   function renderStatus() {
     switch (document.status) {
@@ -100,7 +170,12 @@ export default function DocumentCard({
           <FileText size={28} />
         </div>
 
-        <div className="relative">
+        <div
+          className="relative"
+          onMouseLeave={() =>
+            setMenuOpen(false)
+          }
+        >
 
           <button
             onClick={() =>
@@ -112,16 +187,32 @@ export default function DocumentCard({
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-12 z-20 w-44 rounded-2xl border border-white/10 bg-[#101319] p-2 shadow-2xl">
+            <div className="absolute right-0 top-12 z-20 w-44 overflow-hidden rounded-2xl border border-white/10 bg-[#101319] p-2 shadow-2xl backdrop-blur-xl">
+              <button
+                onClick={() => {
+                  setTitle(document.name);
 
-              <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm hover:bg-white/5">
+                  setRenameOpen(true);
+
+                  setMenuOpen(false);
+                }}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm transition hover:bg-white/5"
+              >
+
                 <Pencil size={16} />
-                Rename
+                <span>Rename</span>
               </button>
 
-              <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-red-400 hover:bg-red-500/10">
+              <button
+                onClick={() => {
+                  setConfirmDelete(true);
+
+                  setMenuOpen(false);
+                }}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-red-400 transition hover:bg-red-500/10"
+              >
                 <Trash2 size={16} />
-                Delete
+                <span>Delete</span>
               </button>
 
             </div>
@@ -163,7 +254,9 @@ export default function DocumentCard({
             to={`/dashboard/workspace/${document.id}`}
             className="flex items-center justify-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-semibold text-white transition hover:bg-cyan-400"
           >
-            Workspace
+            <span>
+              Workspace
+            </span>
 
             <ArrowRight size={18} />
           </Link>
@@ -174,12 +267,141 @@ export default function DocumentCard({
           >
             <Sparkles size={18} />
 
-            Study Planner
+            <span>
+              Study Planner
+            </span>
           </Link>
 
         </div>
 
       </div>
+
+      {renameOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+
+          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-[#101319] p-6 shadow-2xl">
+
+            <h2 className="text-xl font-semibold text-white">
+              Rename Document
+            </h2>
+
+            <p className="mt-2 text-sm text-white/50">
+              Enter a new name.
+            </p>
+
+            <input
+              autoFocus
+              value={title}
+              onChange={(e) =>
+                setTitle(e.target.value)
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleRename();
+                }
+              }}
+              className="mt-6 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition focus:border-cyan-500"
+            />
+
+            <div className="mt-6 flex justify-end gap-3">
+
+              <button
+                onClick={() => {
+                  setRenameOpen(false);
+
+                  setTitle(document.name);
+                }}
+                className="rounded-2xl border border-white/10 px-5 py-3 text-white transition hover:bg-white/5"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleRename}
+                disabled={
+                  renameMutation.isPending
+                }
+                className="rounded-2xl bg-cyan-500 px-5 py-3 font-semibold text-white transition hover:bg-cyan-400 disabled:opacity-60"
+              >
+                {renameMutation.isPending
+                  ? "Saving..."
+                  : "Save"}
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
+
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+
+          <div className="w-full max-w-md rounded-3xl border border-red-500/20 bg-[#101319] p-6 shadow-2xl">
+
+            <div className="flex items-center gap-3">
+
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-500/10 text-red-400">
+                <Trash2 size={22} />
+              </div>
+
+              <div>
+
+                <h2 className="text-xl font-semibold text-white">
+                  Delete Document
+                </h2>
+
+                <p className="text-sm text-white/50">
+                  This action cannot be undone.
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-red-500/20 bg-red-500/10 p-4">
+
+              <p className="text-sm text-white/70">
+                You are about to permanently delete
+              </p>
+
+              <p className="mt-2 font-semibold text-red-300">
+                {document.name}
+              </p>
+
+            </div>
+
+            <div className="mt-8 flex justify-end gap-3">
+
+              <button
+                onClick={() =>
+                  setConfirmDelete(false)
+                }
+                disabled={deleting}
+                className="rounded-2xl border border-white/10 px-5 py-3 text-white transition hover:bg-white/5"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="rounded-2xl bg-red-500 px-5 py-3 font-semibold text-white transition hover:bg-red-400 disabled:opacity-60"
+              >
+                {deleting
+                  ? "Deleting..."
+                  : "Delete"}
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      )}
+
+
 
     </motion.div>
   );

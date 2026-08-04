@@ -1,5 +1,7 @@
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { toast } from "sonner";
+
 import {
   CloudUpload,
   FileText,
@@ -34,16 +36,22 @@ export default function UploadZone() {
           setProgress,
         );
 
-        // Refresh documents automatically
         await queryClient.invalidateQueries({
           queryKey: ["documents"],
         });
 
-        alert("Document uploaded successfully.");
+        toast.success(
+          "Document uploaded successfully!",
+        );
       } catch (error) {
         console.error(error);
 
-        alert("Upload failed.");
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Upload failed. Please try again.";
+
+        toast.error(message);
       } finally {
         setUploading(false);
         setProgress(0);
@@ -86,7 +94,6 @@ export default function UploadZone() {
       <input {...getInputProps()} />
 
       <div className="flex flex-col items-center text-center">
-
         <CloudUpload className="mb-6 h-14 w-14 text-violet-400" />
 
         <h2 className="text-3xl font-bold text-white">
@@ -102,38 +109,31 @@ export default function UploadZone() {
         {uploading && (
           <>
             <div className="mt-8 h-3 w-full overflow-hidden rounded-full bg-zinc-800">
-
               <div
                 className="h-full bg-violet-500 transition-all"
                 style={{
                   width: `${progress}%`,
                 }}
               />
-
             </div>
 
             <div className="mt-4 flex items-center gap-3 text-violet-400">
-
               <Loader2 className="animate-spin" />
 
               <span>{progress}%</span>
-
             </div>
           </>
         )}
 
         {!uploading && (
           <div className="mt-10 flex items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-5 py-3">
-
             <FileText className="text-violet-400" />
 
             <span className="text-white">
               PDF · DOCX · PPTX · TXT
             </span>
-
           </div>
         )}
-
       </div>
     </div>
   );

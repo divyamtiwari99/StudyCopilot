@@ -46,6 +46,7 @@ export interface UploadedDocument {
 
 interface ApiResponse<T> {
   success: boolean;
+
   data: T;
 }
 
@@ -118,6 +119,20 @@ export async function getDocument(
     await api.get<
       ApiResponse<UploadedDocument>
     >(`/content/${id}`);
+
+  return response.data.data;
+}
+
+export async function renameDocument(
+  id: string,
+  title: string,
+) {
+  const response =
+    await api.patch<
+      ApiResponse<UploadedDocument>
+    >(`/content/${id}`, {
+      title,
+    });
 
   return response.data.data;
 }

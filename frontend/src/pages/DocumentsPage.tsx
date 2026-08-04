@@ -15,7 +15,7 @@ export default function DocumentsPage() {
   const documents: Document[] =
     (data ?? []).map((doc) => ({
       id: doc.id,
-      name: doc.originalName,
+      name: doc.title,
       pages: 0,
       size: `${(doc.size / (1024 * 1024)).toFixed(2)} MB`,
       uploadedAt: new Date(
