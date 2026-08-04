@@ -1,23 +1,17 @@
 import { api } from "@/lib/api";
 
-export interface AskQuestionPayload {
-  contentId: string;
-  question: string;
-}
-
-export interface AskQuestionResponse {
-  success: boolean;
-
-  answer: string;
-}
+import type {
+  AskQuestionRequest,
+  AskQuestionResponse,
+} from "../types/chat.types";
 
 export async function askQuestion(
-  payload: AskQuestionPayload
-) {
+  payload: AskQuestionRequest,
+): Promise<AskQuestionResponse> {
   const { data } =
-    await api.post<AskQuestionResponse>(
+    await api.post(
       "/chat/ask",
-      payload
+      payload,
     );
 
   return data;

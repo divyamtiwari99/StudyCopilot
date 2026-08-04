@@ -20,7 +20,7 @@ import StudyPlannerPage from "../pages/StudyPlannerPage";
 
 import SettingsPage from "../pages/SettingsPage";
 import NotFoundPage from "../pages/NotFoundPage";
-
+import ChatWorkspacePage from "../pages/ChatWorkspacePage";
 import LandingPage from "../pages/LandingPage";
 
 import {
@@ -84,6 +84,15 @@ export const router =
           path: "chat",
           element: <ChatPage />,
         },
+
+        {
+          path: "chat/:contentId",
+          element: (
+            <ChatWorkspacePage />
+          ),
+        },
+
+
 
         // ==========================
         // Study Planner Dashboard

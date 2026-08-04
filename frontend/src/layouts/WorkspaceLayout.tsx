@@ -5,17 +5,21 @@ import Navbar from "../components/layout/Navbar";
 
 export default function WorkspaceLayout() {
   return (
-    <div className="relative flex min-h-screen overflow-hidden bg-[#060816]">
+    <div className="flex min-h-screen bg-[#060816]">
 
       <Sidebar />
 
-      <main className="relative flex-1 overflow-y-auto">
+      <main className="flex min-w-0 flex-1 flex-col">
 
         <Navbar />
 
-        <div className="mx-auto w-full max-w-[1700px] px-10 py-10">
+        <div className="flex-1 overflow-y-auto">
 
-          <Outlet />
+          <div className="mx-auto w-full max-w-[1700px] px-10 py-8">
+
+            <Outlet />
+
+          </div>
 
         </div>
 
