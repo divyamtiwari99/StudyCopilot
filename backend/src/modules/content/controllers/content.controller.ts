@@ -4,7 +4,11 @@ import {
   NextFunction,
 } from "express";
 
-import { uploadContentSchema } from "../validation/content.validation.js";
+import {
+  uploadContentSchema,
+  renameContentSchema,
+} from "../validation/content.validation.js";
+
 import { contentService } from "../services/content.service.js";
 
 export class ContentController {
@@ -89,7 +93,9 @@ export class ContentController {
         });
       }
 
-      const contentId = Array.isArray(req.params.id)
+      const contentId = Array.isArray(
+        req.params.id,
+      )
         ? req.params.id[0]
         : req.params.id;
 
@@ -98,16 +104,92 @@ export class ContentController {
           req.user.id,
           contentId,
         );
+
       if (!document) {
         return res.status(404).json({
           success: false,
-          message: "Document not found.",
+          message:
+            "Document not found.",
         });
       }
 
       return res.json({
         success: true,
         data: document,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async rename(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized",
+        });
+      }
+
+      const contentId = Array.isArray(
+        req.params.id,
+      )
+        ? req.params.id[0]
+        : req.params.id;
+
+      const payload =
+        renameContentSchema.parse(
+          req.body,
+        );
+
+      const document =
+        await contentService.rename(
+          req.user.id,
+          contentId,
+          payload.title,
+        );
+
+      return res.json({
+        success: true,
+        data: document,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async delete(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized",
+        });
+      }
+
+      const contentId = Array.isArray(
+        req.params.id,
+      )
+        ? req.params.id[0]
+        : req.params.id;
+
+      const result =
+        await contentService.delete(
+          req.user.id,
+          contentId,
+        );
+
+      return res.json({
+        success: true,
+        data: result,
       });
     } catch (error) {
       next(error);

@@ -1,30 +1,7 @@
 import multer from "multer";
-import crypto from "crypto";
-import path from "path";
-import fs from "fs";
 
-const uploadDirectory = path.resolve("uploads");
-
-if (!fs.existsSync(uploadDirectory)) {
-  fs.mkdirSync(uploadDirectory, {
-    recursive: true,
-  });
-}
-
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, uploadDirectory);
-  },
-
-  filename(req, file, cb) {
-    const extension = path.extname(file.originalname);
-
-    const filename =
-      crypto.randomUUID() + extension;
-
-    cb(null, filename);
-  },
-});
+const storage =
+  multer.memoryStorage();
 
 const allowedMimeTypes = [
   "application/pdf",
@@ -51,24 +28,43 @@ const allowedMimeTypes = [
   "application/zip",
 ];
 
-export const uploadMiddleware = multer({
-  storage,
+export const uploadMiddleware =
+  multer({
 
-  limits: {
-    fileSize: 1024 * 1024 * 250,
-  },
+    storage,
 
-  fileFilter(req, file, cb) {
-    if (
-      allowedMimeTypes.includes(file.mimetype)
+    limits: {
+
+      fileSize:
+        1024 * 1024 * 250,
+
+    },
+
+    fileFilter(
+      req,
+      file,
+      cb,
     ) {
-      return cb(null, true);
-    }
 
-    cb(
-      new Error(
-        `Unsupported file type: ${file.mimetype}`
-      )
-    );
-  },
-});
+      if (
+        allowedMimeTypes.includes(
+          file.mimetype,
+        )
+      ) {
+
+        return cb(
+          null,
+          true,
+        );
+
+      }
+
+      cb(
+        new Error(
+          `Unsupported file type: ${file.mimetype}`,
+        ),
+      );
+
+    },
+
+  });

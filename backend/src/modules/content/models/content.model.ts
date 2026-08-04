@@ -5,6 +5,120 @@ import {
   InferSchemaType,
 } from "mongoose";
 
+const StorageSchema = new Schema(
+  {
+    originalName: {
+      type: String,
+      required: true,
+    },
+
+    storedName: {
+      type: String,
+      required: true,
+    },
+
+    mimeType: {
+      type: String,
+      required: true,
+    },
+
+    extension: {
+      type: String,
+      required: true,
+    },
+
+    size: {
+      type: Number,
+      required: true,
+    },
+
+    path: {
+      type: String,
+      required: true,
+    },
+
+    provider: {
+      type: String,
+      default: "local",
+    },
+
+    bucket: {
+      type: String,
+      default: "",
+    },
+
+    key: {
+      type: String,
+      default: "",
+    },
+
+    url: {
+      type: String,
+      default: "",
+    },
+  },
+  {
+    _id: false,
+  },
+);
+
+const ProcessingSchema = new Schema(
+  {
+    parser: {
+      type: Boolean,
+      default: false,
+    },
+
+    normalized: {
+      type: Boolean,
+      default: false,
+    },
+
+    embeddings: {
+      type: Boolean,
+      default: false,
+    },
+
+    knowledgeGraph: {
+      type: Boolean,
+      default: false,
+    },
+
+    roadmap: {
+      type: Boolean,
+      default: false,
+    },
+
+    summary: {
+      type: Boolean,
+      default: false,
+    },
+
+    flashcards: {
+      type: Boolean,
+      default: false,
+    },
+
+    quiz: {
+      type: Boolean,
+      default: false,
+    },
+
+    notes: {
+      type: Boolean,
+      default: false,
+    },
+
+    studyPlanner: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    _id: false,
+  },
+);
+
 const ContentSchema = new Schema(
   {
     userId: {
@@ -31,88 +145,13 @@ const ContentSchema = new Schema(
     },
 
     storage: {
-      originalName: {
-        type: String,
-        required: true,
-      },
-
-      storedName: {
-        type: String,
-        required: true,
-      },
-
-      mimeType: {
-        type: String,
-        required: true,
-      },
-
-      extension: {
-        type: String,
-        required: true,
-      },
-
-      size: {
-        type: Number,
-        required: true,
-      },
-
-      path: {
-        type: String,
-        required: true,
-      },
+      type: StorageSchema,
+      required: true,
     },
 
     processing: {
-      parser: {
-        type: Boolean,
-        default: false,
-      },
-
-      normalized: {
-        type: Boolean,
-        default: false,
-      },
-
-      embeddings: {
-        type: Boolean,
-        default: false,
-      },
-
-      knowledgeGraph: {
-        type: Boolean,
-        default: false,
-      },
-
-      roadmap: {
-        type: Boolean,
-        default: false,
-      },
-
-      summary: {
-        type: Boolean,
-        default: false,
-      },
-
-      flashcards: {
-        type: Boolean,
-        default: false,
-      },
-
-      quiz: {
-        type: Boolean,
-        default: false,
-      },
-
-      notes: {
-        type: Boolean,
-        default: false,
-      },
-
-      studyPlanner: {
-        type: Boolean,
-        default: false,
-      },
-
+      type: ProcessingSchema,
+      required: true,
     },
   },
   {

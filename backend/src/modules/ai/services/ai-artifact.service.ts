@@ -12,8 +12,7 @@ export interface SaveArtifactInput {
     | "quiz"
     | "knowledgeGraph"
     | "roadmap"
-    | "studyPlanner"
-    ;
+    | "studyPlanner";
 
   title: string;
 
@@ -36,17 +35,14 @@ export class AIArtifactService {
   ) {
     const existing =
       await AIArtifactModel.findOne({
-        contentId:
-          input.contentId,
-
+        contentId: input.contentId,
         type: input.type,
       });
 
     if (existing) {
       existing.version += 1;
 
-      existing.title =
-        input.title;
+      existing.title = input.title;
 
       existing.markdown =
         input.markdown ?? "";
@@ -57,8 +53,7 @@ export class AIArtifactService {
       const metadata =
         existing.metadata ?? {
           model: "",
-          promptVersion:
-            "v1",
+          promptVersion: "v1",
           tokens: 0,
           generationTime: 0,
         };
@@ -156,6 +151,20 @@ export class AIArtifactService {
     return AIArtifactModel.findOneAndDelete({
       contentId,
       type,
+    });
+  }
+
+  // ==========================
+  // NEW
+  // Delete every AI artifact
+  // of a document
+  // ==========================
+
+  async deleteAllByContent(
+    contentId: string,
+  ) {
+    return AIArtifactModel.deleteMany({
+      contentId,
     });
   }
 }
