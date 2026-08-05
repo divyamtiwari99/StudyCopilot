@@ -17,7 +17,12 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-import { useState } from "react";
+import {
+  useRef,
+  useState,
+} from "react";
+
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 export interface Document {
   id: string;
@@ -46,6 +51,17 @@ export default function DocumentCard({
 }: Props) {
   const [menuOpen, setMenuOpen] =
     useState(false);
+
+  const menuRef =
+    useRef<HTMLDivElement>(null);
+
+  useClickOutside(
+    menuRef,
+    () => {
+      setMenuOpen(false);
+    },
+  );
+
 
 
   const deleteMutation =
@@ -171,15 +187,14 @@ export default function DocumentCard({
         </div>
 
         <div
+          ref={menuRef}
           className="relative"
-          onMouseLeave={() =>
-            setMenuOpen(false)
-          }
         >
 
           <button
+            aria-label="Document menu"
             onClick={() =>
-              setMenuOpen(!menuOpen)
+              setMenuOpen((prev) => !prev)
             }
             className="rounded-xl p-2 transition hover:bg-white/10"
           >
@@ -187,7 +202,10 @@ export default function DocumentCard({
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 top-12 z-20 w-44 overflow-hidden rounded-2xl border border-white/10 bg-[#101319] p-2 shadow-2xl backdrop-blur-xl">
+            <div
+              role="menu"
+              className="absolute right-0 top-full mt-2 z-20 w-44 overflow-hidden rounded-2xl border border-white/10 bg-[#101319] p-2 shadow-2xl backdrop-blur-xl"
+            >
               <button
                 onClick={() => {
                   setTitle(document.name);

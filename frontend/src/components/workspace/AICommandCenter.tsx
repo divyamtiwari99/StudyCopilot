@@ -1,130 +1,123 @@
+import { useNavigate } from "react-router-dom";
+
 import {
   ArrowRight,
+  BookOpen,
   BrainCircuit,
-  Clock3,
+  FileText,
+  Layers3,
+  NotebookPen,
   Sparkles,
-  TrendingUp,
 } from "lucide-react";
 
-const suggestions = [
+const actions = [
   {
-    title: "Continue Machine Learning",
-    subtitle: "Resume from Chapter 7",
+    title: "Ask AI",
+    subtitle: "Start a new AI conversation",
+    icon: BrainCircuit,
+    path: "/dashboard/chat",
   },
   {
-    title: "Generate Quiz",
-    subtitle: "Create 20 MCQs from uploaded PDF",
+    title: "Upload Document",
+    subtitle: "Add new study material",
+    icon: FileText,
+    path: "/dashboard/documents",
   },
   {
-    title: "Summarize Notes",
-    subtitle: "Convert today's notes into revision sheet",
+    title: "Generate Notes",
+    subtitle: "Create structured notes",
+    icon: NotebookPen,
+    path: "/dashboard/notes",
+  },
+  {
+    title: "Create Quiz",
+    subtitle: "Test your knowledge",
+    icon: BookOpen,
+    path: "/dashboard/quiz",
+  },
+  {
+    title: "Flashcards",
+    subtitle: "Quick revision cards",
+    icon: Layers3,
+    path: "/dashboard/flashcards",
   },
 ];
 
 export default function AICommandCenter() {
+  const navigate = useNavigate();
+
   return (
-    <section className="grid gap-6 xl:grid-cols-[2fr_1fr]">
+    <section className="rounded-[30px] border border-white/10 bg-white/[0.04] p-8 backdrop-blur-3xl">
 
-      {/* Main Card */}
+      <div className="mb-8 flex items-center justify-between">
 
-      <div className="rounded-[30px] border border-white/10 bg-white/[0.04] p-8 backdrop-blur-3xl">
+        <div>
 
-        <div className="mb-8 flex items-center justify-between">
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-4 py-2 text-sm text-indigo-300">
 
-          <div>
+            <Sparkles size={15} />
 
-            <p className="text-sm uppercase tracking-[0.3em] text-indigo-400">
-              AI COMMAND CENTER
-            </p>
-
-            <h2 className="mt-2 text-3xl font-bold text-white">
-              What would you like to learn today?
-            </h2>
+            Quick Actions
 
           </div>
 
-          <BrainCircuit
-            size={40}
-            className="text-indigo-400"
-          />
+          <h2 className="mt-5 text-3xl font-bold text-white">
+            What would you like to do?
+          </h2>
 
-        </div>
-
-        <div className="rounded-3xl border border-white/10 bg-[#0b1020] p-5">
-
-          <textarea
-            rows={4}
-            placeholder="Ask AI anything about your study materials..."
-            className="w-full resize-none bg-transparent text-white placeholder:text-slate-500 outline-none"
-          />
-
-          <div className="mt-5 flex justify-end">
-
-            <button className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3 font-medium text-white transition hover:scale-105">
-
-              <Sparkles size={18} />
-
-              Ask AI
-
-            </button>
-
-          </div>
+          <p className="mt-2 text-slate-400">
+            Jump directly into your next learning task.
+          </p>
 
         </div>
 
       </div>
 
-      {/* Suggestions */}
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
 
-      <div className="rounded-[30px] border border-white/10 bg-white/[0.04] p-8 backdrop-blur-3xl">
+        {actions.map((action) => {
 
-        <div className="mb-6 flex items-center gap-3">
+          const Icon = action.icon;
 
-          <TrendingUp className="text-cyan-400" />
+          return (
 
-          <h3 className="text-xl font-semibold text-white">
-            Smart Suggestions
-          </h3>
-
-        </div>
-
-        <div className="space-y-4">
-
-          {suggestions.map((item) => (
             <button
-              key={item.title}
-              className="group w-full rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left transition hover:border-indigo-500/40 hover:bg-white/[0.06]"
+              key={action.title}
+              onClick={() => navigate(action.path)}
+              className="group rounded-3xl border border-white/10 bg-white/[0.03] p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/30 hover:bg-white/[0.05]"
             >
-              <div className="flex items-start justify-between">
 
-                <div>
+              <div className="flex items-center justify-between">
 
-                  <h4 className="font-semibold text-white">
-                    {item.title}
-                  </h4>
+                <div className="rounded-2xl bg-indigo-500/10 p-3">
 
-                  <p className="mt-2 text-sm text-slate-400">
-                    {item.subtitle}
-                  </p>
+                  <Icon
+                    size={24}
+                    className="text-indigo-400"
+                  />
 
                 </div>
 
-                <ArrowRight className="transition group-hover:translate-x-1" />
+                <ArrowRight
+                  size={18}
+                  className="text-slate-500 transition group-hover:translate-x-1 group-hover:text-white"
+                />
 
               </div>
 
+              <h3 className="mt-6 text-lg font-semibold text-white">
+                {action.title}
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-slate-400">
+                {action.subtitle}
+              </p>
+
             </button>
-          ))}
 
-        </div>
+          );
 
-        <div className="mt-8 flex items-center gap-2 text-sm text-slate-400">
-
-          <Clock3 size={16} />
-
-          Updated a few seconds ago
-
-        </div>
+        })}
 
       </div>
 
