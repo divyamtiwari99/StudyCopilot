@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+
 import {
   Sparkles,
   LayoutDashboard,
@@ -62,67 +63,68 @@ function NavSection({
   items: typeof workspace;
 }) {
   return (
-    <div className="mb-7">
-
+    <div>
       <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
         {title}
       </p>
 
       {items.map((item) => {
-
         const Icon = item.icon;
 
         return (
-
           <NavLink
             key={item.title}
             to={item.path}
             className={({ isActive }) =>
               `mb-1.5 flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all ${
                 isActive
-                  ? "bg-indigo-500/15 text-white"
+                  ? "bg-[color-mix(in_srgb,var(--accent-color)_15%,transparent)] text-white"
                   : "text-slate-400 hover:bg-white/5 hover:text-white"
               }`
             }
           >
-
             <Icon size={18} />
 
             <span className="text-sm font-medium">
               {item.title}
             </span>
-
           </NavLink>
-
         );
-
       })}
-
     </div>
   );
 }
 
 export default function Sidebar() {
   return (
-    <aside className="sticky top-0 flex h-screen w-[260px] flex-col border-r border-white/10 bg-[#050816]/80 backdrop-blur-2xl">
-
+    <aside className="flex h-full flex-col">
       {/* Logo */}
 
       <div className="border-b border-white/10 px-6 py-5">
-
         <div className="flex items-center gap-3">
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600">
-
+          <div
+            className="
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-xl
+            "
+            style={{
+              background:
+                "linear-gradient(135deg,var(--accent-color),#8b5cf6)",
+            }}
+          >
             <Sparkles
               size={18}
               className="text-white"
             />
-
           </div>
 
-          <div>
 
+          <div>
             <h1 className="text-lg font-bold text-white">
               StudyCopilot
             </h1>
@@ -130,12 +132,11 @@ export default function Sidebar() {
             <p className="text-[11px] text-slate-400">
               Learning OS
             </p>
-
           </div>
 
         </div>
-
       </div>
+
 
       {/* Navigation */}
 
@@ -151,18 +152,20 @@ export default function Sidebar() {
           items={aiTools}
         />
 
-        <div>
+
+        <div className="mt-5">
 
           <p className="mb-3 px-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
             System
           </p>
+
 
           <NavLink
             to="/dashboard/settings"
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all ${
                 isActive
-                  ? "bg-indigo-500/15 text-white"
+                  ? "bg-[color-mix(in_srgb,var(--accent-color)_15%,transparent)] text-white"
                   : "text-slate-400 hover:bg-white/5 hover:text-white"
               }`
             }
@@ -180,9 +183,11 @@ export default function Sidebar() {
 
       </div>
 
+
       {/* Footer */}
 
-      <div className="border-t border-white/10 p-4 space-y-3">
+      <div className="space-y-3 border-t border-white/10 p-4">
+
 
         <div className="rounded-2xl border border-orange-500/20 bg-orange-500/10 p-3">
 
@@ -209,16 +214,24 @@ export default function Sidebar() {
 
         </div>
 
+
+
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
 
+
           <div className="mb-2 flex items-center justify-between">
+
 
             <div className="flex items-center gap-2">
 
               <HardDrive
                 size={16}
-                className="text-indigo-400"
+                style={{
+                  color:
+                    "var(--accent-color)",
+                }}
               />
+
 
               <span className="text-sm text-white">
                 Storage
@@ -226,19 +239,35 @@ export default function Sidebar() {
 
             </div>
 
+
             <span className="text-xs text-slate-400">
               38%
             </span>
 
+
           </div>
+
+
 
           <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
 
-            <div className="h-full w-[38%] rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400" />
+            <div
+              className="
+                h-full
+                w-[38%]
+                rounded-full
+              "
+              style={{
+                background:
+                  "linear-gradient(90deg,var(--accent-color),#22d3ee)",
+              }}
+            />
 
           </div>
 
+
         </div>
+
 
       </div>
 

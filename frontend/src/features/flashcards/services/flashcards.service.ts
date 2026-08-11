@@ -5,6 +5,8 @@ import type { Flashcard } from "../types/flashcard.types";
 interface ArtifactResponse {
   _id: string;
 
+  contentId: string;
+
   title: string;
 
   json: Flashcard[];
@@ -47,4 +49,36 @@ export async function getFlashcards(
     );
 
   return response.data.data;
+}
+
+export async function getAllFlashcards() {
+
+  const response =
+    await api.get<
+      ApiResponse<ArtifactResponse[]>
+    >(
+      "/ai/flashcards",
+    );
+
+
+  return response.data.data;
+
+}
+
+
+
+export async function deleteFlashcards(
+  contentId: string,
+) {
+
+  const response =
+    await api.delete<
+      ApiResponse<null>
+    >(
+      `/ai/flashcards/${contentId}`,
+    );
+
+
+  return response.data;
+
 }

@@ -37,12 +37,27 @@ export default function CommandCard({
       {/* Glow */}
 
       <div className="pointer-events-none absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100">
-        <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-cyan-500/10 blur-3xl" />
+        <div
+          className="absolute -right-10 -top-10 h-28 w-28 rounded-full blur-3xl"
+          style={{
+            background:
+              "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+          }}
+        />
       </div>
 
       {/* Icon */}
 
-      <div className="relative z-10 mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 transition group-hover:scale-110">
+      <div
+        className="relative z-10 mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border transition group-hover:scale-110"
+        style={{
+          color: "var(--accent-color)",
+          backgroundColor:
+            "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+          borderColor:
+            "color-mix(in srgb,var(--accent-color) 20%,transparent)",
+        }}
+      >
         <Icon size={24} />
       </div>
 
@@ -71,7 +86,11 @@ export default function CommandCard({
       <button
         onClick={onClick}
         disabled={loading}
-        className="relative z-20 mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-white transition-all duration-300 hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-70"
+        className="relative z-20 mt-7 flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold text-white transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-70"
+        style={{
+          backgroundColor:
+            "var(--accent-color)",
+        }}
       >
         {loading ? (
           <>

@@ -1,4 +1,6 @@
-import { useDocument } from "@/features/dashboard/hooks/useDocument";
+import { useMemo } from "react";
+
+import { useDocuments } from "@/features/documents/hooks/useDocuments";
 
 import { useChat } from "../hooks/useChat";
 
@@ -22,28 +24,18 @@ export default function ChatWorkspace({
     sendMessage,
   } = useChat(contentId);
 
-  const {
-    data: document,
-    isLoading,
-  } = useDocument(contentId);
+  const { data } =
+    useDocuments();
 
-  if (isLoading) {
-    return (
-      <div className="flex h-[70vh] items-center justify-center">
-
-        <div className="text-center">
-
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-cyan-500 border-t-transparent" />
-
-          <p className="mt-6 text-slate-400">
-            Loading workspace...
-          </p>
-
-        </div>
-
-      </div>
+  const document =
+    useMemo(
+      () =>
+        (data ?? []).find(
+          (doc: any) =>
+            doc.id === contentId,
+        ),
+      [data, contentId],
     );
-  }
 
   const title =
     document?.title ??
@@ -58,8 +50,7 @@ export default function ChatWorkspace({
           1024 /
           1024
         ).toFixed(1)} MB`
-      : document?.size ??
-        "-";
+      : document?.size ?? "-";
 
   const status =
     document?.status ??

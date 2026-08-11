@@ -7,6 +7,8 @@ import type {
 interface ArtifactResponse {
   _id: string;
 
+  contentId: string;
+
   title: string;
 
   json: QuizQuestion[];
@@ -49,4 +51,34 @@ export async function getQuiz(
     );
 
   return response.data.data;
+}
+
+export async function getAllQuiz() {
+
+  const response =
+    await api.get<
+      ApiResponse<ArtifactResponse[]>
+    >(
+      "/ai/quiz",
+    );
+
+
+  return response.data.data;
+
+}
+
+export async function deleteQuiz(
+  contentId: string,
+) {
+
+  const response =
+    await api.delete<
+      ApiResponse<null>
+    >(
+      `/ai/quiz/${contentId}`,
+    );
+
+
+  return response.data;
+
 }

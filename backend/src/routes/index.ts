@@ -4,6 +4,7 @@ import authModule from "../modules/auth/index.js";
 import contentModule from "../modules/content/index.js";
 import chatModule from "../modules/chat/index.js";
 import aiModule from "../modules/ai/index.js";
+import settingsModule from "../modules/settings/index.js";
 
 const router = Router();
 
@@ -14,5 +15,7 @@ router.use("/content", contentModule);
 router.use("/chat", chatModule);
 
 router.use("/ai", aiModule);
+
+router.use("/settings", settingsModule);
 
 export default router;

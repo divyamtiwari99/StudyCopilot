@@ -106,6 +106,25 @@ export class FlashcardsService {
       "flashcards"
     );
   }
+
+  async getAll(
+  userId: string,
+) {
+  return aiArtifactService.getAllByUser(
+    userId,
+    "flashcards",
+  );
+}
+
+
+async delete(
+  contentId: string,
+) {
+  return aiArtifactService.deleteByContent(
+    contentId,
+    "flashcards",
+  );
+}
 }
 
 export const flashcardsService =

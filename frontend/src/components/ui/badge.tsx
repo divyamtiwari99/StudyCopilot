@@ -10,9 +10,16 @@ export function Badge({
   return (
     <span
       className={cn(
-        "rounded-full border border-cyan-400/20 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-300",
-        className
+        "rounded-full border px-3 py-1 text-xs font-medium",
+        className,
       )}
+      style={{
+        color: "var(--accent-color)",
+        borderColor:
+          "color-mix(in srgb, var(--accent-color) 20%, transparent)",
+        backgroundColor:
+          "color-mix(in srgb, var(--accent-color) 10%, transparent)",
+      }}
     >
       {children}
     </span>

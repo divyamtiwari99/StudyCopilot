@@ -108,6 +108,22 @@ export class QuizService {
       "quiz"
     );
   }
+  async getAll(
+  userId: string,
+) {
+  return aiArtifactService.getAllByUser(
+    userId,
+    "quiz",
+  );
+}
+async delete(
+  contentId: string,
+) {
+  return aiArtifactService.deleteByContent(
+    contentId,
+    "quiz",
+  );
+}
 }
 
 export const quizService =

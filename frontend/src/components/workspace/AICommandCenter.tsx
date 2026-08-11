@@ -10,6 +10,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
+
 const actions = [
   {
     title: "Ask AI",
@@ -43,75 +44,221 @@ const actions = [
   },
 ];
 
+
 export default function AICommandCenter() {
+
   const navigate = useNavigate();
 
+
   return (
-    <section className="rounded-[30px] border border-white/10 bg-white/[0.04] p-8 backdrop-blur-3xl">
+    <section
+      className="
+        rounded-3xl
+        border
+        border-white/10
+        bg-white/[0.04]
+        p-6
+        backdrop-blur-3xl
+      "
+    >
 
-      <div className="mb-8 flex items-center justify-between">
 
-        <div>
+      <div className="mb-6">
 
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-4 py-2 text-sm text-indigo-300">
 
-            <Sparkles size={15} />
+        <div
+          className="
+            inline-flex
+            items-center
+            gap-2
+            rounded-full
+            px-4
+            py-2
+            text-sm
+            font-medium
+          "
+          style={{
+            color:
+              "var(--accent-color)",
 
-            Quick Actions
+            backgroundColor:
+              "color-mix(in srgb,var(--accent-color) 10%,transparent)",
 
-          </div>
+            border:
+              "1px solid color-mix(in srgb,var(--accent-color) 20%,transparent)",
+          }}
+        >
 
-          <h2 className="mt-5 text-3xl font-bold text-white">
-            What would you like to do?
-          </h2>
+          <Sparkles size={15} />
 
-          <p className="mt-2 text-slate-400">
-            Jump directly into your next learning task.
-          </p>
+          Quick Actions
 
         </div>
 
+
+
+        <h2
+          className="
+            mt-5
+            text-2xl
+            font-bold
+            text-white
+            lg:text-3xl
+          "
+        >
+          What would you like to do?
+        </h2>
+
+
+
+        <p
+          className="
+            mt-2
+            text-slate-400
+          "
+        >
+          Jump directly into your next learning task.
+        </p>
+
+
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+
+
+      <div
+        className="
+          grid
+          gap-4
+          md:grid-cols-2
+          xl:grid-cols-3
+        "
+      >
 
         {actions.map((action) => {
 
           const Icon = action.icon;
 
+
           return (
 
             <button
+
               key={action.title}
-              onClick={() => navigate(action.path)}
-              className="group rounded-3xl border border-white/10 bg-white/[0.03] p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/30 hover:bg-white/[0.05]"
+
+              onClick={() =>
+                navigate(action.path)
+              }
+
+              className="
+                group
+                rounded-2xl
+                border
+                border-white/10
+                bg-white/[0.03]
+                p-5
+                text-left
+                transition-all
+                duration-300
+                hover:-translate-y-1
+                hover:bg-white/[0.06]
+              "
+
+              style={{
+                borderColor:
+                  undefined,
+              }}
+
             >
 
-              <div className="flex items-center justify-between">
 
-                <div className="rounded-2xl bg-indigo-500/10 p-3">
+              <div
+                className="
+                  flex
+                  items-center
+                  justify-between
+                "
+              >
+
+
+                <div
+                  className="
+                    flex
+                    h-12
+                    w-12
+                    items-center
+                    justify-center
+                    rounded-2xl
+                    border
+                    border-white/10
+                    transition
+                    duration-300
+                    group-hover:scale-105
+                  "
+                  style={{
+                    backgroundColor:
+                      "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+                  }}
+                >
 
                   <Icon
-                    size={24}
-                    className="text-indigo-400"
+
+                    size={22}
+
+                    style={{
+                      color:
+                        "var(--accent-color)",
+                    }}
+
                   />
 
                 </div>
 
+
+
                 <ArrowRight
+
                   size={18}
-                  className="text-slate-500 transition group-hover:translate-x-1 group-hover:text-white"
+
+                  className="
+                    text-slate-500
+                    transition-all
+                    duration-300
+                    group-hover:translate-x-1
+                    group-hover:text-white
+                  "
+
                 />
+
 
               </div>
 
-              <h3 className="mt-6 text-lg font-semibold text-white">
+
+
+
+              <h3
+                className="
+                  mt-5
+                  text-base
+                  font-semibold
+                  text-white
+                "
+              >
                 {action.title}
               </h3>
 
-              <p className="mt-2 text-sm leading-6 text-slate-400">
+
+
+              <p
+                className="
+                  mt-2
+                  text-sm
+                  leading-6
+                  text-slate-400
+                "
+              >
                 {action.subtitle}
               </p>
+
 
             </button>
 
@@ -119,7 +266,9 @@ export default function AICommandCenter() {
 
         })}
 
+
       </div>
+
 
     </section>
   );

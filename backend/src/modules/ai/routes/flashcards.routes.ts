@@ -14,10 +14,32 @@ router.post(
   )
 );
 
+
+
+router.get(
+  "/",
+  authMiddleware,
+  flashcardsController.getAll.bind(
+    flashcardsController
+  )
+);
+
+
+
 router.get(
   "/:contentId",
   authMiddleware,
   flashcardsController.get.bind(
+    flashcardsController
+  )
+);
+
+
+
+router.delete(
+  "/:contentId",
+  authMiddleware,
+  flashcardsController.delete.bind(
     flashcardsController
   )
 );

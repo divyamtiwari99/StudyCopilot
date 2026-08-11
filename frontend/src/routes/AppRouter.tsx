@@ -11,10 +11,12 @@ import DocumentsPage from "../pages/DocumentsPage";
 import WorkspacePage from "../pages/WorkspacePage";
 
 import ChatPage from "../pages/ChatPage";
-import NotesPage from "../pages/NotesPage";
-import QuizPage from "../pages/QuizPage";
-import FlashcardsPage from "../pages/FlashcardsPage";
 
+import NotesLibraryPage from "../pages/NotesLibraryPage";
+
+import QuizLibraryPage from "../pages/QuizLibraryPage";
+
+import FlashcardsLibraryPage from "../pages/FlashcardsLibraryPage";
 import StudyPlannerDashboardPage from "../pages/StudyPlannerDashboardPage";
 import StudyPlannerPage from "../pages/StudyPlannerPage";
 
@@ -118,17 +120,17 @@ export const router =
 
         {
           path: "notes",
-          element: <NotesPage />,
+          element: <NotesLibraryPage />,
         },
 
         {
           path: "quiz",
-          element: <QuizPage />,
+          element: <QuizLibraryPage />,
         },
 
         {
           path: "flashcards",
-          element: <FlashcardsPage />,
+          element: <FlashcardsLibraryPage />,
         },
 
         {

@@ -1,5 +1,12 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import type {
+  ButtonHTMLAttributes,
+  ReactNode,
+} from "react";
+
+import {
+  cva,
+  type VariantProps,
+} from "class-variance-authority";
 
 import { cn } from "../../lib/cn";
 
@@ -9,7 +16,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-indigo-600 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-600/20",
+          "bg-[var(--accent-color)] text-white shadow-lg hover:opacity-90",
 
         secondary:
           "border border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08]",
@@ -36,7 +43,7 @@ const buttonVariants = cva(
       variant: "primary",
       size: "md",
     },
-  }
+  },
 );
 
 interface ButtonProps
@@ -59,7 +66,7 @@ export default function Button({
           variant,
           size,
         }),
-        className
+        className,
       )}
       {...props}
     >

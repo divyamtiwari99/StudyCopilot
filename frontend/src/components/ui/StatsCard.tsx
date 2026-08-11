@@ -14,31 +14,116 @@ export default function StatsCard({
   icon: Icon,
 }: StatsCardProps) {
   return (
-    <div className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/30">
+    <div
+      className="
+        group
+        relative
+        overflow-hidden
+        rounded-3xl
+        border
+        border-white/10
+        bg-white/[0.04]
+        p-5
+        backdrop-blur-3xl
+        transition-all
+        duration-300
+        hover:-translate-y-1
+        hover:border-[var(--accent-color)]
+        hover:bg-white/[0.06]
+      "
+    >
+      <div
+        className="
+          pointer-events-none
+          absolute
+          -right-10
+          -top-10
+          h-32
+          w-32
+          rounded-full
+          blur-3xl
+          transition
+          duration-500
+          opacity-20
+          group-hover:opacity-40
+        "
+        style={{
+          backgroundColor:
+            "var(--accent-color)",
+        }}
+      />
 
-      <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-indigo-500/10 blur-3xl transition group-hover:bg-indigo-500/20" />
-
-      <div className="relative z-10 flex items-start justify-between">
-
+      <div
+        className="
+          relative
+          z-10
+          flex
+          items-start
+          justify-between
+          gap-4
+        "
+      >
         <div>
-          <p className="text-sm text-slate-400">{title}</p>
+          <p
+            className="
+              text-sm
+              font-medium
+              text-slate-400
+            "
+          >
+            {title}
+          </p>
 
-          <h3 className="mt-3 text-4xl font-bold text-white">
+          <h3
+            className="
+              mt-2
+              text-3xl
+              font-black
+              tracking-tight
+              text-white
+            "
+          >
             {value}
           </h3>
 
-          <p className="mt-3 text-sm text-slate-500">
+          <p
+            className="
+              mt-2
+              text-sm
+              text-slate-500
+            "
+          >
             {subtitle}
           </p>
         </div>
 
-        <div className="rounded-2xl bg-indigo-500/15 p-3">
+        <div
+          className="
+            flex
+            h-12
+            w-12
+            items-center
+            justify-center
+            rounded-2xl
+            border
+            border-white/10
+            transition
+            duration-300
+            group-hover:scale-105
+          "
+          style={{
+            backgroundColor:
+              "color-mix(in srgb, var(--accent-color) 10%, transparent)",
+          }}
+        >
           <Icon
-            size={24}
-            className="text-indigo-400"
+            size={22}
+            style={{
+              color:
+                "var(--accent-color)",
+            }}
           />
         </div>
-
       </div>
     </div>
   );

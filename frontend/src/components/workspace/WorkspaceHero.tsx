@@ -1,29 +1,23 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+
 import {
   ArrowRight,
   BrainCircuit,
-  CheckCircle2,
-  Clock3,
-  HardDrive,
   Sparkles,
   Upload,
 } from "lucide-react";
 
 import Button from "../ui/Button";
+import { useAuthStore } from "@/store/auth.store";
 
-import type { DashboardStats } from "@/features/dashboard/hooks/useDashboard";
-
-interface Props {
-  dashboard: {
-    stats: DashboardStats;
-  };
-}
-
-export default function WorkspaceHero({
-  dashboard,
-}: Props) {
+export default function WorkspaceHero() {
   const navigate = useNavigate();
+
+  const user = useAuthStore(
+    (state) => state.user,
+  );
+
 
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
@@ -39,153 +33,156 @@ export default function WorkspaceHero({
     return "Good Evening";
   }, []);
 
-  const { stats } = dashboard;
 
   return (
-    <section className="overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04] backdrop-blur-3xl">
+    <section
+      className="
+        relative
+        overflow-hidden
+        rounded-3xl
+        border
+        border-white/10
+        bg-white/[0.04]
+        backdrop-blur-3xl
+      "
+    >
 
-      <div className="grid lg:grid-cols-[1.7fr_360px]">
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+        "
+        style={{
+          background:
+            "radial-gradient(circle at top left,color-mix(in srgb,var(--accent-color) 12%,transparent),transparent 45%)",
+        }}
+      />
 
-        {/* Left */}
 
-        <div className="p-10">
+      <div
+        className="
+          relative
+          p-8
+          lg:p-10
+        "
+      >
 
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-4 py-2 text-sm text-indigo-300">
 
-            <Sparkles size={15} />
+        <div
+          className="
+            inline-flex
+            items-center
+            gap-2
+            rounded-full
+            px-4
+            py-2
+            text-sm
+            font-medium
+          "
+          style={{
+            color:
+              "var(--accent-color)",
 
-            Dashboard
+            backgroundColor:
+              "color-mix(in srgb,var(--accent-color) 10%,transparent)",
 
-          </div>
+            border:
+              "1px solid color-mix(in srgb,var(--accent-color) 20%,transparent)",
+          }}
+        >
 
-          <h1 className="mt-6 text-5xl font-black text-white">
+          <Sparkles size={15} />
 
-            {greeting} 👋
-
-          </h1>
-
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-400">
-
-            Ready to continue learning?
-            Upload new material or continue chatting
-            with your existing documents.
-
-          </p>
-
-          <div className="mt-10 flex flex-wrap gap-4">
-
-            <Button
-              size="lg"
-              className="gap-3"
-              onClick={() =>
-                navigate("/dashboard/documents")
-              }
-            >
-
-              <Upload size={20} />
-
-              Upload Document
-
-            </Button>
-
-            <Button
-              variant="secondary"
-              size="lg"
-              className="gap-3"
-              onClick={() =>
-                navigate("/dashboard/chat")
-              }
-            >
-
-              <BrainCircuit size={20} />
-
-              Continue Chat
-
-              <ArrowRight size={18} />
-
-            </Button>
-
-          </div>
+          Dashboard
 
         </div>
 
-        {/* Right */}
 
-        <div className="grid gap-px border-l border-white/10 bg-white/5">
 
-          <Stat
-            icon={CheckCircle2}
-            label="Ready Documents"
-            value={stats.readyDocuments.toString()}
-          />
+        <h1
+          className="
+            mt-6
+            text-4xl
+            font-black
+            text-white
+            lg:text-5xl
+          "
+        >
 
-          <Stat
-            icon={Clock3}
-            label="Processing"
-            value={stats.processingDocuments.toString()}
-          />
+          {greeting} {user?.name ?? ""} 👋
 
-          <Stat
-            icon={Sparkles}
-            label="Total Documents"
-            value={stats.totalDocuments.toString()}
-          />
+        </h1>
 
-          <Stat
-            icon={HardDrive}
-            label="Storage Used"
-            value={stats.totalStorageLabel}
-          />
 
-        </div>
 
-      </div>
+        <p
+          className="
+            mt-4
+            max-w-3xl
+            text-lg
+            leading-8
+            text-slate-400
+          "
+        >
 
-    </section>
-  );
-}
-
-interface StatProps {
-  icon: typeof Sparkles;
-
-  label: string;
-
-  value: string;
-}
-
-function Stat({
-  icon: Icon,
-  label,
-  value,
-}: StatProps) {
-  return (
-    <div className="flex items-center gap-4 border-b border-white/10 p-6 last:border-b-0">
-
-      <div className="rounded-2xl bg-indigo-500/15 p-3">
-
-        <Icon
-          size={22}
-          className="text-indigo-400"
-        />
-
-      </div>
-
-      <div>
-
-        <p className="text-sm text-slate-400">
-
-          {label}
+          Ready to continue learning?
+          Upload new material or continue chatting
+          with your existing documents.
 
         </p>
 
-        <h3 className="mt-1 text-2xl font-bold text-white">
 
-          {value}
 
-        </h3>
+        <div
+          className="
+            mt-8
+            flex
+            flex-wrap
+            gap-4
+          "
+        >
+
+          <Button
+            size="lg"
+            className="gap-3"
+            onClick={() =>
+              navigate("/dashboard/documents")
+            }
+          >
+
+            <Upload size={20} />
+
+            Upload Document
+
+          </Button>
+
+
+
+          <Button
+            variant="secondary"
+            size="lg"
+            className="gap-3"
+            onClick={() =>
+              navigate("/dashboard/chat")
+            }
+          >
+
+            <BrainCircuit size={20} />
+
+            Continue Chat
+
+            <ArrowRight size={18} />
+
+          </Button>
+
+
+        </div>
+
 
       </div>
 
-    </div>
+
+    </section>
   );
 }

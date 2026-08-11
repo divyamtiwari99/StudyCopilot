@@ -109,6 +109,56 @@ export class NotesService {
       "notes",
     );
   }
+  async getAll(
+  userId: string,
+) {
+  return aiArtifactService.getAllByUser(
+    userId,
+    "notes",
+  );
+}
+async delete(
+  contentId: string,
+  userId: string,
+) {
+
+  const content =
+    await ContentModel.findOne({
+      _id: contentId,
+      userId,
+    });
+
+
+  if (!content) {
+
+    throw new Error(
+      "Content not found.",
+    );
+
+  }
+
+
+  await aiArtifactService.deleteByContent(
+    contentId,
+    "notes",
+  );
+
+
+  await ContentModel.findByIdAndUpdate(
+    contentId,
+    {
+      $set: {
+        "processing.notes": false,
+      },
+    },
+  );
+
+
+  return {
+    success: true,
+  };
+
+}
 }
 
 export const notesService =

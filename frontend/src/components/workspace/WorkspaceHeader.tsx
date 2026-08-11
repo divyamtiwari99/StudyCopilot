@@ -1,7 +1,12 @@
 import SearchBar from "./SearchBar";
 import QuickActions from "./QuickActions";
-
+import { useAuthStore } from "@/store/auth.store";
 export default function WorkspaceHeader() {
+
+  const user =
+  useAuthStore(
+    (state) => state.user,
+  );
   const hour = new Date().getHours();
 
   const greeting =
@@ -15,7 +20,7 @@ export default function WorkspaceHeader() {
     <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
       <div>
         <h1 className="text-4xl font-bold text-white">
-          {greeting}
+          {greeting} {user?.name ?? ""}
         </h1>
 
         <p className="mt-2 text-slate-400">

@@ -15,9 +15,25 @@ router.post(
 );
 
 router.get(
+  "/",
+  authMiddleware,
+  quizController.getAll.bind(
+    quizController
+  )
+);
+
+router.get(
   "/:contentId",
   authMiddleware,
   quizController.get.bind(
+    quizController
+  )
+);
+
+router.delete(
+  "/:contentId",
+  authMiddleware,
+  quizController.delete.bind(
     quizController
   )
 );

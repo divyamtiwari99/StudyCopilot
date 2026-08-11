@@ -9,19 +9,31 @@ import StatsCard from "../ui/StatsCard";
 
 import type { DashboardStats } from "@/features/dashboard/hooks/useDashboard";
 
+
 interface Props {
   dashboard: {
     stats: DashboardStats;
   };
 }
 
+
 export default function LearningOverview({
   dashboard,
 }: Props) {
+
   const { stats } = dashboard;
 
+
   return (
-    <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+
+    <section
+      className="
+        grid
+        gap-5
+        md:grid-cols-2
+        xl:grid-cols-4
+      "
+    >
 
       <StatsCard
         title="Documents"
@@ -30,12 +42,14 @@ export default function LearningOverview({
         icon={BookOpen}
       />
 
+
       <StatsCard
         title="Ready"
         value={stats.readyDocuments.toString()}
         subtitle="Available for AI"
         icon={BrainCircuit}
       />
+
 
       <StatsCard
         title="Processing"
@@ -44,6 +58,7 @@ export default function LearningOverview({
         icon={Clock3}
       />
 
+
       <StatsCard
         title="Storage"
         value={stats.totalStorageLabel}
@@ -51,6 +66,8 @@ export default function LearningOverview({
         icon={HardDrive}
       />
 
+
     </section>
+
   );
 }

@@ -137,6 +137,19 @@ export class AIArtifactService {
       })
       .lean();
   }
+  async getAllByUser(
+  userId: string,
+  type: SaveArtifactInput["type"],
+) {
+  return AIArtifactModel.find({
+    userId,
+    type,
+  })
+    .sort({
+      updatedAt: -1,
+    })
+    .lean();
+}
 
   async delete(id: string) {
     return AIArtifactModel.findByIdAndDelete(

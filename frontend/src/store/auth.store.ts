@@ -2,12 +2,17 @@ import { create } from "zustand";
 
 import authService from "../services/auth.service";
 import storage from "../lib/storage";
-import type { User } from "../types/auth";
+
+import type {
+  User,
+} from "../types/auth";
+
 
 interface LoginPayload {
   email: string;
   password: string;
 }
+
 
 interface RegisterPayload {
   name: string;
@@ -15,7 +20,9 @@ interface RegisterPayload {
   password: string;
 }
 
+
 interface AuthState {
+
   user: User | null;
 
   isAuthenticated: boolean;
@@ -24,20 +31,34 @@ interface AuthState {
 
   initialized: boolean;
 
-  login: (
+
+  login(
     payload: LoginPayload
-  ) => Promise<void>;
+  ): Promise<void>;
 
-  register: (
+
+  register(
     payload: RegisterPayload
-  ) => Promise<void>;
+  ): Promise<void>;
 
-  logout: () => void;
 
-  loadUser: () => Promise<void>;
+  logout(): Promise<void>;
+
+
+  loadUser(): Promise<void>;
+
+
+  updateUser(
+    user: Partial<User>,
+  ): void;
+
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+
+
+export const useAuthStore =
+create<AuthState>((set) => ({
+
   user: null,
 
   isAuthenticated: false,
@@ -46,102 +67,244 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   initialized: false,
 
+
+
   async login(payload) {
+
     set({
       loading: true,
     });
 
+
     try {
-      const response = await authService.login(payload);
+
+      const response =
+        await authService.login(
+          payload,
+        );
+
 
       storage.setTokens(
         response.data.accessToken,
-        response.data.refreshToken
+        response.data.refreshToken,
       );
 
+
       set({
-        user: response.data.user,
+
+        user:
+          response.data.user,
+
         isAuthenticated: true,
+
         loading: false,
+
         initialized: true,
+
       });
+
+
     } catch (error) {
+
+
       storage.clear();
 
+
       set({
+
         user: null,
+
         isAuthenticated: false,
+
         loading: false,
+
         initialized: true,
+
       });
 
+
       throw error;
+
     }
+
   },
+
+
 
   async register(payload) {
+
+
     set({
       loading: true,
     });
 
+
+
     try {
-      const response = await authService.register(payload);
+
+
+      const response =
+        await authService.register(
+          payload,
+        );
+
+
 
       storage.setTokens(
         response.data.accessToken,
-        response.data.refreshToken
+        response.data.refreshToken,
       );
 
-      set({
-        user: response.data.user,
-        isAuthenticated: true,
-        loading: false,
-        initialized: true,
-      });
-    } catch (error) {
-      storage.clear();
+
 
       set({
-        user: null,
-        isAuthenticated: false,
+
+        user:
+          response.data.user,
+
+        isAuthenticated: true,
+
         loading: false,
+
         initialized: true,
+
       });
+
+
+
+    } catch (error) {
+
+
+      storage.clear();
+
+
+
+      set({
+
+        user: null,
+
+        isAuthenticated: false,
+
+        loading: false,
+
+        initialized: true,
+
+      });
+
+
 
       throw error;
+
     }
+
   },
+
+
 
   async loadUser() {
+
+
     try {
-      const response = await authService.me();
+
+
+      const response =
+        await authService.me();
+
+
 
       set({
-        user: response.data,
+
+        user:
+          response.data,
+
         isAuthenticated: true,
+
         initialized: true,
+
       });
+
+
+
     } catch {
+
+
       storage.clear();
 
+
+
       set({
+
         user: null,
+
         isAuthenticated: false,
+
         initialized: true,
+
       });
+
+
     }
+
   },
 
-  logout() {
+
+
+  updateUser(user) {
+
+
+    set((state) => ({
+
+
+      user: state.user
+        ? {
+
+            ...state.user,
+
+            ...user,
+
+          }
+
+        : null,
+
+
+    }));
+
+  },
+
+
+
+ async logout() {
+
+  try {
+
+    await authService.logout();
+
+  } catch (error) {
+
+    console.error(
+      "Logout failed",
+      error,
+    );
+
+  } finally {
+
     storage.clear();
 
-    authService.logout();
-
     set({
+
       user: null,
+
       isAuthenticated: false,
+
       loading: false,
+
       initialized: true,
+
     });
-  },
+
+  }
+
+},
+
+
 }));

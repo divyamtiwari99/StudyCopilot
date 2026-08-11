@@ -4,16 +4,16 @@ export interface User {
   email: string;
   avatar: string;
   role: string;
+  plan?: string;
 }
+
 
 export interface LoginResponse {
   success: boolean;
 
   data: {
     user: User;
-
     accessToken: string;
-
     refreshToken: string;
   };
 }

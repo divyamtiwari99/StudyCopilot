@@ -7,7 +7,18 @@ export default function Glow({
 }: GlowProps) {
   return (
     <div
-      className={`pointer-events-none absolute rounded-full bg-violet-600/20 blur-[140px] ${className}`}
+      className={`
+        pointer-events-none
+        absolute
+        rounded-full
+        blur-[140px]
+        opacity-20
+        ${className}
+      `}
+      style={{
+        backgroundColor:
+          "var(--accent-color)",
+      }}
     />
   );
 }

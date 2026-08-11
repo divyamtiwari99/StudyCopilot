@@ -104,6 +104,140 @@ class FlashcardsController {
       });
     }
   }
+  async getAll(
+req: Request,
+res: Response
+) {
+
+try {
+
+if (!req.user) {
+
+return res.status(401).json({
+success:false,
+message:"Unauthorized",
+});
+
+}
+
+
+const flashcards =
+await flashcardsService.getAll(
+req.user.id,
+);
+
+
+return res.json({
+
+success:true,
+
+data:flashcards,
+
+});
+
+
+} catch(error) {
+
+console.error(error);
+
+
+return res.status(500).json({
+
+success:false,
+
+message:
+"Failed to fetch flashcards.",
+
+});
+
+}
+
+}
+
+
+
+async delete(
+req: Request,
+res: Response
+) {
+
+try {
+
+if (!req.user) {
+
+return res.status(401).json({
+success:false,
+message:"Unauthorized",
+});
+
+}
+
+
+
+const rawContentId =
+req.params.contentId;
+
+
+
+const contentId =
+Array.isArray(rawContentId)
+?
+rawContentId[0]
+:
+rawContentId;
+
+
+
+if(!contentId){
+
+return res.status(400).json({
+
+success:false,
+
+message:
+"contentId is required.",
+
+});
+
+}
+
+
+
+await flashcardsService.delete(
+contentId,
+);
+
+
+
+return res.json({
+
+success:true,
+
+message:
+"Flashcards deleted successfully.",
+
+});
+
+
+}catch(error){
+
+console.error(error);
+
+
+
+return res.status(500).json({
+
+success:false,
+
+message:
+"Failed to delete flashcards.",
+
+});
+
+
+}
+
+}
 }
 
 export const flashcardsController =
