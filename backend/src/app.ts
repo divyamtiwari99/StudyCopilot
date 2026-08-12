@@ -12,9 +12,9 @@ app.disable("x-powered-by");
 app.use(
   cors({
     origin: [
-  "http://localhost:5173",
-  "https://studycopilot.me"
-],
+      "http://localhost:5173",
+      "https://studycopilot.me",
+    ],
     credentials: true,
   })
 );
@@ -33,8 +33,10 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api", routes);
 
+
 app.use(notFoundMiddleware);
 
 app.use(errorMiddleware);
+
 
 export default app;
