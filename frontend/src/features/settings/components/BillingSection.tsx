@@ -308,7 +308,7 @@ export default function BillingSection() {
 
 
                   </div>
-                  id="billing-part-2"
+                  
                     <div className="
                       rounded-2xl
                       border
