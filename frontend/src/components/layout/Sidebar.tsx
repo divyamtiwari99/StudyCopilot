@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom";
 
 import {
-  Sparkles,
   LayoutDashboard,
   FileText,
   BrainCircuit,
@@ -76,10 +75,9 @@ function NavSection({
             key={item.title}
             to={item.path}
             className={({ isActive }) =>
-              `mb-1.5 flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all ${
-                isActive
-                  ? "bg-[color-mix(in_srgb,var(--accent-color)_15%,transparent)] text-white"
-                  : "text-slate-400 hover:bg-white/5 hover:text-white"
+              `mb-1.5 flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all ${isActive
+                ? "bg-[color-mix(in_srgb,var(--accent-color)_15%,transparent)] text-white"
+                : "text-slate-400 hover:bg-white/5 hover:text-white"
               }`
             }
           >
@@ -103,25 +101,16 @@ export default function Sidebar() {
       <div className="border-b border-white/10 px-6 py-5">
         <div className="flex items-center gap-3">
 
-          <div
+          <img
+            src="/logo.png"
+            alt="StudyCopilot Logo"
             className="
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              rounded-xl
-            "
-            style={{
-              background:
-                "linear-gradient(135deg,var(--accent-color),#8b5cf6)",
-            }}
-          >
-            <Sparkles
-              size={18}
-              className="text-white"
-            />
-          </div>
+    h-10
+    w-10
+    rounded-xl
+    object-contain
+  "
+          />
 
 
           <div>
@@ -163,10 +152,9 @@ export default function Sidebar() {
           <NavLink
             to="/dashboard/settings"
             className={({ isActive }) =>
-              `flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all ${
-                isActive
-                  ? "bg-[color-mix(in_srgb,var(--accent-color)_15%,transparent)] text-white"
-                  : "text-slate-400 hover:bg-white/5 hover:text-white"
+              `flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all ${isActive
+                ? "bg-[color-mix(in_srgb,var(--accent-color)_15%,transparent)] text-white"
+                : "text-slate-400 hover:bg-white/5 hover:text-white"
               }`
             }
           >
