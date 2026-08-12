@@ -4,12 +4,26 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#09090B]/80 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-        <Link
-          to="/"
-          className="text-2xl font-bold tracking-tight text-white"
-        >
-          StudyCopilot
-        </Link>
+       <Link
+  to="/"
+  className="flex items-center gap-3 text-white"
+>
+  <img
+    src="/logo.png"
+    alt="StudyCopilot Logo"
+    className="h-11 w-11 rounded-xl object-contain"
+  />
+
+  <div className="flex flex-col">
+    <span className="text-xl font-bold tracking-tight">
+      StudyCopilot
+    </span>
+
+    <span className="text-xs text-zinc-400">
+      AI Learning Assistant
+    </span>
+  </div>
+</Link>
 
         <nav className="hidden items-center gap-8 md:flex">
           <a

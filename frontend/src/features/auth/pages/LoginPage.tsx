@@ -58,8 +58,16 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="rounded-[32px] border border-white/10 bg-white/[0.05] p-8 backdrop-blur-3xl">
-      <div className="mb-8">
+  <div className="rounded-[32px] border border-white/10 bg-white/[0.05] p-8 backdrop-blur-3xl">
+
+      <div className="mb-8 flex flex-col items-center text-center">
+
+        <img
+          src="/logo.png"
+          alt="StudyCopilot Logo"
+          className="mb-5 h-20 w-20 rounded-3xl object-contain"
+        />
+
         <h1 className="text-4xl font-bold text-white">
           Welcome Back
         </h1>

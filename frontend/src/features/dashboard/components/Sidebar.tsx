@@ -39,10 +39,26 @@ export default function Sidebar() {
   return (
     <aside className="flex h-screen w-72 flex-col overflow-hidden border-r border-white/10 bg-[#0D0D11]">
       <div className="border-b border-white/10 p-6">
-        <h1 className="text-2xl font-bold text-white">
-          StudyCopilot
-        </h1>
-      </div>
+  <div className="flex items-center gap-3">
+
+    <img
+      src="/logo.png"
+      alt="StudyCopilot Logo"
+      className="h-12 w-12 rounded-2xl object-contain"
+    />
+
+    <div>
+      <h1 className="text-xl font-bold text-white">
+        StudyCopilot
+      </h1>
+
+      <p className="text-xs text-zinc-400">
+        AI Learning Assistant
+      </p>
+    </div>
+
+  </div>
+</div>
 
       <nav className="flex-1 space-y-2 overflow-y-auto p-5 scrollbar-hide">
         {links.map(({ icon: Icon, label, to }) => (
