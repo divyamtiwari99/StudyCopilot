@@ -11,7 +11,10 @@ app.disable("x-powered-by");
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+  "http://localhost:5173",
+  "https://studycopilot.me"
+],
     credentials: true,
   })
 );
