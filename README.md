@@ -2,99 +2,172 @@
 
 <div align="center">
 
-### AI-Powered Learning Assistant
+## AI-Powered Learning Assistant
 
-StudyCopilot helps students learn smarter by transforming documents into interactive learning experiences using Artificial Intelligence.
+StudyCopilot is an intelligent learning workspace that transforms your study material into interactive learning experiences using Artificial Intelligence.
+
+Upload documents, chat with your PDFs, generate AI notes, summaries, quizzes, flashcards and personalized study plans — all in one powerful platform.
+
+<br/>
+
+![GitHub stars](https://img.shields.io/github/stars/divyamtiwari99/StudyCopilot?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/divyamtiwari99/StudyCopilot?style=for-the-badge)
+![GitHub license](https://img.shields.io/github/license/divyamtiwari99/StudyCopilot?style=for-the-badge)
+
+<br/>
+
+🌐 **Live Demo**
+
+https://studycopilot.me
+
+<br/>
+
+[GitHub](https://github.com/divyamtiwari99/StudyCopilot)
+•
+[LinkedIn](https://www.linkedin.com/in/divyam-tiwari-b14171329/)
 
 </div>
 
 
-## ✨ Features
+---
 
-📄 **AI Document Chat**
-- Chat with your uploaded documents
-- Get contextual answers using AI
+# ✨ Features
 
-🧠 **Smart Notes Generation**
+## 📄 AI Document Chat
+
+- Chat with uploaded documents
+- Get contextual AI answers
+- Understand complex topics easily
+
+
+## 🧠 Smart Notes Generation
+
 - Generate structured notes automatically
 - Extract important concepts
-
-📝 **AI Summaries**
-- Convert long documents into concise summaries
-
-🎯 **AI Quiz Generator**
-- Create practice quizzes from study material
-
-🃏 **Flashcards**
-- Generate revision flashcards for faster learning
-
-📊 **Knowledge Graph**
-- Visualize relationships between concepts
-
-📅 **AI Study Planner**
-- Generate personalized learning schedules
+- Convert long documents into readable notes
 
 
-## 🏗️ Tech Stack
+## 📝 AI Summaries
 
-### Frontend
+- Create concise summaries from documents
+- Save time while revising
+
+
+## 🎯 AI Quiz Generator
+
+- Generate exam-style questions
+- Practice with AI-generated quizzes
+
+
+## 🃏 Flashcards
+
+- Create smart revision flashcards
+- Improve memory retention
+
+
+## 📊 Knowledge Graph
+
+- Visualize connections between concepts
+- Understand relationships between topics
+
+
+## 📅 AI Study Planner
+
+- Generate personalized study schedules
+- Track learning progress
+
+
+
+---
+
+# 🏗️ Tech Stack
+
+
+## Frontend
+
 - React
 - TypeScript
 - Tailwind CSS
 - Vite
 
-### Backend
+
+## Backend
+
 - Node.js
 - Express.js
 
-### Database
+
+## Database
+
 - MongoDB
 
-### Artificial Intelligence
+
+## Artificial Intelligence
+
 - Google Gemini AI
 - RAG (Retrieval Augmented Generation)
 
 
-## 🌐 Deployment
 
-Frontend:
-https://studycopilot.me
+---
 
-Backend:
-Railway
+# 🖥️ Screenshots
 
 
-## 📸 Screenshots
-
-
-### 🏠 Landing Page
+## 🏠 Landing Page
 
 ![Landing Page](screenshot/01-landing-page.png)
 
 
-### 📊 Dashboard
+
+## 📊 Dashboard
 
 ![Dashboard](screenshot/02-dashboard.png)
 
 
-### 🤖 AI Command Center
+
+## 🤖 AI Command Center
 
 ![AI Command Center](screenshot/03-ai-command-center.png)
 
 
-### 📚 Document Library
+
+## 📚 Document Library
 
 ![Document Library](screenshot/04-document-library.png)
 
 
-### 🧠 AI Learning Tools
+
+## 🧠 AI Learning Tools
 
 ![Learning Tools](screenshot/05-study-tools.png)
 
 
-## ⚙️ Local Development
 
-Clone the repository:
+---
+
+# 🌐 Deployment
+
+
+### Frontend
+
+Vercel
+
+https://studycopilot.me
+
+
+### Backend
+
+Railway
+
+
+
+---
+
+# ⚙️ Local Development
+
+
+## Clone Repository
 
 ```bash
 git clone https://github.com/divyamtiwari99/StudyCopilot.git
