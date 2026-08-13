@@ -69,27 +69,27 @@ Railway
 
 ### 🏠 Landing Page
 
-![Landing Page](screenshots/01-landing-page.png)
+![Landing Page](screenshot/01-landing-page.png)
 
 
 ### 📊 Dashboard
 
-![Dashboard](screenshots/02-dashboard.png)
+![Dashboard](screenshot/02-dashboard.png)
 
 
 ### 🤖 AI Command Center
 
-![AI Command Center](screenshots/03-ai-command-center.png)
+![AI Command Center](screenshot/03-ai-command-center.png)
 
 
 ### 📚 Document Library
 
-![Document Library](screenshots/04-document-library.png)
+![Document Library](screenshot/04-document-library.png)
 
 
 ### 🧠 AI Learning Tools
 
-![Learning Tools](screenshots/05-study-tools.png)
+![Learning Tools](screenshot/05-study-tools.png)
 
 
 ## ⚙️ Local Development
