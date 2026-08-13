@@ -66,7 +66,30 @@ Railway
 
 ## 📸 Screenshots
 
-Coming soon...
+
+### 🏠 Landing Page
+
+![Landing Page](screenshots/01-landing-page.png)
+
+
+### 📊 Dashboard
+
+![Dashboard](screenshots/02-dashboard.png)
+
+
+### 🤖 AI Command Center
+
+![AI Command Center](screenshots/03-ai-command-center.png)
+
+
+### 📚 Document Library
+
+![Document Library](screenshots/04-document-library.png)
+
+
+### 🧠 AI Learning Tools
+
+![Learning Tools](screenshots/05-study-tools.png)
 
 
 ## ⚙️ Local Development
