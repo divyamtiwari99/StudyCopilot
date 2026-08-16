@@ -3,7 +3,9 @@ import type {
 } from "../types/settings.types";
 
 
+
 export const DEFAULT_SETTINGS: SettingsState = {
+
 
   user: {
 
@@ -16,6 +18,7 @@ export const DEFAULT_SETTINGS: SettingsState = {
     joinedAt: "",
 
   },
+
 
 
   ai: {
@@ -31,44 +34,69 @@ export const DEFAULT_SETTINGS: SettingsState = {
   },
 
 
+
   appearance: {
 
-    theme: "dark",
 
+    // Premium light-first SaaS identity
+    theme: "arctic",
+
+
+    // Soft glass surfaces
     glassEffect: true,
 
-    accentColor: "cyan",
 
+    // Premium default brand accent
+    accentColor: "indigo",
+
+
+    // Comfortable spacing
     compactMode: false,
 
+
+    // Smooth interactions
     animations: true,
 
+
   },
+
 
 
   notifications: {
 
+
     studyReminder: true,
+
 
     emailNotifications: false,
 
+
     aiUpdates: true,
+
 
     weeklyReport: true,
 
+
   },
+
 
 
   storage: {
 
+
     used: 0,
+
 
     total: 5,
 
+
     documents: 0,
+
 
     chats: 0,
 
+
   },
+
 
 };

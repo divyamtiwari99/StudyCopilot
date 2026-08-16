@@ -308,3 +308,14 @@ create<AuthState>((set) => ({
 
 
 }));
+
+if (typeof window !== "undefined") {
+  window.addEventListener("studycopilot:unauthorized", () => {
+    useAuthStore.setState({
+      user: null,
+      isAuthenticated: false,
+      loading: false,
+      initialized: true,
+    });
+  });
+}

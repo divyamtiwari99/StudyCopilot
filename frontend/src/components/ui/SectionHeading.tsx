@@ -1,38 +1,257 @@
 import GradientText from "./GradientText";
 
+import { cn } from "@/lib/cn";
+
+
+
 interface Props {
+
   badge?: string;
+
   title: string;
+
   highlight?: string;
+
   description?: string;
+
+  className?: string;
+
 }
 
+
+
+
+
 export default function SectionHeading({
+
   badge,
+
   title,
+
   highlight,
+
   description,
+
+  className,
+
 }: Props) {
+
+
   return (
-    <div className="mx-auto max-w-3xl text-center">
-      {badge && (
-        <span className="rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-2 text-sm font-medium text-violet-300">
-          {badge}
-        </span>
+
+
+    <div
+
+
+      className={cn(
+
+        "mx-auto",
+
+        "max-w-3xl",
+
+        "text-center",
+
+        className,
+
       )}
 
-      <h2 className="mt-6 text-4xl font-bold text-white md:text-5xl">
-        {title}{" "}
+
+
+    >
+
+
+
+      {badge && (
+
+
+        <div
+
+
+          className="
+
+            inline-flex
+
+            items-center
+
+            rounded-full
+
+            border
+
+            px-4
+
+            py-2
+
+            text-sm
+
+            font-semibold
+
+            transition-all
+
+            duration-300
+
+          "
+
+
+
+          style={{
+
+
+            background:
+
+              "color-mix(in srgb,var(--accent-color) 8%,transparent)",
+
+
+
+            borderColor:
+
+              "color-mix(in srgb,var(--accent-color) 20%,transparent)",
+
+
+
+            color:
+
+              "var(--accent-color)",
+
+
+          }}
+
+
+
+        >
+
+
+          {badge}
+
+
+        </div>
+
+
+      )}
+
+
+
+
+
+
+
+      <h2
+
+
+        className="
+
+          mt-6
+
+          text-4xl
+
+          font-bold
+
+          tracking-tight
+
+          md:text-5xl
+
+        "
+
+
+
+        style={{
+
+
+          color:
+
+            "var(--text)",
+
+
+        }}
+
+
+
+      >
+
+
+        {title}
+
+
         {highlight && (
-          <GradientText>{highlight}</GradientText>
+
+          <>
+
+            {" "}
+
+            <GradientText>
+
+              {highlight}
+
+            </GradientText>
+
+          </>
+
         )}
+
+
       </h2>
 
+
+
+
+
+
+
       {description && (
-        <p className="mt-6 text-lg leading-8 text-zinc-400">
+
+
+
+        <p
+
+
+          className="
+
+            mx-auto
+
+            mt-5
+
+            max-w-2xl
+
+            text-base
+
+            leading-7
+
+            md:text-lg
+
+          "
+
+
+
+          style={{
+
+
+            color:
+
+              "var(--muted)",
+
+
+          }}
+
+
+
+        >
+
+
           {description}
+
+
         </p>
+
+
+
       )}
+
+
+
+
+
     </div>
+
+
   );
+
 }

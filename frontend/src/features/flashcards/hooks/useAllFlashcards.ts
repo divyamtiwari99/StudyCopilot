@@ -1,3 +1,5 @@
+import { queryKeys } from "@/lib/queryKeys";
+
 import {
   useQuery,
 } from "@tanstack/react-query";
@@ -15,10 +17,7 @@ export function useAllFlashcards() {
   return useQuery({
 
 
-    queryKey: [
-      "flashcards",
-      "all",
-    ],
+    queryKey: queryKeys.allFlashcards(),
 
 
 
@@ -34,10 +33,6 @@ export function useAllFlashcards() {
 
     gcTime:
       1000 * 60 * 10,
-
-
-
-    retry: 1,
 
 
 

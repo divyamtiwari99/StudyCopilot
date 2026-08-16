@@ -13,7 +13,7 @@ export function useSummary(
   return useQuery<SummaryArtifact>({
     queryKey: contentId
       ? queryKeys.summary(contentId)
-      : ["summary"],
+      : queryKeys.summaryRoot(),
 
     queryFn: () =>
       getSummary(contentId!),
@@ -25,8 +25,6 @@ export function useSummary(
 
     gcTime:
       1000 * 60 * 10,
-
-    retry: 1,
 
     refetchOnWindowFocus: false,
   });

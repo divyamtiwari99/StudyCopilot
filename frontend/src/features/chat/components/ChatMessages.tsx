@@ -26,9 +26,6 @@ export default function ChatMessages({
   loading,
   onQuestion,
 }: Props) {
-  const scrollRef =
-    useRef<HTMLDivElement>(null);
-
   const bottomRef =
     useRef<HTMLDivElement>(null);
 
@@ -42,22 +39,16 @@ export default function ChatMessages({
   if (!messages.length) {
     return (
       <div className="flex h-full flex-col">
-
         <ChatEmptyState
           onQuestion={onQuestion}
         />
-
       </div>
     );
   }
 
   return (
-    <div
-      ref={scrollRef}
-      className="h-full overflow-y-auto"
-    >
+    <div className="h-full overflow-y-auto">
       <div className="mx-auto flex max-w-5xl flex-col gap-8 p-8">
-
         {messages.map(
           (message) => (
             <MessageBubble
@@ -72,9 +63,7 @@ export default function ChatMessages({
         )}
 
         <div ref={bottomRef} />
-
       </div>
-
     </div>
   );
 }

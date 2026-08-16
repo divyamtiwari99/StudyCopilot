@@ -1,5 +1,5 @@
-
 import { Clock3 } from "lucide-react";
+
 
 const activities = [
   {
@@ -28,52 +28,242 @@ const activities = [
   },
 ];
 
+
+
 export default function ActivityTimeline() {
+
   return (
+
     <section className="mb-8">
+
+
       <div className="mb-5">
-        <h2 className="text-2xl font-bold text-white">
+
+        <h2
+
+          className="
+            text-2xl
+            font-bold
+          "
+
+          style={{
+            color:"var(--text)",
+          }}
+
+        >
+
           Recent Activity
+
+
         </h2>
 
-        <p className="text-slate-400">
+
+
+        <p
+
+          className="text-sm"
+
+          style={{
+            color:"var(--muted)",
+          }}
+
+        >
+
           Everything you've done recently
+
+
         </p>
+
+
       </div>
 
-      <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
-        {activities.map((item, index) => (
+
+
+
+
+      <div
+
+        className="
+          rounded-3xl
+          border
+          p-6
+          backdrop-blur-xl
+        "
+
+        style={{
+
+
+          background:
+            "var(--surface)",
+
+
+          borderColor:
+            "var(--border)",
+
+
+          boxShadow:
+            "var(--shadow-card)",
+
+
+        }}
+
+      >
+
+
+        {activities.map((item,index)=>(
+
+
           <div
+
             key={item.id}
-            className={`flex items-start gap-4 ${
-              index !== activities.length - 1
-                ? "mb-6 border-b border-slate-800 pb-6"
-                : ""
-            }`}
+
+            className={`
+              flex
+              items-start
+              gap-4
+              ${
+                index !== activities.length - 1
+                  ? "mb-6 pb-6 border-b"
+                  : ""
+              }
+            `}
+
+            style={{
+
+              borderColor:
+                index !== activities.length - 1
+                  ? "var(--border)"
+                  : "transparent",
+
+            }}
+
           >
-            <div className="rounded-xl bg-indigo-600/20 p-3">
+
+
+
+            <div
+
+              className="
+                rounded-xl
+                p-3
+              "
+
+              style={{
+
+
+                background:
+                  "color-mix(in srgb,var(--accent-color) 12%,transparent)",
+
+
+              }}
+
+            >
+
+
               <Clock3
+
                 size={18}
-                className="text-indigo-400"
+
+                style={{
+
+                  color:
+                    "var(--accent-color)",
+
+                }}
+
               />
+
+
             </div>
+
+
+
+
 
             <div className="flex-1">
-              <h3 className="font-semibold text-white">
+
+
+              <h3
+
+                className="font-semibold"
+
+                style={{
+
+                  color:
+                    "var(--text)",
+
+                }}
+
+              >
+
                 {item.title}
+
+
               </h3>
 
-              <p className="mt-1 text-sm text-slate-400">
+
+
+
+
+              <p
+
+                className="
+                  mt-1
+                  text-sm
+                "
+
+                style={{
+
+                  color:
+                    "var(--muted)",
+
+                }}
+
+              >
+
                 {item.action}
+
+
               </p>
+
+
             </div>
 
-            <span className="text-xs text-slate-500">
+
+
+
+
+            <span
+
+              className="text-xs"
+
+              style={{
+
+                color:
+                  "var(--muted)",
+
+              }}
+
+            >
+
               {item.time}
+
+
             </span>
+
+
+
           </div>
+
+
         ))}
+
+
       </div>
+
+
     </section>
+
   );
+
 }

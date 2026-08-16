@@ -1,103 +1,177 @@
 import { motion } from "framer-motion";
+
 import { UploadCloud } from "lucide-react";
 
 
 export default function EmptyState() {
 
+
   return (
 
     <motion.div
+
       initial={{
-        opacity:0,
+        opacity: 0,
+        y: 10,
       }}
+
       animate={{
-        opacity:1,
+        opacity: 1,
+        y: 0,
       }}
+
+      transition={{
+        duration: 0.4,
+      }}
+
+
       className="
         flex
-        h-[420px]
+        min-h-[360px]
         flex-col
         items-center
         justify-center
-        rounded-3xl
+        rounded-[32px]
         border
         border-dashed
-        border-white/10
-        bg-white/[0.03]
         text-center
+        backdrop-blur-xl
       "
+
+
+      style={{
+
+        background:
+          "var(--surface)",
+
+
+        borderColor:
+          "var(--border)",
+
+
+        boxShadow:
+          "0 20px 45px rgba(15,23,42,0.05)",
+
+      }}
+
     >
 
+
+
+
       <div
+
         className="
           flex
-          h-16
-          w-16
+          h-20
+          w-20
           items-center
           justify-center
-          rounded-2xl
+          rounded-3xl
         "
+
         style={{
-          backgroundColor:
-            "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+
+
+          background:
+
+            "color-mix(in srgb,var(--accent-color) 12%,transparent)",
+
+
+
           color:
+
             "var(--accent-color)",
+
+
         }}
+
       >
 
-        <UploadCloud size={30}/>
+        <UploadCloud size={34}/>
+
 
       </div>
 
 
 
+
+
+
+
       <h2
+
         className="
-          mt-6
+          mt-7
           text-2xl
-          font-semibold
-          text-white
+          font-bold
+          tracking-tight
         "
+
+        style={{
+
+
+          color:
+
+            "var(--text)",
+
+
+        }}
+
       >
+
         No documents yet
+
+
       </h2>
 
 
 
+
+
+
+
       <p
+
         className="
           mt-3
           max-w-md
-          text-white/50
+          text-sm
+          leading-6
         "
+
+        style={{
+
+
+          color:
+
+            "var(--muted)",
+
+
+        }}
+
       >
+
         Upload your first PDF and start chatting with AI,
         generate notes, quizzes and flashcards instantly.
+
+
       </p>
 
 
 
-      <button
-        className="
-          mt-8
-          rounded-2xl
-          px-6
-          py-3
-          font-medium
-          text-black
-          transition
-          hover:scale-105
-        "
-        style={{
-          backgroundColor:
-            "var(--accent-color)",
-        }}
-      >
-        Upload PDF
-      </button>
+
+
+
+
+      
+
+
+
 
 
     </motion.div>
 
   );
+
 }

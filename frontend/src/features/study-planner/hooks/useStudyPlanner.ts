@@ -10,7 +10,7 @@ export function useStudyPlanner(
   return useQuery({
     queryKey: contentId
       ? queryKeys.studyPlanner(contentId)
-      : ["studyPlanner"],
+      : queryKeys.studyPlannerRoot(),
 
     queryFn: () =>
       getStudyPlanner(contentId!),
@@ -22,8 +22,6 @@ export function useStudyPlanner(
 
     gcTime:
       1000 * 60 * 10,
-
-    retry: 1,
 
     refetchOnWindowFocus: false,
   });

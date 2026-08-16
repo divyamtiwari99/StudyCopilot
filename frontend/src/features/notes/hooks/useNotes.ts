@@ -17,7 +17,7 @@ export function useNotes(
 
     queryKey: contentId
       ? queryKeys.notes(contentId)
-      : ["notes"],
+      : queryKeys.notesRoot(),
 
 
     queryFn: () =>
@@ -33,9 +33,6 @@ export function useNotes(
 
     gcTime:
       1000 * 60 * 10,
-
-
-    retry: 1,
 
 
     refetchOnWindowFocus:
@@ -57,9 +54,7 @@ export function useAllNotes() {
 
   return useQuery({
 
-    queryKey: [
-      "all-notes",
-    ],
+    queryKey: queryKeys.allNotes(),
 
 
     queryFn:
@@ -72,9 +67,6 @@ export function useAllNotes() {
 
     gcTime:
       1000 * 60 * 10,
-
-
-    retry: 1,
 
 
     refetchOnWindowFocus:

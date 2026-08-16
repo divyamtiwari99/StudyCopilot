@@ -3,9 +3,9 @@ import {
   Moon,
   Palette,
   Sparkles,
+  Sun,
 } from "lucide-react";
 
-import { useMemo } from "react";
 
 import SectionHeader from "./SectionHeader";
 import SettingCard from "./SettingCard";
@@ -13,63 +13,196 @@ import SettingSwitch from "./SettingSwitch";
 import { useSettingsContext } from "./SettingsContext";
 
 
-type ThemeMode =
-  | "dark"
-  | "oled";
+import type {
+  ThemeMode,
+  AccentColor,
+} from "../types/settings.types";
 
 
-type AccentColorKey =
-  | "cyan"
-  | "violet"
-  | "emerald"
-  | "amber";
+
+
+
+interface ThemeOption {
+
+  key: ThemeMode;
+
+  label: string;
+
+  description: string;
+
+  icon: React.ReactNode;
+
+}
+
+
+
 
 
 interface AccentOption {
 
-  key: AccentColorKey;
+  key: AccentColor;
 
   label: string;
 
-  colorClass: string;
-
-  ringClass: string;
+  color: string;
 
 }
+
+
+
+
+
+const THEME_OPTIONS: ThemeOption[] = [
+
+  {
+    key: "arctic",
+
+    label: "Paper Light",
+
+    description:
+      "Clean workspace with a calm paper-like experience.",
+
+    icon:
+      <Sun size={20} />,
+
+  },
+
+
+  {
+    key: "forest",
+
+    label: "Forest",
+
+    description:
+      "Natural green workspace for focused learning.",
+
+    icon:
+      <Sparkles size={20} />,
+
+  },
+
+
+  {
+    key: "sunset",
+
+    label: "Sunset",
+
+    description:
+      "Warm colors for relaxed study sessions.",
+
+    icon:
+      <Palette size={20} />,
+
+  },
+
+
+  {
+    key: "carbon",
+
+    label: "Minimal",
+
+    description:
+      "Simple distraction-free workspace.",
+
+    icon:
+      <Monitor size={20} />,
+
+  },
+
+
+  {
+    key: "midnight",
+
+    label: "Midnight",
+
+    description:
+      "Dark mode for low light environments.",
+
+    icon:
+      <Moon size={20} />,
+
+  },
+
+
+];
+
+
+
+
 
 
 
 const ACCENT_OPTIONS: AccentOption[] = [
 
   {
-    key: "cyan",
-    label: "Cyan",
-    colorClass: "bg-cyan-500",
-    ringClass: "ring-cyan-400",
+    key: "teal",
+    label: "Teal",
+    color: "#0F766E",
   },
+
+
+  {
+    key: "indigo",
+    label: "Indigo",
+    color: "#6366F1",
+  },
+
+
+  {
+    key: "blue",
+    label: "Blue",
+    color: "#2563EB",
+  },
+
 
   {
     key: "violet",
     label: "Violet",
-    colorClass: "bg-violet-500",
-    ringClass: "ring-violet-400",
+    color: "#7C3AED",
   },
+
 
   {
     key: "emerald",
     label: "Emerald",
-    colorClass: "bg-emerald-500",
-    ringClass: "ring-emerald-400",
+    color: "#10B981",
   },
+
+
+  {
+    key: "orange",
+    label: "Orange",
+    color: "#F97316",
+  },
+
+
+  {
+    key: "rose",
+    label: "Rose",
+    color: "#F43F5E",
+  },
+
+
+  {
+    key: "cyan",
+    label: "Cyan",
+    color: "#06B6D4",
+  },
+
 
   {
     key: "amber",
     label: "Amber",
-    colorClass: "bg-amber-500",
-    ringClass: "ring-amber-400",
+    color: "#F59E0B",
   },
 
+
 ];
+
+
+
+
+
 
 
 
@@ -77,10 +210,15 @@ export default function AppearanceSection() {
 
 
   const {
+
     settings,
+
     updateAppearance,
+
     saving,
+
   } = useSettingsContext();
+
 
 
 
@@ -89,130 +227,112 @@ export default function AppearanceSection() {
 
 
 
-  const themeLabel =
-    useMemo(() => {
-
-      return appearance.theme === "oled"
-        ? "OLED Mode"
-        : "Dark Mode";
-
-    }, [
-      appearance.theme,
-    ]);
 
 
 
-  const layoutLabel =
-    appearance.compactMode
-      ? "Compact"
-      : "Comfortable";
-
-
-
-  const accentKey =
-    useMemo(() => {
-
-      const normalized =
-        appearance.accentColor.toLowerCase();
-
-
-      const found =
-        ACCENT_OPTIONS.find(
-          (option) =>
-            option.key === normalized,
-        );
-
-
-      return found?.key ?? "cyan";
-
-
-    }, [
-      appearance.accentColor,
-    ]);
-
-
-
-  function handleThemeToggle(
-    nextEnabled: boolean,
+  function handleThemeChange(
+    theme: ThemeMode,
   ) {
-
-    const nextTheme: ThemeMode =
-      nextEnabled
-        ? "oled"
-        : "dark";
 
 
     updateAppearance({
-      theme: nextTheme,
+
+      theme,
+
     });
+
 
   }
 
 
-
-  function handleGlassToggle(
-    nextEnabled: boolean,
-  ) {
-
-    updateAppearance({
-      glassEffect: nextEnabled,
-    });
-
-  }
-
-
-
-  function handleAnimationsToggle(
-    nextEnabled: boolean,
-  ) {
-
-    updateAppearance({
-      animations: nextEnabled,
-    });
-
-  }
-
-
-
-  function handleCompactToggle(
-    nextEnabled: boolean,
-  ) {
-
-    updateAppearance({
-      compactMode: nextEnabled,
-    });
-
-  }
 
 
 
   function handleAccentChange(
-    accentColor: AccentColorKey,
+    accentColor: AccentColor,
   ) {
 
+
     updateAppearance({
+
       accentColor,
+
     });
+
 
   }
 
 
 
-  const themeEnabled =
-    appearance.theme === "oled";
+
+
+  function handleGlassToggle(
+    value: boolean,
+  ) {
+
+
+    updateAppearance({
+
+      glassEffect:value,
+
+    });
+
+
+  }
+
+
+
+
+
+  function handleAnimationToggle(
+    value:boolean,
+  ) {
+
+
+    updateAppearance({
+
+      animations:value,
+
+    });
+
+
+  }
+
+
+
+
+
+  function handleCompactToggle(
+    value:boolean,
+  ) {
+
+
+    updateAppearance({
+
+      compactMode:value,
+
+    });
+
+
+  }
+
+
 
 
 
   return (
+
     <section
+
       className="
         overflow-hidden
         rounded-3xl
         border
-        border-white/10
-        bg-white/[0.04]
-        backdrop-blur-3xl
+        border-[var(--border)]
+        bg-[var(--surface)]
+        shadow-[var(--shadow-card)]
       "
+
     >
 
       <SectionHeader
@@ -222,40 +342,49 @@ export default function AppearanceSection() {
         title="Customize Interface"
 
         description="
-        Personalize the look and feel
-        of StudyCopilot.
+          Personalize your StudyCopilot workspace.
         "
 
         icon={
+
           <Palette
+
             size={26}
+
             style={{
-              color:"var(--accent-color)",
+              color:
+                "var(--accent-color)",
             }}
+
           />
+
         }
 
         action={
 
           <span
+
             className="
               rounded-full
               border
-              border-white/10
-              bg-white/[0.04]
+              border-[var(--border)]
+              bg-[var(--surfaceHover)]
               px-4
               py-2
               text-xs
               font-semibold
               uppercase
               tracking-[0.2em]
-              text-slate-400
+              text-[var(--muted)]
             "
+
           >
 
-            {saving
-              ? "Saving..."
-              : "Live Preview"}
+            {
+              saving
+                ? "Saving..."
+                : "Live Preview"
+            }
 
           </span>
 
@@ -264,229 +393,61 @@ export default function AppearanceSection() {
       />
 
 
+
       <div
+
         className="
-          grid
-          gap-5
+          space-y-5
           p-6
-          lg:grid-cols-2
         "
+
       >
-              <SettingCard
-
-        title="Theme"
-
-        description="Choose the overall application theme."
-
-        icon={
-          <Moon
-            size={20}
-            style={{
-              color:
-                "var(--accent-color)",
-            }}
-          />
-        }
+              {/* Theme Selection */}
 
 
-        value={
+        <SettingCard
 
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              gap-4
-            "
-          >
+          title="Theme"
 
-            <div>
+          description="
+            Choose the visual style of your learning workspace.
+          "
 
-              <p
-                className="
-                  text-base
-                  font-semibold
-                  text-white
-                "
-              >
+          icon={
 
-                {themeLabel}
+            <Moon
 
-              </p>
+              size={20}
 
-
-              <p
-                className="
-                  mt-1
-                  text-sm
-                  text-slate-400
-                "
-              >
-
-                {appearance.theme === "oled"
-                  ? "Deeper blacks for premium contrast."
-                  : "Balanced contrast for daily use."}
-
-              </p>
-
-
-            </div>
-
-
-
-            <SettingSwitch
-
-              enabled={themeEnabled}
-
-              onToggle={() =>
-                handleThemeToggle(
-                  !themeEnabled,
-                )
-              }
+              style={{
+                color:
+                  "var(--accent-color)",
+              }}
 
             />
 
-
-          </div>
-
-        }
-
-      />
+          }
 
 
-
-
-
-      <SettingCard
-
-        title="Glass Interface"
-
-        description="Enable premium glassmorphism effects."
-
-        icon={
-          <Sparkles
-            size={20}
-            style={{
-              color:
-                "var(--accent-color)",
-            }}
-          />
-        }
-
-
-        value={
-
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              gap-4
-            "
-          >
-
-
-            <div>
-
-              <p
-                className="
-                  text-base
-                  font-semibold
-                  text-white
-                "
-              >
-
-                {appearance.glassEffect
-                  ? "Enabled"
-                  : "Disabled"}
-
-              </p>
-
-
-              <p
-                className="
-                  mt-1
-                  text-sm
-                  text-slate-400
-                "
-              >
-
-                Soft blur surfaces and luminous depth.
-
-              </p>
-
-
-            </div>
-
-
-
-            <SettingSwitch
-
-              enabled={
-                appearance.glassEffect
-              }
-
-              onToggle={() =>
-                handleGlassToggle(
-                  !appearance.glassEffect,
-                )
-              }
-
-            />
-
-
-          </div>
-
-        }
-
-      />
-
-
-
-
-
-      <SettingCard
-
-        title="Accent Color"
-
-        description="Primary accent used throughout the app."
-
-        icon={
-          <Palette
-            size={20}
-            style={{
-              color:
-                "var(--accent-color)",
-            }}
-          />
-        }
-
-
-        value={
-
-
-          <div
-            className="
-              space-y-4
-            "
-          >
+          value={
 
 
             <div
+
               className="
-                flex
-                flex-wrap
+                grid
                 gap-3
+                sm:grid-cols-2
               "
+
             >
 
-
-              {ACCENT_OPTIONS.map(
+              {THEME_OPTIONS.map(
                 (option) => {
 
 
-                  const isActive =
-                    accentKey === option.key;
+                  const active =
+                    option.key === appearance.theme;
 
 
 
@@ -499,275 +460,698 @@ export default function AppearanceSection() {
                       type="button"
 
                       onClick={() =>
-                        handleAccentChange(
+                        handleThemeChange(
                           option.key,
                         )
                       }
 
 
-                      aria-label={
-                        `Set accent color to ${option.label}`
-                      }
+                      className={`
+                        rounded-2xl
+                        border
+                        p-4
+                        text-left
+                        transition-all
+                        duration-300
+                        ${
+                          active
+                            ?
+                              "border-[var(--accent-color)] bg-[color-mix(in_srgb,var(--accent-color)_8%,transparent)]"
+                            :
+                              "border-[var(--border)] bg-[var(--surface)] hover:border-[var(--accent-color)]"
+                        }
+                      `}
+
+                    >
 
 
-                      aria-pressed={
-                        isActive
-                      }
+                      <div
+
+                        className="
+                          flex
+                          items-center
+                          gap-3
+                        "
+
+                      >
+
+                        <div
+
+                          className="
+                            flex
+                            h-10
+                            w-10
+                            items-center
+                            justify-center
+                            rounded-xl
+                          "
+
+                          style={{
+
+                            backgroundColor:
+                              "color-mix(in srgb,var(--accent-color) 12%,transparent)",
+
+                            color:
+                              "var(--accent-color)",
+
+                          }}
+
+                        >
+
+                          {option.icon}
+
+                        </div>
 
 
-                      className={[
-                        "h-9 w-9 rounded-full transition duration-300",
-                        option.colorClass,
-                        "ring-2 ring-transparent hover:scale-110",
-                        isActive
-                          ? `ring-white ${option.ringClass}`
-                          : "",
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
 
-                    />
+                        <div>
+
+
+                          <p
+
+                            className="
+                              font-semibold
+                              text-[var(--text)]
+                            "
+
+                          >
+
+                            {option.label}
+
+                          </p>
+
+
+
+                          <p
+
+                            className="
+                              mt-1
+                              text-xs
+                              text-[var(--muted)]
+                            "
+
+                          >
+
+                            {option.description}
+
+                          </p>
+
+
+                        </div>
+
+
+                      </div>
+
+
+                    </button>
 
                   );
 
 
                 },
+
               )}
 
 
             </div>
 
 
+          }
 
 
-            <p
-              className="
-                text-sm
-                text-slate-400
-              "
-            >
-
-              Current accent:
-
-              <span
-                className="
-                  ml-2
-                  font-semibold
-                  text-slate-200
-                "
-              >
-
-                {appearance.accentColor}
-
-              </span>
-
-            </p>
-
-
-          </div>
-
-
-        }
-
-      />
+        />
 
 
 
 
 
-      <SettingCard
-
-        title="Layout"
-
-        description="Choose your preferred workspace density."
-
-        icon={
-          <Monitor
-            size={20}
-            style={{
-              color:
-                "var(--accent-color)",
-            }}
-          />
-        }
 
 
-        value={
-
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              gap-4
-            "
-          >
+        {/* Glass */}
 
 
-            <div>
-
-              <p
-                className="
-                  text-base
-                  font-semibold
-                  text-white
-                "
-              >
-
-                {layoutLabel}
-
-              </p>
+        <SettingCard
 
 
-              <p
-                className="
-                  mt-1
-                  text-sm
-                  text-slate-400
-                "
-              >
-
-                {appearance.compactMode
-                  ? "More information on screen at once."
-                  : "More spacious spacing for comfort."}
-
-              </p>
+          title="Glass Interface"
 
 
-            </div>
-                        <button
+          description="
+            Add subtle depth and premium surfaces.
+          "
 
-              type="button"
 
-              onClick={() =>
-                handleCompactToggle(
-                  !appearance.compactMode,
-                )
-              }
+          icon={
 
-              className="
-                rounded-xl
-                border
-                px-4
-                py-2
-                text-sm
-                font-medium
-                transition
-              "
+            <Sparkles
+
+              size={20}
 
               style={{
-                borderColor:
-                  "color-mix(in srgb,var(--accent-color) 20%,transparent)",
-
-                backgroundColor:
-                  "color-mix(in srgb,var(--accent-color) 10%,transparent)",
-
                 color:
                   "var(--accent-color)",
               }}
 
+            />
+
+          }
+
+
+
+          value={
+
+
+            <div
+
+              className="
+                flex
+                items-center
+                justify-between
+                gap-4
+              "
+
             >
 
-              Change
 
-            </button>
-
-
-          </div>
+              <div>
 
 
-        }
+                <p
 
-      />
+                  className="
+                    font-semibold
+                    text-[var(--text)]
+                  "
 
+                >
 
-
-
-
-      <SettingCard
-
-        title="Animations"
-
-        description="Control interface motion effects."
-
-        icon={
-          <Sparkles
-            size={20}
-            style={{
-              color:
-                "var(--accent-color)",
-            }}
-          />
-        }
+                  {
+                    appearance.glassEffect
+                      ? "Enabled"
+                      : "Disabled"
+                  }
 
 
-        value={
-
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              gap-4
-            "
-          >
+                </p>
 
 
-            <div>
 
-              <p
-                className="
-                  text-base
-                  font-semibold
-                  text-white
-                "
-              >
+                <p
 
-                {appearance.animations
-                  ? "Enabled"
-                  : "Disabled"}
+                  className="
+                    mt-1
+                    text-sm
+                    text-[var(--muted)]
+                  "
 
-              </p>
+                >
+
+                  Soft blur and premium depth effects.
+
+                </p>
 
 
-              <p
-                className="
-                  mt-1
-                  text-sm
-                  text-slate-400
-                "
-              >
+              </div>
 
-                Smooth transitions and effects.
 
-              </p>
+
+
+              <SettingSwitch
+
+                enabled={
+                  appearance.glassEffect
+                }
+
+
+                onToggle={() =>
+                  handleGlassToggle(
+                    !appearance.glassEffect,
+                  )
+                }
+
+
+              />
 
 
             </div>
 
 
+          }
 
-            <SettingSwitch
 
-              enabled={
-                appearance.animations
-              }
+        />
 
-              onToggle={() =>
-                handleAnimationsToggle(
-                  !appearance.animations,
-                )
-              }
+
+
+
+
+
+
+
+
+        {/* Accent Colors */}
+
+
+
+        <SettingCard
+
+
+          title="Accent Color"
+
+
+          description="
+            Select your workspace identity color.
+          "
+
+
+          icon={
+
+            <Palette
+
+              size={20}
+
+              style={{
+                color:
+                  "var(--accent-color)",
+              }}
 
             />
 
+          }
 
-          </div>
 
 
-        }
+          value={
 
-      />
+
+            <div
+
+              className="
+                space-y-5
+              "
+
+            >
+
+
+              <div
+
+                className="
+                  flex
+                  flex-wrap
+                  gap-4
+                "
+
+              >
+
+
+                {ACCENT_OPTIONS.map(
+                  (option) => {
+
+
+                    const active =
+                      option.key ===
+                      appearance.accentColor;
+
+
+
+                    return (
+
+                      <button
+
+
+                        key={
+                          option.key
+                        }
+
+
+                        type="button"
+
+
+                        onClick={() =>
+                          handleAccentChange(
+                            option.key,
+                          )
+                        }
+
+
+
+                        className={`
+                          group
+                          relative
+                          h-10
+                          w-10
+                          rounded-full
+                          transition-all
+                          duration-300
+                          hover:scale-110
+                          ${
+                            active
+                              ?
+                              "ring-4 ring-[color-mix(in_srgb,var(--accent-color)_25%,transparent)]"
+                              :
+                              ""
+                          }
+                        `}
+
+
+
+                        style={{
+
+                          backgroundColor:
+                            option.color,
+
+                        }}
+
+
+
+                        aria-label={
+                          option.label
+                        }
+
+
+                      >
+
+                      </button>
+
+
+                    );
+
+
+                  },
+
+                )}
+
+
+              </div>
+
+
+
+
+
+              <p
+
+                className="
+                  text-sm
+                  text-[var(--muted)]
+                "
+
+              >
+
+                Current accent:
+
+                <span
+
+                  className="
+                    ml-2
+                    font-semibold
+                    text-[var(--text)]
+                  "
+
+                >
+
+                  {
+                    appearance.accentColor
+                  }
+
+                </span>
+
+
+              </p>
+
+
+
+            </div>
+
+
+          }
+
+
+        />
+
+
+
+
+
+
+
+
+
+        {/* Layout */}
+
+
+
+        <SettingCard
+
+
+          title="Layout"
+
+
+          description="
+            Adjust workspace density.
+          "
+
+
+          icon={
+
+            <Monitor
+
+              size={20}
+
+              style={{
+                color:
+                  "var(--accent-color)",
+              }}
+
+            />
+
+          }
+
+
+
+
+          value={
+
+
+            <div
+
+              className="
+                flex
+                items-center
+                justify-between
+                gap-4
+              "
+
+            >
+
+
+              <div>
+
+
+                <p
+
+                  className="
+                    font-semibold
+                    text-[var(--text)]
+                  "
+
+                >
+
+                  {
+                    appearance.compactMode
+                      ? "Compact"
+                      : "Comfortable"
+                  }
+
+                </p>
+
+
+
+                <p
+
+                  className="
+                    mt-1
+                    text-sm
+                    text-[var(--muted)]
+                  "
+
+                >
+
+                  Choose spacing according to your workflow.
+
+                </p>
+
+
+              </div>
+
+
+
+
+
+              <button
+
+
+                type="button"
+
+
+                onClick={() =>
+                  handleCompactToggle(
+                    !appearance.compactMode,
+                  )
+                }
+
+
+
+                className="
+                  rounded-xl
+                  border
+                  border-[var(--border)]
+                  bg-[var(--surfaceHover)]
+                  px-4
+                  py-2
+                  text-sm
+                  font-medium
+                  text-[var(--text)]
+                  transition
+                  hover:border-[var(--accent-color)]
+                "
+
+
+              >
+
+                Change
+
+
+              </button>
+
+
+
+            </div>
+
+
+          }
+
+
+        />
+
+
+        {/* Animations */}
+
+
+        <SettingCard
+
+
+          title="Animations"
+
+
+          description="
+            Control smooth transitions and motion effects.
+          "
+
+
+          icon={
+
+            <Sparkles
+
+              size={20}
+
+              style={{
+                color:
+                  "var(--accent-color)",
+              }}
+
+            />
+
+          }
+
+
+
+          value={
+
+
+            <div
+
+              className="
+                flex
+                items-center
+                justify-between
+                gap-4
+              "
+
+            >
+
+
+              <div>
+
+
+                <p
+
+                  className="
+                    font-semibold
+                    text-[var(--text)]
+                  "
+
+                >
+
+                  {
+                    appearance.animations
+                      ? "Enabled"
+                      : "Disabled"
+                  }
+
+
+                </p>
+
+
+
+                <p
+
+                  className="
+                    mt-1
+                    text-sm
+                    text-[var(--muted)]
+                  "
+
+                >
+
+                  Smooth interface interactions.
+
+                </p>
+
+
+              </div>
+
+
+
+
+
+              <SettingSwitch
+
+
+                enabled={
+                  appearance.animations
+                }
+
+
+
+                onToggle={() =>
+                  handleAnimationToggle(
+                    !appearance.animations,
+                  )
+                }
+
+
+              />
+
+
+
+            </div>
+
+
+          }
+
+
+        />
+
 
 
       </div>
@@ -776,103 +1160,155 @@ export default function AppearanceSection() {
 
 
 
+
+      {/* Quick Presets */}
+
+
+
       <div
+
+
         className="
           border-t
-          border-white/10
+          border-[var(--border)]
           p-6
         "
+
+
       >
 
+
+
         <h3
+
           className="
             text-lg
             font-bold
-            text-white
+            text-[var(--text)]
           "
+
         >
 
-          Quick Actions
+          Quick Presets
+
 
         </h3>
 
 
+
+
         <p
+
           className="
             mt-1
             text-sm
-            text-slate-400
+            text-[var(--muted)]
           "
+
         >
 
-          Apply common workspace preferences instantly.
+          Apply common workspace styles instantly.
 
         </p>
 
 
 
 
+
         <div
+
+
           className="
             mt-5
             grid
             gap-3
             sm:grid-cols-3
           "
+
+
         >
+
 
 
           <button
 
+
             type="button"
 
-            onClick={() => {
+
+
+            onClick={() =>
 
               updateAppearance({
-                theme: "dark",
-                glassEffect: true,
-                animations: true,
-                compactMode: false,
-              });
 
-            }}
+                theme:
+                  "arctic",
+
+                accentColor:
+                  "teal",
+
+                glassEffect:
+                  true,
+
+                animations:
+                  true,
+
+                compactMode:
+                  false,
+
+              })
+
+            }
+
+
 
             className="
               rounded-2xl
               border
-              border-white/10
-              bg-white/[0.04]
+              border-[var(--border)]
+              bg-[var(--surface)]
               p-4
               text-left
-              transition
-              hover:bg-white/[0.08]
+              transition-all
+              duration-300
+              hover:-translate-y-1
+              hover:border-[var(--accent-color)]
             "
+
 
           >
 
+
             <p
+
               className="
                 font-semibold
-                text-white
+                text-[var(--text)]
               "
+
             >
 
               Balanced
 
+
             </p>
+
 
 
             <p
+
               className="
                 mt-1
                 text-sm
-                text-slate-400
+                text-[var(--muted)]
               "
+
             >
 
-              Default experience.
+              Default learning experience.
 
             </p>
+
 
 
           </button>
@@ -881,60 +1317,100 @@ export default function AppearanceSection() {
 
 
 
+
+
+
           <button
+
 
             type="button"
 
-            onClick={() => {
+
+
+            onClick={() =>
+
 
               updateAppearance({
-                theme: "oled",
-                glassEffect: true,
-                animations: true,
-                compactMode: true,
-              });
 
-            }}
+                theme:
+                  "arctic",
+
+                accentColor:
+                  "violet",
+
+                glassEffect:
+                  true,
+
+                animations:
+                  true,
+
+                compactMode:
+                  true,
+
+              })
+
+
+            }
+
+
 
             className="
               rounded-2xl
               border
-              border-white/10
-              bg-white/[0.04]
+              border-[var(--border)]
+              bg-[var(--surface)]
               p-4
               text-left
-              transition
-              hover:bg-white/[0.08]
+              transition-all
+              duration-300
+              hover:-translate-y-1
+              hover:border-[var(--accent-color)]
             "
+
 
           >
 
+
+
             <p
+
               className="
                 font-semibold
-                text-white
+                text-[var(--text)]
               "
+
             >
 
-              Focus
+              Focus Mode
+
 
             </p>
 
 
+
+
             <p
+
               className="
                 mt-1
                 text-sm
-                text-slate-400
+                text-[var(--muted)]
               "
+
             >
 
-              Dark OLED workspace.
+              Compact workspace for deep study.
 
             </p>
 
 
-                      </button>
+
+
+          </button>
+
+
+
+
 
 
 
@@ -942,67 +1418,111 @@ export default function AppearanceSection() {
 
           <button
 
+
             type="button"
 
-            onClick={() => {
+
+
+            onClick={() =>
+
 
               updateAppearance({
-                theme: "dark",
-                glassEffect: false,
-                animations: false,
-                compactMode: true,
-              });
 
-            }}
+                theme:
+                  "forest",
+
+                accentColor:
+                  "emerald",
+
+                glassEffect:
+                  false,
+
+                animations:
+                  false,
+
+                compactMode:
+                  true,
+
+              })
+
+
+            }
+
+
+
 
             className="
               rounded-2xl
               border
-              border-white/10
-              bg-white/[0.04]
+              border-[var(--border)]
+              bg-[var(--surface)]
               p-4
               text-left
-              transition
-              hover:bg-white/[0.08]
+              transition-all
+              duration-300
+              hover:-translate-y-1
+              hover:border-[var(--accent-color)]
             "
+
 
           >
 
+
+
             <p
+
               className="
                 font-semibold
-                text-white
+                text-[var(--text)]
               "
+
             >
 
               Minimal
 
+
             </p>
+
+
 
 
             <p
+
               className="
                 mt-1
                 text-sm
-                text-slate-400
+                text-[var(--muted)]
               "
+
             >
 
-              Lightweight interface.
+              Clean distraction-free setup.
 
             </p>
 
 
+
+
           </button>
+
+
+
 
 
         </div>
 
 
+
+
       </div>
 
 
+
+
     </section>
+
+
   );
+
+
 }
-          

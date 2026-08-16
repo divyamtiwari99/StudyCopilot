@@ -1,10 +1,13 @@
 import type { LucideIcon } from "lucide-react";
 
+import { cn } from "@/lib/cn";
+
 interface StatsCardProps {
   title: string;
   value: string;
   subtitle: string;
   icon: LucideIcon;
+  className?: string;
 }
 
 export default function StatsCard({
@@ -12,44 +15,67 @@ export default function StatsCard({
   value,
   subtitle,
   icon: Icon,
+  className,
 }: StatsCardProps) {
   return (
     <div
-      className="
-        group
-        relative
-        overflow-hidden
-        rounded-3xl
-        border
-        border-white/10
-        bg-white/[0.04]
-        p-5
-        backdrop-blur-3xl
-        transition-all
-        duration-300
-        hover:-translate-y-1
-        hover:border-[var(--accent-color)]
-        hover:bg-white/[0.06]
-      "
+      className={cn(
+        "group",
+        "relative",
+        "overflow-hidden",
+        "rounded-[28px]",
+        "border",
+        "p-6",
+        "transition-all",
+        "duration-300",
+        "hover:-translate-y-1",
+        className,
+      )}
+      style={{
+        background:
+          "color-mix(in srgb,var(--surface) 96%,transparent)",
+        borderColor: "var(--border)",
+        boxShadow: "var(--shadow-card)",
+      }}
     >
+      {/* Ambient accent glow */}
       <div
         className="
           pointer-events-none
           absolute
-          -right-10
-          -top-10
-          h-32
-          w-32
+          -right-16
+          -top-16
+          h-40
+          w-40
           rounded-full
           blur-3xl
-          transition
+          opacity-0
+          transition-all
           duration-500
-          opacity-20
-          group-hover:opacity-40
+          group-hover:opacity-20
         "
         style={{
-          backgroundColor:
-            "var(--accent-color)",
+          background: "var(--accent-color)",
+        }}
+      />
+
+      {/* Bottom accent line */}
+      <div
+        className="
+          pointer-events-none
+          absolute
+          bottom-0
+          left-6
+          right-6
+          h-px
+          opacity-0
+          transition-opacity
+          duration-300
+          group-hover:opacity-100
+        "
+        style={{
+          background:
+            "linear-gradient(90deg,transparent,var(--accent-color),transparent)",
         }}
       />
 
@@ -60,28 +86,35 @@ export default function StatsCard({
           flex
           items-start
           justify-between
-          gap-4
+          gap-5
         "
       >
-        <div>
+        <div className="min-w-0">
           <p
             className="
-              text-sm
-              font-medium
-              text-slate-400
+              text-xs
+              font-semibold
+              uppercase
+              tracking-[0.14em]
             "
+            style={{
+              color: "var(--muted)",
+            }}
           >
             {title}
           </p>
 
           <h3
             className="
-              mt-2
-              text-3xl
+              mt-3
+              truncate
+              text-4xl
               font-black
               tracking-tight
-              text-white
             "
+            style={{
+              color: "var(--text)",
+            }}
           >
             {value}
           </h3>
@@ -90,8 +123,10 @@ export default function StatsCard({
             className="
               mt-2
               text-sm
-              text-slate-500
             "
+            style={{
+              color: "var(--muted)",
+            }}
           >
             {subtitle}
           </p>
@@ -100,27 +135,32 @@ export default function StatsCard({
         <div
           className="
             flex
-            h-12
-            w-12
+            h-14
+            w-14
+            shrink-0
             items-center
             justify-center
             rounded-2xl
             border
-            border-white/10
-            transition
+            transition-all
             duration-300
-            group-hover:scale-105
+            group-hover:scale-110
+            group-hover:-rotate-2
           "
           style={{
-            backgroundColor:
-              "color-mix(in srgb, var(--accent-color) 10%, transparent)",
+            background:
+              "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+            borderColor:
+              "color-mix(in srgb,var(--accent-color) 20%,transparent)",
+            boxShadow:
+              "inset 0 0 20px color-mix(in srgb,var(--accent-color) 5%,transparent)",
           }}
         >
           <Icon
-            size={22}
+            size={24}
+            strokeWidth={2}
             style={{
-              color:
-                "var(--accent-color)",
+              color: "var(--accent-color)",
             }}
           />
         </div>

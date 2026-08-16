@@ -10,7 +10,7 @@ export function useKnowledgeGraph(
   return useQuery({
     queryKey: contentId
       ? queryKeys.knowledgeGraph(contentId)
-      : ["knowledgeGraph"],
+      : queryKeys.knowledgeGraphRoot(),
 
     queryFn: () =>
       getKnowledgeGraph(contentId!),
@@ -22,8 +22,6 @@ export function useKnowledgeGraph(
 
     gcTime:
       1000 * 60 * 10,
-
-    retry: 1,
 
     refetchOnWindowFocus: false,
   });

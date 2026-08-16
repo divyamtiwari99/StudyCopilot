@@ -1,40 +1,100 @@
-export const theme = {
-  radius: {
-    sm: "12px",
-    md: "18px",
-    lg: "24px",
-    xl: "32px",
-  },
+export type ThemeMode =
+  | "midnight"
+  | "arctic"
+  | "forest"
+  | "sunset"
+  | "carbon";
 
-  colors: {
-    background: "#070B18",
 
-    surface: "#111827",
+export type AccentColor =
+  | "teal"
+  | "indigo"
+  | "blue"
+  | "violet"
+  | "emerald"
+  | "orange"
+  | "rose"
+  | "cyan"
+  | "amber";
 
-    surfaceHover: "#182235",
 
-    border: "#253046",
+export type AIMode =
+  | "study"
+  | "assistant"
+  | "hybrid";
 
-    primary: "#6D5DF6",
 
-    primaryHover: "#7C6CFF",
+export interface NotificationSettings {
+  studyReminder: boolean;
 
-    secondary: "#3B82F6",
+  emailNotifications: boolean;
 
-    success: "#22C55E",
+  aiUpdates: boolean;
 
-    warning: "#F59E0B",
+  weeklyReport: boolean;
+}
 
-    danger: "#EF4444",
 
-    text: "#FFFFFF",
+export interface AppearanceSettings {
+  theme: ThemeMode;
 
-    muted: "#94A3B8",
-  },
+  glassEffect: boolean;
 
-  shadow: {
-    card: "0 10px 40px rgba(0,0,0,.35)",
+  accentColor: AccentColor;
 
-    glow: "0 0 80px rgba(109,93,246,.25)",
-  },
-};
+  compactMode: boolean;
+
+  animations: boolean;
+}
+
+
+export interface AISettings {
+  defaultMode: AIMode;
+
+  responseLength:
+    | "short"
+    | "balanced"
+    | "detailed";
+
+
+  citations: boolean;
+
+  deepReasoning: boolean;
+}
+
+
+export interface StorageSettings {
+  used: number;
+
+  total: number;
+
+  documents: number;
+
+  chats: number;
+}
+
+
+export interface UserSettings {
+  name: string;
+
+  email: string;
+
+  avatar?: string;
+
+  plan: string;
+
+  joinedAt: string;
+}
+
+
+export interface SettingsState {
+  user: UserSettings;
+
+  ai: AISettings;
+
+  appearance: AppearanceSettings;
+
+  notifications: NotificationSettings;
+
+  storage: StorageSettings;
+}

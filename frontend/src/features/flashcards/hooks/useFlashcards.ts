@@ -1,15 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { queryKeys } from "@/lib/queryKeys";
+
 import { getFlashcards } from "../services/flashcards.service";
 
 export function useFlashcards(
   contentId?: string,
 ) {
   return useQuery({
-    queryKey: [
-      "flashcards",
-      contentId,
-    ],
+    queryKey: contentId ? queryKeys.flashcards(contentId) : queryKeys.flashcardsRoot(),
 
     queryFn: () =>
       getFlashcards(

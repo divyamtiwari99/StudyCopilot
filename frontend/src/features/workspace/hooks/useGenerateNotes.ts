@@ -1,3 +1,5 @@
+import { queryKeys } from "@/lib/queryKeys";
+
 import {
   useMutation,
   useQueryClient,
@@ -14,17 +16,11 @@ export function useGenerateNotes() {
 
     onSuccess: (_, contentId) => {
       queryClient.invalidateQueries({
-        queryKey: [
-          "document",
-          contentId,
-        ],
+        queryKey: queryKeys.document(contentId),
       });
 
       queryClient.invalidateQueries({
-        queryKey: [
-          "notes",
-          contentId,
-        ],
+        queryKey: queryKeys.notes(contentId),
       });
     },
   });

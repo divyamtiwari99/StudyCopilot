@@ -13,7 +13,7 @@ export function useDocument(
   return useQuery<UploadedDocument>({
     queryKey: contentId
       ? queryKeys.document(contentId)
-      : ["document"],
+      : queryKeys.documentRoot(),
 
     queryFn: () =>
       getDocument(contentId!),
@@ -23,8 +23,6 @@ export function useDocument(
     staleTime: 1000 * 60,
 
     gcTime: 1000 * 60 * 10,
-
-    retry: 1,
 
     refetchOnMount: true,
 

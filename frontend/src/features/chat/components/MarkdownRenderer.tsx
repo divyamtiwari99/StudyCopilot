@@ -49,7 +49,22 @@ export default function MarkdownRenderer({
           if (!match) {
             return (
               <code
-                className="rounded-lg bg-white/10 px-2 py-1 text-indigo-300"
+                className="
+                  rounded-lg
+                  border
+                  px-2
+                  py-1
+                "
+                style={{
+                  background:
+                    "var(--surfaceHover)",
+
+                  borderColor:
+                    "var(--border)",
+
+                  color:
+                    "var(--accent-color)",
+                }}
                 {...rest}
               >
                 {children}
@@ -87,58 +102,186 @@ function CodeBlock({
   ] = useState(false);
 
   async function copy() {
-    await navigator.clipboard.writeText(
-      code,
-    );
+    try {
+      await navigator.clipboard.writeText(
+        code,
+      );
 
-    setCopied(true);
+      setCopied(true);
 
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (error) {
+      console.error(
+        "Failed to copy code:",
+        error,
+      );
+    }
   }
 
   return (
-    <div className="my-6 overflow-hidden rounded-2xl border border-white/10">
+    <div
+      className="
+        my-6
+        overflow-hidden
+        rounded-2xl
+        border
+        transition-all
+        duration-300
+      "
+      style={{
+        borderColor:
+          "var(--border)",
 
-      <div className="flex items-center justify-between border-b border-white/10 bg-[#141827] px-4 py-3">
+        boxShadow:
+          "var(--shadow-card)",
+      }}
+    >
+      {/* Code header */}
 
-        <span className="text-xs uppercase tracking-widest text-slate-400">
-          {language}
-        </span>
+      <div
+        className="
+          flex
+          items-center
+          justify-between
+          border-b
+          px-4
+          py-3
+        "
+        style={{
+          background:
+            "var(--surfaceHover)",
+
+          borderColor:
+            "var(--border)",
+        }}
+      >
+        <div className="flex items-center gap-2">
+          <span
+            className="
+              h-2
+              w-2
+              rounded-full
+            "
+            style={{
+              backgroundColor:
+                "var(--accent-color)",
+
+              boxShadow:
+                "0 0 8px color-mix(in srgb,var(--accent-color) 60%,transparent)",
+            }}
+          />
+
+          <span
+            className="
+              text-xs
+              font-semibold
+              uppercase
+              tracking-widest
+            "
+            style={{
+              color:
+                "var(--muted)",
+            }}
+          >
+            {language}
+          </span>
+        </div>
 
         <button
+          type="button"
           onClick={copy}
-          className="flex items-center gap-2 rounded-lg px-3 py-1 text-sm text-slate-300 transition hover:bg-white/10"
+          className="
+            flex
+            items-center
+            gap-2
+            rounded-lg
+            px-3
+            py-1.5
+            text-sm
+            transition-all
+            duration-200
+            hover:-translate-y-0.5
+          "
+          style={{
+            color:
+              copied
+                ? "var(--success)"
+                : "var(--text)",
+
+            background:
+              "transparent",
+          }}
+          onMouseEnter={(event) => {
+            event.currentTarget.style.background =
+              "color-mix(in srgb,var(--accent-color) 8%,var(--surface))";
+          }}
+          onMouseLeave={(event) => {
+            event.currentTarget.style.background =
+              "transparent";
+          }}
         >
           {copied ? (
             <>
-              <Check size={15} />
+              <Check
+                size={15}
+                style={{
+                  color:
+                    "var(--success)",
+                }}
+              />
+
               Copied
             </>
           ) : (
             <>
-              <Copy size={15} />
+              <Copy
+                size={15}
+                style={{
+                  color:
+                    "var(--accent-color)",
+                }}
+              />
+
               Copy
             </>
           )}
         </button>
-
       </div>
 
-      <SyntaxHighlighter
-        language={language}
-        style={vscDarkPlus}
-        customStyle={{
-          margin: 0,
-          padding: 20,
-          background: "#0B1020",
-          fontSize: "14px",
+      {/* Code */}
+
+      <div
+        className="
+          overflow-x-auto
+        "
+        style={{
+          background:
+            "var(--background)",
         }}
       >
-        {code}
-      </SyntaxHighlighter>
-
+        <SyntaxHighlighter
+          language={language}
+          style={vscDarkPlus}
+          customStyle={{
+            margin: 0,
+            padding: 20,
+            background:
+              "var(--background)",
+            fontSize: "14px",
+            lineHeight: "1.7",
+          }}
+          codeTagProps={{
+            style: {
+              fontFamily:
+                "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+            },
+          }}
+        >
+          {code}
+        </SyntaxHighlighter>
+      </div>
     </div>
   );
 }

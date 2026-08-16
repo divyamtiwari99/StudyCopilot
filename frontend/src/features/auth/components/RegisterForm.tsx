@@ -13,6 +13,18 @@ import {
 
 import { useAuthStore } from "../../../store/auth.store";
 
+function getAuthErrorMessage(error: unknown, fallback: string) {
+  if (typeof error === "object" && error !== null) {
+    const response = (error as { response?: { data?: { message?: unknown } } }).response;
+    const message = response?.data?.message;
+    if (typeof message === "string" && message.trim()) {
+      return message;
+    }
+  }
+
+  return fallback;
+}
+
 export default function RegisterForm() {
   const navigate = useNavigate();
 
@@ -48,22 +60,21 @@ export default function RegisterForm() {
       });
 
       navigate("/dashboard");
-    } catch (error: any) {
+    } catch (error: unknown) {
       setServerError(
-        error?.response?.data?.message ??
-          "Registration failed."
+        getAuthErrorMessage(error, "Registration failed.")
       );
     }
   }
 
   return (
-    <div className="rounded-[32px] border border-white/10 bg-white/[0.05] p-8 backdrop-blur-3xl">
+    <div className="rounded-[32px] border border-[var(--border)] bg-[var(--surface)] p-8 backdrop-blur-3xl">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-white">
+        <h1 className="text-4xl font-bold text-[var(--text)]">
           Create Account
         </h1>
 
-        <p className="mt-2 text-zinc-400">
+        <p className="mt-2 text-[var(--muted)]">
           Start your AI learning journey.
         </p>
       </div>
@@ -76,11 +87,11 @@ export default function RegisterForm() {
           <input
             {...register("name")}
             placeholder="Full Name"
-            className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-violet-500"
+            className="w-full rounded-2xl border border-[var(--border)] bg-[var(--surfaceHover)] px-4 py-3 text-[var(--text)] outline-none transition focus:border-[var(--accent-color)]"
           />
 
           {errors.name && (
-            <p className="mt-1 text-sm text-red-400">
+            <p className="mt-1 text-sm text-red-700">
               {errors.name.message}
             </p>
           )}
@@ -91,11 +102,11 @@ export default function RegisterForm() {
             type="email"
             {...register("email")}
             placeholder="Email"
-            className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-violet-500"
+            className="w-full rounded-2xl border border-[var(--border)] bg-[var(--surfaceHover)] px-4 py-3 text-[var(--text)] outline-none transition focus:border-[var(--accent-color)]"
           />
 
           {errors.email && (
-            <p className="mt-1 text-sm text-red-400">
+            <p className="mt-1 text-sm text-red-700">
               {errors.email.message}
             </p>
           )}
@@ -106,11 +117,11 @@ export default function RegisterForm() {
             type="password"
             {...register("password")}
             placeholder="Password"
-            className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-violet-500"
+            className="w-full rounded-2xl border border-[var(--border)] bg-[var(--surfaceHover)] px-4 py-3 text-[var(--text)] outline-none transition focus:border-[var(--accent-color)]"
           />
 
           {errors.password && (
-            <p className="mt-1 text-sm text-red-400">
+            <p className="mt-1 text-sm text-red-700">
               {errors.password.message}
             </p>
           )}
@@ -121,18 +132,18 @@ export default function RegisterForm() {
             type="password"
             {...register("confirmPassword")}
             placeholder="Confirm Password"
-            className="w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-violet-500"
+            className="w-full rounded-2xl border border-[var(--border)] bg-[var(--surfaceHover)] px-4 py-3 text-[var(--text)] outline-none transition focus:border-[var(--accent-color)]"
           />
 
           {errors.confirmPassword && (
-            <p className="mt-1 text-sm text-red-400">
+            <p className="mt-1 text-sm text-red-700">
               {errors.confirmPassword.message}
             </p>
           )}
         </div>
 
         {serverError && (
-          <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-300">
+          <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-700">
             {serverError}
           </div>
         )}
@@ -140,7 +151,7 @@ export default function RegisterForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-2xl bg-violet-600 py-3 font-semibold text-white transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-2xl bg-[var(--accent-color)] py-3 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading
             ? "Creating..."
@@ -148,11 +159,11 @@ export default function RegisterForm() {
         </button>
 
         <div className="pt-2 text-center">
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm text-[var(--muted)]">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="font-medium text-violet-400 transition hover:text-violet-300"
+              className="font-medium text-[var(--accent-color)] transition hover:text-[var(--accent-color)]"
             >
               Login
             </Link>

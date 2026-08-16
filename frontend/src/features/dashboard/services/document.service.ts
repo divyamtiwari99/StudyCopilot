@@ -1,4 +1,5 @@
 import { api } from "@/lib/api";
+import { normalizeDocumentStatus, type DocumentStatus } from "@/features/documents/utils/documentStatus";
 
 export interface ProcessingState {
   parser: boolean;
@@ -37,6 +38,8 @@ export interface UploadedDocument {
 
   size: number;
 
+  pages?: number;
+
   mimeType: string;
 
   createdAt: string;
@@ -48,6 +51,19 @@ interface ApiResponse<T> {
   success: boolean;
 
   data: T;
+}
+
+type ApiUploadedDocument = Omit<UploadedDocument, "status"> & {
+  status: DocumentStatus;
+};
+
+function normalizeUploadedDocument(
+  document: ApiUploadedDocument,
+): UploadedDocument {
+  return {
+    ...document,
+    status: normalizeDocumentStatus(document.status),
+  };
 }
 
 export async function uploadDocument(
@@ -71,7 +87,7 @@ export async function uploadDocument(
 
   const response =
     await api.post<
-      ApiResponse<UploadedDocument>
+      ApiResponse<ApiUploadedDocument>
     >(
       "/content/upload",
       formData,
@@ -98,18 +114,16 @@ export async function uploadDocument(
       },
     );
 
-  return response.data.data;
+  return normalizeUploadedDocument(response.data.data);
 }
 
 export async function getDocuments() {
   const response =
-    await api.get<
-      ApiResponse<
-        UploadedDocument[]
-      >
-    >("/content");
+    await api.get<ApiResponse<ApiUploadedDocument[]>>(
+      "/content",
+    );
 
-  return response.data.data;
+  return response.data.data.map(normalizeUploadedDocument);
 }
 
 export async function getDocument(
@@ -117,10 +131,10 @@ export async function getDocument(
 ) {
   const response =
     await api.get<
-      ApiResponse<UploadedDocument>
+      ApiResponse<ApiUploadedDocument>
     >(`/content/${id}`);
 
-  return response.data.data;
+  return normalizeUploadedDocument(response.data.data);
 }
 
 export async function renameDocument(
@@ -129,12 +143,12 @@ export async function renameDocument(
 ) {
   const response =
     await api.patch<
-      ApiResponse<UploadedDocument>
+      ApiResponse<ApiUploadedDocument>
     >(`/content/${id}`, {
       title,
     });
 
-  return response.data.data;
+  return normalizeUploadedDocument(response.data.data);
 }
 
 export async function deleteDocument(

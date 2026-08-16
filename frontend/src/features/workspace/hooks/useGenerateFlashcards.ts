@@ -1,3 +1,5 @@
+import { queryKeys } from "@/lib/queryKeys";
+
 import {
   useMutation,
   useQueryClient,
@@ -18,17 +20,11 @@ export function useGenerateFlashcards() {
       contentId,
     ) => {
       queryClient.invalidateQueries({
-        queryKey: [
-          "flashcards",
-          contentId,
-        ],
+        queryKey: queryKeys.flashcards(contentId),
       });
 
       queryClient.invalidateQueries({
-        queryKey: [
-          "document",
-          contentId,
-        ],
+        queryKey: queryKeys.document(contentId),
       });
     },
   });

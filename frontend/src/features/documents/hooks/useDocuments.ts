@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { queryKeys } from "@/lib/queryKeys";
+
 import {
   getDocuments,
   type UploadedDocument,
@@ -7,7 +9,7 @@ import {
 
 export function useDocuments() {
   return useQuery<UploadedDocument[]>({
-    queryKey: ["documents"],
+    queryKey: queryKeys.documents(),
 
     queryFn: getDocuments,
 
@@ -34,8 +36,6 @@ export function useDocuments() {
         ? 3000
         : false;
     },
-
-    retry: 1,
 
     refetchOnWindowFocus: false,
   });

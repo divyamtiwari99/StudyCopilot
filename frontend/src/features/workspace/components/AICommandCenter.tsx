@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 
 import { useParams } from "react-router-dom";
-
 import { toast } from "sonner";
 
 import CommandCard from "./CommandCard";
@@ -20,6 +19,7 @@ import { useGenerateSummary } from "../hooks/useGenerateSummary";
 import { useGenerateKnowledgeGraph } from "../hooks/useGenerateKnowledgeGraph";
 import { useGenerateRoadmap } from "../hooks/useGenerateRoadmap";
 import { useWorkspaceArtifacts } from "../hooks/useWorkspaceArtifacts";
+
 
 interface Props {
   onOpenTab: (
@@ -33,186 +33,357 @@ interface Props {
   ) => void;
 }
 
+
+
 export default function AICommandCenter({
   onOpenTab,
 }: Props) {
+
+
   const { contentId } =
     useParams();
+
+
 
   const artifacts =
     useWorkspaceArtifacts();
 
+
+
   const notesMutation =
     useGenerateNotes();
+
 
   const summaryMutation =
     useGenerateSummary();
 
+
   const flashcardsMutation =
     useGenerateFlashcards();
+
 
   const quizMutation =
     useGenerateQuiz();
 
+
   const knowledgeGraphMutation =
     useGenerateKnowledgeGraph();
 
+
   const roadmapMutation =
-  useGenerateRoadmap();
+    useGenerateRoadmap();
+
+
+
 
   async function handleGenerateNotes() {
+
     if (!contentId) return;
 
+
     try {
+
       await notesMutation.mutateAsync(
         contentId,
       );
+
 
       toast.success(
         artifacts.notes
           ? "Notes regenerated successfully!"
           : "Notes generated successfully!",
       );
-    } catch (error) {
+
+
+    } catch(error) {
+
       console.error(error);
+
 
       toast.error(
         "Failed to generate notes.",
       );
+
     }
+
   }
 
+
+
+
+
   async function handleGenerateSummary() {
+
     if (!contentId) return;
 
+
     try {
+
       await summaryMutation.mutateAsync(
         contentId,
       );
+
 
       toast.success(
         artifacts.summary
           ? "Summary regenerated successfully!"
           : "Summary generated successfully!",
       );
-    } catch (error) {
+
+
+    } catch(error) {
+
       console.error(error);
+
 
       toast.error(
         "Failed to generate summary.",
       );
+
     }
+
   }
 
+
+
+
+
   async function handleGenerateFlashcards() {
+
     if (!contentId) return;
 
+
     try {
+
       await flashcardsMutation.mutateAsync(
         contentId,
       );
+
 
       toast.success(
         artifacts.flashcards
           ? "Flashcards regenerated successfully!"
           : "Flashcards generated successfully!",
       );
-    } catch (error) {
+
+
+    } catch(error) {
+
       console.error(error);
+
 
       toast.error(
         "Failed to generate flashcards.",
       );
+
     }
+
   }
 
+
+
+
+
   async function handleGenerateQuiz() {
+
     if (!contentId) return;
 
+
     try {
+
       await quizMutation.mutateAsync(
         contentId,
       );
+
 
       toast.success(
         artifacts.quiz
           ? "Quiz regenerated successfully!"
           : "Quiz generated successfully!",
       );
-    } catch (error) {
+
+
+    } catch(error) {
+
       console.error(error);
+
 
       toast.error(
         "Failed to generate quiz.",
       );
+
     }
+
   }
 
+
+
+
+
   async function handleGenerateKnowledgeGraph() {
+
     if (!contentId) return;
 
+
     try {
+
       await knowledgeGraphMutation.mutateAsync({
+
         contentId,
 
         regenerate:
           artifacts.knowledgeGraph,
+
       });
 
+
+
       toast.success(
+
         artifacts.knowledgeGraph
+
           ? "Knowledge Graph regenerated successfully!"
+
           : "Knowledge Graph generated successfully!",
+
       );
-    } catch (error) {
+
+
+    } catch(error) {
+
       console.error(error);
+
 
       toast.error(
         "Failed to generate Knowledge Graph.",
       );
+
     }
+
   }
+
+
+
+
 
   async function handleGenerateRoadmap() {
-  if (!contentId) return;
 
-  try {
-    await roadmapMutation.mutateAsync({
-      contentId,
+    if (!contentId) return;
 
-      regenerate:
-        artifacts.roadmap,
-    });
 
-    toast.success(
-      artifacts.roadmap
-        ? "Roadmap regenerated successfully!"
-        : "Roadmap generated successfully!",
-    );
-  } catch (error) {
-    console.error(error);
+    try {
 
-    toast.error(
-      "Failed to generate Roadmap.",
-    );
+      await roadmapMutation.mutateAsync({
+
+        contentId,
+
+        regenerate:
+          artifacts.roadmap,
+
+      });
+
+
+
+      toast.success(
+
+        artifacts.roadmap
+
+          ? "Roadmap regenerated successfully!"
+
+          : "Roadmap generated successfully!",
+
+      );
+
+
+    } catch(error) {
+
+      console.error(error);
+
+
+      toast.error(
+        "Failed to generate Roadmap.",
+      );
+
+    }
+
   }
- }
+
+
+
+
 
   return (
+
     <section className="space-y-6">
+
+
       <div>
-        <h2 className="text-2xl font-bold text-white">
+
+
+        <h2
+
+          className="
+            text-2xl
+            font-bold
+            tracking-tight
+          "
+
+          style={{
+
+            color:
+              "var(--text)",
+
+          }}
+
+        >
+
           AI Command Center
+
+
         </h2>
 
-        <p className="mt-2 text-zinc-400">
-          Generate premium learning
-          resources from your uploaded
-          document.
+
+
+
+        <p
+
+          className="
+            mt-2
+            text-sm
+          "
+
+          style={{
+
+            color:
+              "var(--muted)",
+
+          }}
+
+        >
+
+          Generate premium learning resources from your uploaded document.
+
+
         </p>
+
+
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-6">
+
+
+
+
+      <div
+
+        className="
+          grid
+          gap-6
+          md:grid-cols-2
+          xl:grid-cols-6
+        "
+
+      >
+
 
         <CommandCard
           icon={FileText}
@@ -226,6 +397,8 @@ export default function AICommandCenter({
           }
         />
 
+
+
         <CommandCard
           icon={Sparkles}
           title="Summary"
@@ -237,6 +410,8 @@ export default function AICommandCenter({
             onOpenTab("summary")
           }
         />
+
+
 
         <CommandCard
           icon={Brain}
@@ -252,11 +427,11 @@ export default function AICommandCenter({
             handleGenerateFlashcards
           }
           onOpen={() =>
-            onOpenTab(
-              "flashcards",
-            )
+            onOpenTab("flashcards")
           }
         />
+
+
 
         <CommandCard
           icon={GraduationCap}
@@ -269,6 +444,8 @@ export default function AICommandCenter({
             onOpenTab("quiz")
           }
         />
+
+
 
         <CommandCard
           icon={Network}
@@ -284,31 +461,44 @@ export default function AICommandCenter({
             handleGenerateKnowledgeGraph
           }
           onOpen={() =>
-            onOpenTab(
-              "knowledgeGraph",
-            )
+            onOpenTab("knowledgeGraph")
           }
         />
 
-          <CommandCard
-  icon={Route}
-  title="Roadmap"
-  description="Generate a personalized AI learning roadmap."
-  loading={
-    roadmapMutation.isPending
-  }
-  generated={
-    artifacts.roadmap
-  }
-  onClick={
-    handleGenerateRoadmap
-  }
-  onOpen={() =>
-    onOpenTab("roadmap")
-  }
-/>
+
+
+        <CommandCard
+
+          icon={Route}
+
+          title="Roadmap"
+
+          description="Generate a personalized AI learning roadmap."
+
+          loading={
+            roadmapMutation.isPending
+          }
+
+          generated={
+            artifacts.roadmap
+          }
+
+          onClick={
+            handleGenerateRoadmap
+          }
+
+          onOpen={() =>
+            onOpenTab("roadmap")
+          }
+
+        />
+
 
       </div>
+
+
     </section>
+
   );
+
 }

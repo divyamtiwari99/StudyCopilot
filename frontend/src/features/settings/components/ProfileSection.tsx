@@ -21,71 +21,102 @@ import type {
   ChangeEvent,
 } from "react";
 
+import { toast } from "sonner";
+
 import SectionHeader from "./SectionHeader";
 import SettingCard from "./SettingCard";
-import { useSettingsContext } from "./SettingsContext";
+import {
+  useSettingsContext,
+} from "./SettingsContext";
 
 import authService from "../../../services/auth.service";
-import { useAuthStore } from "@/store/auth.store";
+import {
+  useAuthStore,
+} from "@/store/auth.store";
+
 
 interface FormState {
-  name: string;
-  email: string;
-  avatar?: string;
+  name:string;
+  email:string;
+  avatar?:string;
 }
 
 
 interface ValidationErrors {
-  name?: string;
-  email?: string;
+  name?:string;
+  email?:string;
 }
 
 
-export default function ProfileSection() {
+
+export default function ProfileSection(){
 
   const {
     settings,
     updateUser,
   } = useSettingsContext();
 
+
   const updateAuthUser =
     useAuthStore(
-      (state) => state.updateUser,
+      state=>state.updateUser,
     );
 
 
-  const [editing, setEditing] =
-    useState(false);
-
-  const [saving, setSaving] =
-    useState(false);
-
-
-  const [form, setForm] =
-    useState<FormState>({
-      name: settings.user.name,
-      email: settings.user.email,
-      avatar: settings.user.avatar,
-    });
+  const [
+    editing,
+    setEditing,
+  ] = useState(false);
 
 
-  const [errors, setErrors] =
-    useState<ValidationErrors>({});
+  const [
+    saving,
+    setSaving,
+  ] = useState(false);
+
+
+
+  const [
+    form,
+    setForm,
+  ] = useState<FormState>({
+    name:
+      settings.user.name,
+
+    email:
+      settings.user.email,
+
+    avatar:
+      settings.user.avatar,
+  });
+
+
+
+  const [
+    errors,
+    setErrors,
+  ] = useState<ValidationErrors>({});
 
 
   const inputRef =
     useRef<HTMLInputElement>(null);
 
 
-  useEffect(() => {
+
+  useEffect(()=>{
 
     setForm({
-      name: settings.user.name,
-      email: settings.user.email,
-      avatar: settings.user.avatar,
+      name:
+        settings.user.name,
+
+      email:
+        settings.user.email,
+
+      avatar:
+        settings.user.avatar,
     });
 
-  }, [
+  },[
     settings.user.name,
     settings.user.email,
     settings.user.avatar,
@@ -93,8 +124,9 @@ export default function ProfileSection() {
 
 
 
+
   const initials =
-    useMemo(() => {
+    useMemo(()=>{
 
       const parts =
         form.name
@@ -103,28 +135,29 @@ export default function ProfileSection() {
           .filter(Boolean);
 
 
-      if (parts.length === 0) {
+      if(parts.length===0)
         return "U";
-      }
 
 
       return parts
         .map(
-          (part) =>
+          part =>
             part.charAt(0),
         )
         .join("")
-        .slice(0, 2)
+        .slice(0,2)
         .toUpperCase();
 
-    }, [
+
+    },[
       form.name,
     ]);
 
 
 
+
   const dirty =
-    useMemo(() => {
+    useMemo(()=>{
 
       return (
         form.name !== settings.user.name ||
@@ -132,7 +165,7 @@ export default function ProfileSection() {
         form.avatar !== settings.user.avatar
       );
 
-    }, [
+    },[
       form.name,
       form.email,
       form.avatar,
@@ -143,26 +176,32 @@ export default function ProfileSection() {
 
 
 
-  function validate() {
-
-    const nextErrors: ValidationErrors = {};
 
 
-    if (!form.name.trim()) {
+  function validate(){
+
+    const nextErrors:
+      ValidationErrors = {};
+
+
+    if(!form.name.trim()){
+
       nextErrors.name =
         "Name is required.";
+
     }
 
 
-    if (!form.email.trim()) {
+    if(!form.email.trim()){
 
       nextErrors.email =
         "Email is required.";
 
-    } else if (
+    }
+    else if(
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        .test(form.email)
-    ) {
+      .test(form.email)
+    ){
 
       nextErrors.email =
         "Enter a valid email.";
@@ -172,29 +211,37 @@ export default function ProfileSection() {
 
     setErrors(nextErrors);
 
-    return (
-      Object.keys(nextErrors).length === 0
-    );
-  }
-  function updateField(
-    key: keyof FormState,
-    value: string,
-  ) {
 
-    setForm((previous) => ({
+    return (
+      Object.keys(nextErrors)
+      .length===0
+    );
+
+  }
+
+
+
+
+  function updateField(
+    key:keyof FormState,
+    value:string,
+  ){
+
+    setForm(previous=>({
       ...previous,
-      [key]: value,
+      [key]:value,
     }));
 
 
-    if (
-      (key === "name" || key === "email") &&
+    if(
+      (key==="name" ||
+       key==="email") &&
       errors[key]
-    ) {
+    ){
 
-      setErrors((previous) => ({
+      setErrors(previous=>({
         ...previous,
-        [key]: undefined,
+        [key]:undefined,
       }));
 
     }
@@ -203,33 +250,38 @@ export default function ProfileSection() {
 
 
 
-  function openPicker() {
+
+  function openPicker(){
+
     inputRef.current?.click();
+
   }
 
 
 
 
+
   function onAvatarChange(
-    event: ChangeEvent<HTMLInputElement>,
-  ) {
+    event:ChangeEvent<HTMLInputElement>,
+  ){
 
     const file =
       event.target.files?.[0];
 
 
-    if (!file) {
+    if(!file)
       return;
-    }
+
 
 
     const reader =
       new FileReader();
 
 
-    reader.onload = () => {
 
-      setForm((previous) => ({
+    reader.onload=()=>{
+
+      setForm(previous=>({
         ...previous,
         avatar:
           reader.result as string,
@@ -240,22 +292,17 @@ export default function ProfileSection() {
 
     reader.readAsDataURL(file);
 
-    event.target.value = "";
+
+    event.target.value="";
 
   }
+    async function handleSave(){
 
-
-
-
-
-  async function handleSave() {
-
-    if (!validate()) {
+    if(!validate())
       return;
-    }
 
 
-    try {
+    try{
 
       setSaving(true);
 
@@ -282,15 +329,31 @@ export default function ProfileSection() {
 
 
       updateUser({
-        name: updatedUser.name,
-        email: updatedUser.email,
-        avatar: updatedUser.avatar,
+
+        name:
+          updatedUser.name,
+
+        email:
+          updatedUser.email,
+
+        avatar:
+          updatedUser.avatar,
+
       });
 
+
+
       updateAuthUser({
-        name: updatedUser.name,
-        email: updatedUser.email,
-        avatar: updatedUser.avatar,
+
+        name:
+          updatedUser.name,
+
+        email:
+          updatedUser.email,
+
+        avatar:
+          updatedUser.avatar,
+
       });
 
 
@@ -298,15 +361,20 @@ export default function ProfileSection() {
       setEditing(false);
 
 
-    } catch (error) {
+    }
+    catch(error){
 
       console.error(
         "Profile update failed",
         error,
       );
 
+      toast.error(
+        "Failed to update your profile. Please try again.",
+      );
 
-    } finally {
+    }
+    finally{
 
       setSaving(false);
 
@@ -317,8 +385,7 @@ export default function ProfileSection() {
 
 
 
-
-  function handleCancel() {
+  function handleCancel(){
 
     setForm({
 
@@ -343,20 +410,35 @@ export default function ProfileSection() {
 
 
 
-
   const profileCompletion =
     [
       settings.user.name,
       settings.user.email,
       settings.user.avatar,
     ]
-      .filter(Boolean)
-      .length * 33.3;
+    .filter(Boolean)
+    .length * 33.3;
 
 
 
-  return (
-    <section className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-3xl">
+  return(
+
+    <section
+      className="
+        overflow-hidden
+        rounded-3xl
+        border
+        backdrop-blur-3xl
+      "
+      style={{
+        background:
+          "var(--surface)",
+
+        borderColor:
+          "var(--border)",
+      }}
+    >
+
 
       <SectionHeader
 
@@ -364,132 +446,379 @@ export default function ProfileSection() {
 
         title="Your Account"
 
-        description="Manage your personal information, profile picture and account details."
+        description="
+          Manage your personal information,
+          profile picture and account details.
+        "
 
         icon={
           <User2
             size={26}
-            className="text-cyan-400"
+            style={{
+              color:
+                "var(--accent-color)",
+            }}
           />
         }
 
+
         action={
+
           editing ? (
-            <div className="flex items-center gap-3">
+
+            <div
+              className="
+                flex
+                items-center
+                gap-3
+              "
+            >
 
               <button
+
                 type="button"
+
                 onClick={handleCancel}
+
                 disabled={saving}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/[0.08] disabled:opacity-50"
+
+                className="
+                  inline-flex
+                  items-center
+                  gap-2
+                  rounded-xl
+                  border
+                  px-4
+                  py-2
+                  text-sm
+                  font-semibold
+                  transition
+                  disabled:opacity-50
+                "
+
+                style={{
+
+                  background:
+                    "var(--surfaceHover)",
+
+                  borderColor:
+                    "var(--border)",
+
+                  color:
+                    "var(--muted)",
+
+                }}
+
               >
 
-                <X size={16} />
+                <X size={16}/>
 
                 Cancel
 
               </button>
 
 
+
+
               <button
+
                 type="button"
+
                 onClick={handleSave}
-                disabled={!dirty || saving}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-violet-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition hover:-translate-y-0.5 disabled:opacity-50"
+
+                disabled={
+                  !dirty ||
+                  saving
+                }
+
+                className="
+                  inline-flex
+                  items-center
+                  gap-2
+                  rounded-xl
+                  px-5
+                  py-2
+                  text-sm
+                  font-semibold
+                  text-white
+                  transition
+                  hover:-translate-y-0.5
+                  disabled:opacity-50
+                "
+
+                style={{
+
+                  background:
+                    "linear-gradient(90deg,var(--accent-color),#8b5cf6)",
+
+                }}
+
               >
 
-                {saving ? (
-                  <>
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                {
+                  saving ? (
 
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save size={16} />
+                    <>
 
-                    Save Changes
-                  </>
-                )}
+                      <div
+                        className="
+                          h-4
+                          w-4
+                          animate-spin
+                          rounded-full
+                          border-2
+                          border-white/30
+                          border-t-white
+                        "
+                      />
+
+                      Saving...
+
+                    </>
+
+                  ):(
+
+                    <>
+
+                      <Save size={16}/>
+
+                      Save Changes
+
+                    </>
+
+                  )
+                }
+
 
               </button>
 
+
             </div>
-          ) : (
+
+
+          ):(
             <button
+
               type="button"
-              onClick={() => setEditing(true)}
-              className="inline-flex items-center gap-2 rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-500/20"
+
+              onClick={()=>
+                setEditing(true)
+              }
+
+              className="
+                inline-flex
+                items-center
+                gap-2
+                rounded-xl
+                border
+                px-5
+                py-2
+                text-sm
+                font-semibold
+                transition
+              "
+
+              style={{
+
+                background:
+                  "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+
+                borderColor:
+                  "color-mix(in srgb,var(--accent-color) 20%,transparent)",
+
+                color:
+                  "var(--accent-color)",
+
+              }}
+
             >
 
-              <Pencil size={16} />
+              <Pencil size={16}/>
 
               Edit Profile
 
             </button>
+
           )
+
         }
 
       />
-      <div className="grid gap-6 p-6 xl:grid-cols-[160px_1fr]">
 
-        <div className="flex flex-col items-center">
 
-          <div className="relative">
 
-            {form.avatar ? (
+      <div
+        className="
+          grid
+          gap-6
+          p-6
+          xl:grid-cols-[160px_1fr]
+        "
+      >
 
-              <img
-                src={form.avatar}
-                alt={form.name}
-                className="h-32 w-32 rounded-3xl border border-white/10 object-cover shadow-xl"
-              />
 
-            ) : (
+        <div
+          className="
+            flex
+            flex-col
+            items-center
+          "
+        >
 
-              <div className="flex h-32 w-32 items-center justify-center rounded-3xl border border-white/10 bg-gradient-to-br from-cyan-500/20 via-violet-500/20 to-indigo-500/20 text-4xl font-black text-white shadow-xl">
 
-                {initials}
+          <div
+            className="relative"
+          >
 
-              </div>
+            {
+              form.avatar ? (
 
-            )}
+                <img
+
+                  src={form.avatar}
+
+                  alt={form.name}
+
+                  className="
+                    h-32
+                    w-32
+                    rounded-3xl
+                    border
+                    object-cover
+                    shadow-xl
+                  "
+
+                  style={{
+
+                    borderColor:
+                      "var(--border)",
+
+                  }}
+
+                />
+
+              ):(
+                <div
+
+                  className="
+                    flex
+                    h-32
+                    w-32
+                    items-center
+                    justify-center
+                    rounded-3xl
+                    text-4xl
+                    font-black
+                    text-white
+                    shadow-xl
+                  "
+
+                  style={{
+
+                    background:
+                      "linear-gradient(135deg,var(--accent-color),#8b5cf6)",
+
+                  }}
+
+                >
+
+                  {initials}
+
+                </div>
+              )
+            }
+
 
 
             <button
+
               type="button"
+
               onClick={openPicker}
+
               disabled={!editing}
-              className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-cyan-500 text-black shadow-xl transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
+
+              className="
+                absolute
+                -bottom-2
+                -right-2
+                flex
+                h-10
+                w-10
+                items-center
+                justify-center
+                rounded-xl
+                text-black
+                shadow-xl
+                transition
+                hover:scale-105
+                disabled:opacity-50
+              "
+
+              style={{
+
+                background:
+                  "var(--accent-color)",
+
+              }}
+
             >
 
-              <Camera size={16} />
+              <Camera size={16}/>
 
             </button>
 
 
 
             <input
+
               ref={inputRef}
+
               hidden
+
               accept="image/*"
+
               type="file"
+
               onChange={onAvatarChange}
+
             />
 
+
           </div>
-
-
-
-          {editing && (
+                    {editing && (
 
             <button
               type="button"
               onClick={openPicker}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-medium text-slate-300 transition hover:bg-white/[0.08]"
+              className="
+                mt-4
+                inline-flex
+                items-center
+                gap-2
+                rounded-xl
+                border
+                px-3
+                py-2
+                text-xs
+                font-medium
+                transition
+              "
+              style={{
+
+                background:
+                  "var(--surfaceHover)",
+
+                borderColor:
+                  "var(--border)",
+
+                color:
+                  "var(--muted)",
+
+              }}
             >
 
-              <Upload size={14} />
+              <Upload size={14}/>
 
               Upload Photo
 
@@ -499,30 +828,74 @@ export default function ProfileSection() {
 
 
 
-          <div className="mt-4 rounded-full border border-amber-500/20 bg-amber-500/10 px-4 py-1.5">
+          <div
+            className="
+              mt-4
+              rounded-full
+              border
+              px-4
+              py-1.5
+            "
+            style={{
 
-            <div className="flex items-center gap-2">
+              background:
+                "color-mix(in srgb,#f59e0b 10%,transparent)",
+
+              borderColor:
+                "color-mix(in srgb,#f59e0b 20%,transparent)",
+
+            }}
+          >
+
+            <div
+              className="
+                flex
+                items-center
+                gap-2
+              "
+            >
 
               <Crown
                 size={14}
                 className="text-amber-400"
               />
 
-              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">
+
+              <span
+                className="
+                  text-xs
+                  font-semibold
+                  uppercase
+                  tracking-[0.18em]
+                  text-amber-700
+                "
+              >
 
                 {settings.user.plan}
 
               </span>
 
+
             </div>
 
+
           </div>
+
 
         </div>
 
 
 
-        <div className="grid gap-4 md:grid-cols-2">
+
+
+        <div
+          className="
+            grid
+            gap-4
+            md:grid-cols-2
+          "
+        >
+
 
 
           <SettingCard
@@ -534,7 +907,10 @@ export default function ProfileSection() {
             icon={
               <User2
                 size={20}
-                className="text-cyan-400"
+                style={{
+                  color:
+                    "var(--accent-color)",
+                }}
               />
             }
 
@@ -545,31 +921,60 @@ export default function ProfileSection() {
                 <div className="space-y-2">
 
                   <input
+
                     value={form.name}
-                    onChange={(event) =>
+
+                    onChange={(event)=>
                       updateField(
                         "name",
                         event.target.value,
                       )
                     }
-                    className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40"
+
+                    className="
+                      w-full
+                      rounded-xl
+                      border
+                      px-3
+                      py-2
+                      text-sm
+                      outline-none
+                    "
+
+                    style={{
+
+                      background:
+                        "var(--surfaceHover)",
+
+                      borderColor:
+                        "var(--border)",
+
+                      color:
+                        "var(--text)",
+
+                    }}
+
                     placeholder="Enter your name"
+
                   />
+
 
 
                   {errors.name && (
 
-                    <p className="text-xs text-red-400">
-
+                    <p
+                      className="text-xs text-red-400"
+                    >
                       {errors.name}
-
                     </p>
 
                   )}
 
+
                 </div>
 
-              ) : (
+
+              ):(
 
                 <div className="flex items-center gap-2">
 
@@ -578,11 +983,21 @@ export default function ProfileSection() {
                     className="text-emerald-400"
                   />
 
-                  <p className="text-base font-semibold text-white">
+                  <p
+                    className="
+                      text-base
+                      font-semibold
+                    "
+                    style={{
+                      color:
+                        "var(--text)",
+                    }}
+                  >
 
                     {settings.user.name}
 
                   </p>
+
 
                 </div>
 
@@ -591,6 +1006,8 @@ export default function ProfileSection() {
             }
 
           />
+
+
 
 
 
@@ -603,9 +1020,13 @@ export default function ProfileSection() {
             icon={
               <Mail
                 size={20}
-                className="text-cyan-400"
+                style={{
+                  color:
+                    "var(--accent-color)",
+                }}
               />
             }
+
 
             value={
 
@@ -613,23 +1034,60 @@ export default function ProfileSection() {
 
                 <div className="space-y-2">
 
+
                   <input
+
                     type="email"
+
                     value={form.email}
-                    onChange={(event) =>
+
+                    onChange={(event)=>
                       updateField(
                         "email",
                         event.target.value,
                       )
                     }
-                    className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40"
+
+
+                    className="
+                      w-full
+                      rounded-xl
+                      border
+                      px-3
+                      py-2
+                      text-sm
+                      outline-none
+                    "
+
+
+                    style={{
+
+                      background:
+                        "var(--surfaceHover)",
+
+                      borderColor:
+                        "var(--border)",
+
+                      color:
+                        "var(--text)",
+
+                    }}
+
+
                     placeholder="Enter your email"
+
                   />
+
 
 
                   {errors.email && (
 
-                    <p className="text-xs text-red-400">
+                    <p
+                      className="
+                        text-xs
+                        text-red-400
+                      "
+                    >
 
                       {errors.email}
 
@@ -637,9 +1095,12 @@ export default function ProfileSection() {
 
                   )}
 
+
                 </div>
 
-              ) : (
+
+              ):(
+
 
                 <div className="flex items-center gap-2">
 
@@ -648,19 +1109,38 @@ export default function ProfileSection() {
                     className="text-emerald-400"
                   />
 
-                  <p className="break-all text-base font-semibold text-white">
+
+                  <p
+                    className="
+                      break-all
+                      text-base
+                      font-semibold
+                    "
+                    style={{
+                      color:
+                        "var(--text)",
+                    }}
+                  >
 
                     {settings.user.email}
 
                   </p>
 
+
                 </div>
+
 
               )
 
             }
 
+
           />
+
+
+
+
+
           <SettingCard
 
             title="Workspace Plan"
@@ -669,18 +1149,47 @@ export default function ProfileSection() {
 
             value={
 
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="
+                flex
+                flex-wrap
+                items-center
+                gap-3
+              ">
 
 
-                <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-4 py-2">
+                <div
+                  className="
+                    inline-flex
+                    items-center
+                    gap-2
+                    rounded-full
+                    border
+                    px-4
+                    py-2
+                  "
+                  style={{
+
+                    background:
+                      "color-mix(in srgb,#f59e0b 10%,transparent)",
+
+                    borderColor:
+                      "color-mix(in srgb,#f59e0b 20%,transparent)",
+
+                  }}
+                >
 
                   <Crown
                     size={15}
                     className="text-amber-400"
                   />
 
-
-                  <span className="text-sm font-semibold text-amber-300">
+                  <span
+                    className="
+                      text-sm
+                      font-semibold
+                      text-amber-700
+                    "
+                  >
 
                     {settings.user.plan}
 
@@ -690,7 +1199,22 @@ export default function ProfileSection() {
 
 
 
-                <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-emerald-300">
+
+                <span
+                  className="
+                    rounded-full
+                    border
+                    border-emerald-500/20
+                    bg-emerald-500/10
+                    px-3
+                    py-1
+                    text-xs
+                    font-semibold
+                    uppercase
+                    tracking-[0.15em]
+                    text-emerald-700
+                  "
+                >
 
                   Active
 
@@ -702,12 +1226,7 @@ export default function ProfileSection() {
             }
 
           />
-
-
-
-
-
-          <SettingCard
+                    <SettingCard
 
             title="Member Since"
 
@@ -717,14 +1236,32 @@ export default function ProfileSection() {
 
               <div>
 
-                <p className="text-base font-semibold text-white">
+                <p
+                  className="
+                    text-base
+                    font-semibold
+                  "
+                  style={{
+                    color:
+                      "var(--text)",
+                  }}
+                >
 
                   {settings.user.joinedAt}
 
                 </p>
 
 
-                <p className="mt-1 text-xs text-slate-500">
+                <p
+                  className="
+                    mt-1
+                    text-xs
+                  "
+                  style={{
+                    color:
+                      "var(--muted)",
+                  }}
+                >
 
                   Your learning journey started here.
 
@@ -743,16 +1280,52 @@ export default function ProfileSection() {
           <div className="md:col-span-2">
 
 
-            <div className="overflow-hidden rounded-3xl border border-cyan-500/10 bg-gradient-to-r from-cyan-500/[0.06] via-sky-500/[0.03] to-violet-500/[0.06]">
+            <div
+
+              className="
+                overflow-hidden
+                rounded-3xl
+                border
+              "
+
+              style={{
+
+                background:
+                  "color-mix(in srgb,var(--accent-color) 5%,transparent)",
+
+                borderColor:
+                  "color-mix(in srgb,var(--accent-color) 15%,transparent)",
+
+              }}
+
+            >
 
 
-              <div className="grid gap-5 p-5 lg:grid-cols-3">
+              <div
+                className="
+                  grid
+                  gap-5
+                  p-5
+                  lg:grid-cols-3
+                "
+              >
 
 
                 <div>
 
 
-                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
+                  <p
+                    className="
+                      text-xs
+                      font-semibold
+                      uppercase
+                      tracking-[0.25em]
+                    "
+                    style={{
+                      color:
+                        "var(--muted)",
+                    }}
+                  >
 
                     Profile Completion
 
@@ -760,27 +1333,67 @@ export default function ProfileSection() {
 
 
 
-                  <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/5">
+                  <div
+
+                    className="
+                      mt-4
+                      h-2
+                      overflow-hidden
+                      rounded-full
+                    "
+
+                    style={{
+
+                      background:
+                        "var(--surfaceHover)",
+
+                    }}
+
+                  >
+
 
                     <div
 
-                      className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-sky-500 to-violet-500 transition-all duration-500"
+                      className="
+                        h-full
+                        rounded-full
+                        transition-all
+                        duration-500
+                      "
 
                       style={{
 
                         width:
-
                           `${profileCompletion}%`,
+
+                        background:
+                          "var(--accent-color)",
 
                       }}
 
                     />
 
+
                   </div>
 
 
 
-                  <p className="mt-3 text-xs leading-6 text-slate-400">
+                  <p
+
+                    className="
+                      mt-3
+                      text-xs
+                      leading-6
+                    "
+
+                    style={{
+
+                      color:
+                        "var(--muted)",
+
+                    }}
+
+                  >
 
                     Complete your profile to unlock the best StudyCopilot experience.
 
@@ -796,7 +1409,23 @@ export default function ProfileSection() {
                 <div>
 
 
-                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
+                  <p
+
+                    className="
+                      text-xs
+                      font-semibold
+                      uppercase
+                      tracking-[0.25em]
+                    "
+
+                    style={{
+
+                      color:
+                        "var(--muted)",
+
+                    }}
+
+                  >
 
                     Account Status
 
@@ -804,13 +1433,48 @@ export default function ProfileSection() {
 
 
 
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2">
+                  <div
+
+                    className="
+                      mt-4
+                      inline-flex
+                      items-center
+                      gap-2
+                      rounded-xl
+                      border
+                      px-4
+                      py-2
+                    "
+
+                    style={{
+
+                      background:
+                        "color-mix(in srgb,#22c55e 10%,transparent)",
+
+                      borderColor:
+                        "color-mix(in srgb,#22c55e 20%,transparent)",
+
+                    }}
+
+                  >
+
+                    <div
+                      className="
+                        h-2.5
+                        w-2.5
+                        rounded-full
+                        bg-emerald-400
+                      "
+                    />
 
 
-                    <div className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-
-
-                    <span className="text-sm font-semibold text-emerald-300">
+                    <span
+                      className="
+                        text-sm
+                        font-semibold
+                        text-emerald-700
+                      "
+                    >
 
                       Verified
 
@@ -829,7 +1493,23 @@ export default function ProfileSection() {
                 <div>
 
 
-                  <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
+                  <p
+
+                    className="
+                      text-xs
+                      font-semibold
+                      uppercase
+                      tracking-[0.25em]
+                    "
+
+                    style={{
+
+                      color:
+                        "var(--muted)",
+
+                    }}
+
+                  >
 
                     Sync Status
 
@@ -837,13 +1517,65 @@ export default function ProfileSection() {
 
 
 
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-2">
+                  <div
+
+                    className="
+                      mt-4
+                      inline-flex
+                      items-center
+                      gap-2
+                      rounded-xl
+                      border
+                      px-4
+                      py-2
+                    "
+
+                    style={{
+
+                      background:
+                        "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+
+                      borderColor:
+                        "color-mix(in srgb,var(--accent-color) 20%,transparent)",
+
+                    }}
+
+                  >
+
+                    <div
+
+                      className="
+                        h-2.5
+                        w-2.5
+                        animate-pulse
+                        rounded-full
+                      "
+
+                      style={{
+
+                        background:
+                          "var(--accent-color)",
+
+                      }}
+
+                    />
 
 
-                    <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-cyan-400" />
+                    <span
 
+                      className="
+                        text-sm
+                        font-semibold
+                      "
 
-                    <span className="text-sm font-semibold text-cyan-300">
+                      style={{
+
+                        color:
+                          "var(--accent-color)",
+
+                      }}
+
+                    >
 
                       Cloud Synced
 

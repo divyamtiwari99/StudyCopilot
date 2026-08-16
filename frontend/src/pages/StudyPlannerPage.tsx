@@ -18,8 +18,7 @@ import { useStudyPlanner } from "@/features/study-planner/hooks/useStudyPlanner"
 import { useGenerateStudyPlanner } from "@/features/study-planner/hooks/useGenerateStudyPlanner";
 
 export default function StudyPlannerPage() {
-  const { contentId } =
-    useParams();
+  const { contentId } = useParams();
 
   const {
     data,
@@ -65,28 +64,126 @@ export default function StudyPlannerPage() {
 
   if (isLoading) {
     return (
-      <div className="flex h-[70vh] items-center justify-center">
+      <div
+        className="
+          flex
+          h-[70vh]
+          flex-col
+          items-center
+          justify-center
+          gap-4
+          rounded-3xl
+          border
+        "
+        style={{
+          borderColor:
+            "var(--border)",
+
+          background:
+            "var(--surface)",
+
+          boxShadow:
+            "var(--shadow-card)",
+        }}
+      >
         <Loader2
           size={42}
-          className="animate-spin text-cyan-400"
+          className="animate-spin"
+          style={{
+            color:
+              "var(--accent-color)",
+          }}
         />
+
+        <p
+          className="
+            text-sm
+            font-medium
+          "
+          style={{
+            color:
+              "var(--muted)",
+          }}
+        >
+          Loading Study Planner...
+        </p>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="flex h-[70vh] flex-col items-center justify-center">
-        <Brain
-          size={54}
-          className="mb-5 text-red-400"
-        />
+      <div
+        className="
+          flex
+          h-[70vh]
+          flex-col
+          items-center
+          justify-center
+          rounded-3xl
+          border
+          p-8
+          text-center
+        "
+        style={{
+          borderColor:
+            "color-mix(in srgb,var(--danger) 20%,var(--border))",
 
-        <h2 className="text-2xl font-bold text-white">
+          background:
+            "color-mix(in srgb,var(--danger) 4%,var(--surface))",
+
+          boxShadow:
+            "var(--shadow-card)",
+        }}
+      >
+        <div
+          className="
+            flex
+            h-16
+            w-16
+            items-center
+            justify-center
+            rounded-2xl
+            border
+          "
+          style={{
+            background:
+              "color-mix(in srgb,var(--danger) 9%,transparent)",
+
+            borderColor:
+              "color-mix(in srgb,var(--danger) 20%,var(--border))",
+
+            color:
+              "var(--danger)",
+          }}
+        >
+          <Brain size={32} />
+        </div>
+
+        <h2
+          className="
+            mt-5
+            text-2xl
+            font-bold
+          "
+          style={{
+            color:
+              "var(--text)",
+          }}
+        >
           Failed to load Study Planner
         </h2>
 
-        <p className="mt-3 text-zinc-400">
+        <p
+          className="
+            mt-3
+            text-sm
+          "
+          style={{
+            color:
+              "var(--muted)",
+          }}
+        >
           Please try again.
         </p>
       </div>

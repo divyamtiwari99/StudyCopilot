@@ -12,8 +12,17 @@ export default function PublicRoute({
 
   if (!initialized) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#09090B]">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-violet-600 border-t-transparent" />
+      <div
+        className="flex min-h-screen items-center justify-center"
+        style={{
+          background: "var(--background)",
+          color: "var(--text)",
+        }}
+      >
+        <div
+          className="h-10 w-10 animate-spin rounded-full border-4 border-t-transparent"
+          style={{ borderColor: "var(--border)", borderTopColor: "var(--accent-color)" }}
+        />
       </div>
     );
   }

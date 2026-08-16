@@ -1,3 +1,5 @@
+import { queryKeys } from "@/lib/queryKeys";
+
 import {
   useMutation,
   useQueryClient,
@@ -34,10 +36,7 @@ export function useDeleteQuiz() {
 
       queryClient.invalidateQueries({
 
-        queryKey: [
-          "quiz",
-          contentId,
-        ],
+        queryKey: queryKeys.quiz(contentId),
 
       });
 
@@ -48,10 +47,7 @@ export function useDeleteQuiz() {
 
       queryClient.invalidateQueries({
 
-        queryKey: [
-          "quiz",
-          "all",
-        ],
+        queryKey: queryKeys.allQuiz(),
 
       });
 

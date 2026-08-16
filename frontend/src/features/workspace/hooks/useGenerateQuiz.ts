@@ -1,3 +1,5 @@
+import { queryKeys } from "@/lib/queryKeys";
+
 import {
   useMutation,
   useQueryClient,
@@ -14,17 +16,11 @@ export function useGenerateQuiz() {
 
     onSuccess: (_, contentId) => {
       queryClient.invalidateQueries({
-        queryKey: [
-          "quiz",
-          contentId,
-        ],
+        queryKey: queryKeys.quiz(contentId),
       });
 
       queryClient.invalidateQueries({
-        queryKey: [
-          "document",
-          contentId,
-        ],
+        queryKey: queryKeys.document(contentId),
       });
     },
   });

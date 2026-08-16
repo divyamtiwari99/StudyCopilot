@@ -20,446 +20,552 @@ import {
   useDeleteQuiz,
 } from "../hooks/useDeleteQuiz";
 
-
 interface QuizCardProps {
-
   quiz: {
-
     _id: string;
-
     contentId: string;
-
     title: string;
-
     json: QuizQuestion[];
-
     createdAt: string;
-
     updatedAt: string;
-
   };
-
 }
-
-
 
 export default function QuizCard({
   quiz,
 }: QuizCardProps) {
-
-
   const navigate =
     useNavigate();
 
-
   const deleteMutation =
     useDeleteQuiz();
-
-
 
   const [
     showDeleteModal,
     setShowDeleteModal,
   ] = useState(false);
 
-
-
-
   function handleOpen() {
-
     navigate(
       `/dashboard/workspace/${quiz.contentId}?tab=quiz`,
     );
-
   }
 
-
-
-
   function handleDelete() {
-
-
     deleteMutation.mutate(
       quiz.contentId,
       {
-
         onSuccess() {
-
           toast.success(
             "Quiz removed from your library.",
           );
 
-
           setShowDeleteModal(false);
-
         },
 
-
         onError() {
-
           toast.error(
             "Failed to remove quiz.",
           );
-
         },
-
       },
     );
-
   }
 
-
-
-
   return (
-
     <>
+      {/* Quiz Card */}
 
       <div
         className="
+          group
+          relative
+          overflow-hidden
           rounded-3xl
           border
-          border-white/10
-          bg-white/[0.04]
           p-5
-          transition
-          hover:border-white/20
+          backdrop-blur-xl
+          transition-all
+          duration-300
+          hover:-translate-y-1
         "
-      >
+        style={{
+          background:
+            "var(--surface)",
 
+          borderColor:
+            "var(--border)",
+
+          boxShadow:
+            "var(--shadow-card)",
+        }}
+        onMouseEnter={(event) => {
+          event.currentTarget.style.borderColor =
+            "color-mix(in srgb,var(--accent-color) 30%,var(--border))";
+
+          event.currentTarget.style.boxShadow =
+            "var(--shadow-hover)";
+        }}
+        onMouseLeave={(event) => {
+          event.currentTarget.style.borderColor =
+            "var(--border)";
+
+          event.currentTarget.style.boxShadow =
+            "var(--shadow-card)";
+        }}
+      >
+        {/* Accent Glow */}
 
         <div
           className="
-            flex
-            items-start
-            justify-between
-            gap-4
+            pointer-events-none
+            absolute
+            -right-14
+            -top-14
+            h-32
+            w-32
+            rounded-full
+            blur-3xl
+            opacity-0
+            transition-opacity
+            duration-500
+            group-hover:opacity-20
           "
-        >
+          style={{
+            background:
+              "var(--accent-color)",
+          }}
+        />
 
+        <div className="relative z-10">
+          {/* Header */}
 
           <div
             className="
               flex
-              items-center
+              items-start
+              justify-between
+              gap-4
+            "
+          >
+            <div
+              className="
+                flex
+                min-w-0
+                items-center
+                gap-3
+              "
+            >
+              {/* Quiz Icon */}
+
+              <div
+                className="
+                  flex
+                  h-12
+                  w-12
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  border
+                  transition-all
+                  duration-300
+                  group-hover:scale-105
+                "
+                style={{
+                  background:
+                    "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+
+                  borderColor:
+                    "color-mix(in srgb,var(--accent-color) 20%,var(--border))",
+
+                  color:
+                    "var(--accent-color)",
+                }}
+              >
+                <Brain
+                  size={22}
+                  strokeWidth={1.8}
+                />
+              </div>
+
+              {/* Title + Date */}
+
+              <div className="min-w-0">
+                <h3
+                  className="
+                    line-clamp-1
+                    font-semibold
+                  "
+                  style={{
+                    color:
+                      "var(--text)",
+                  }}
+                  title={quiz.title}
+                >
+                  {quiz.title}
+                </h3>
+
+                <div
+                  className="
+                    mt-1
+                    flex
+                    items-center
+                    gap-2
+                    text-xs
+                  "
+                  style={{
+                    color:
+                      "var(--muted)",
+                  }}
+                >
+                  <Calendar
+                    size={13}
+                  />
+
+                  {new Date(
+                    quiz.createdAt,
+                  ).toLocaleDateString()}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+
+          <div
+            className="
+              mt-5
+              flex
               gap-3
             "
           >
+            {/* Open Quiz */}
 
+            <button
+              type="button"
+              onClick={handleOpen}
+              className="
+                group/open
+                flex
+                flex-1
+                items-center
+                justify-center
+                gap-2
+                rounded-xl
+                border
+                px-4
+                py-2.5
+                text-sm
+                font-medium
+                transition-all
+                duration-200
+                hover:-translate-y-0.5
+              "
+              style={{
+                background:
+                  "var(--surfaceHover)",
+
+                borderColor:
+                  "var(--border)",
+
+                color:
+                  "var(--text)",
+              }}
+              onMouseEnter={(event) => {
+                event.currentTarget.style.borderColor =
+                  "color-mix(in srgb,var(--accent-color) 35%,var(--border))";
+
+                event.currentTarget.style.background =
+                  "color-mix(in srgb,var(--accent-color) 8%,var(--surfaceHover))";
+
+                event.currentTarget.style.color =
+                  "var(--accent-color)";
+              }}
+              onMouseLeave={(event) => {
+                event.currentTarget.style.borderColor =
+                  "var(--border)";
+
+                event.currentTarget.style.background =
+                  "var(--surfaceHover)";
+
+                event.currentTarget.style.color =
+                  "var(--text)";
+              }}
+            >
+              <ExternalLink
+                size={16}
+                className="
+                  transition-transform
+                  duration-200
+                  group-hover/open:-translate-y-0.5
+                "
+              />
+
+              Open Quiz
+            </button>
+
+            {/* Delete */}
+
+            <button
+              type="button"
+              onClick={() =>
+                setShowDeleteModal(true)
+              }
+              disabled={
+                deleteMutation.isPending
+              }
+              aria-label="Delete quiz"
+              className="
+                flex
+                items-center
+                justify-center
+                rounded-xl
+                border
+                px-4
+                transition-all
+                duration-200
+                hover:-translate-y-0.5
+                disabled:cursor-not-allowed
+                disabled:opacity-50
+              "
+              style={{
+                color:
+                  "var(--danger)",
+
+                background:
+                  "color-mix(in srgb,var(--danger) 8%,transparent)",
+
+                borderColor:
+                  "color-mix(in srgb,var(--danger) 22%,var(--border))",
+              }}
+              onMouseEnter={(event) => {
+                if (
+                  !deleteMutation.isPending
+                ) {
+                  event.currentTarget.style.background =
+                    "color-mix(in srgb,var(--danger) 15%,transparent)";
+
+                  event.currentTarget.style.borderColor =
+                    "color-mix(in srgb,var(--danger) 35%,var(--border))";
+                }
+              }}
+              onMouseLeave={(event) => {
+                event.currentTarget.style.background =
+                  "color-mix(in srgb,var(--danger) 8%,transparent)";
+
+                event.currentTarget.style.borderColor =
+                  "color-mix(in srgb,var(--danger) 22%,var(--border))";
+              }}
+            >
+              <Trash2
+                size={16}
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Delete Modal */}
+
+      {showDeleteModal && (
+        <div
+          className="
+            fixed
+            inset-0
+            z-50
+            flex
+            items-center
+            justify-center
+            bg-black/60
+            px-4
+            backdrop-blur-sm
+          "
+        >
+          <div
+            className="
+              w-full
+              max-w-md
+              overflow-hidden
+              rounded-3xl
+              border
+              p-6
+              shadow-2xl
+              backdrop-blur-2xl
+            "
+            style={{
+              background:
+                "var(--surface)",
+
+              borderColor:
+                "var(--border)",
+
+              boxShadow:
+                "var(--shadow-hover)",
+            }}
+          >
+            {/* Modal Header */}
 
             <div
               className="
                 flex
-                h-12
-                w-12
                 items-center
-                justify-center
-                rounded-2xl
-                bg-indigo-500/10
+                justify-between
+                gap-4
               "
             >
-
-              <Brain
-                size={22}
-                className="text-indigo-400"
-              />
-
-            </div>
-
-
-
-            <div>
-
-
-              <h3
+              <h2
                 className="
-                  line-clamp-1
+                  text-xl
                   font-semibold
-                  text-white
                 "
+                style={{
+                  color:
+                    "var(--text)",
+                }}
               >
+                Remove Quiz?
+              </h2>
 
-                {quiz.title}
-
-              </h3>
-
-
-
-              <div
+              <button
+                type="button"
+                onClick={() =>
+                  setShowDeleteModal(
+                    false,
+                  )
+                }
+                aria-label="Close delete dialog"
                 className="
-                  mt-1
                   flex
+                  h-9
+                  w-9
                   items-center
-                  gap-2
-                  text-xs
-                  text-slate-400
+                  justify-center
+                  rounded-xl
+                  transition-all
+                  duration-200
+                  hover:rotate-90
                 "
+                style={{
+                  color:
+                    "var(--muted)",
+                }}
+                onMouseEnter={(event) => {
+                  event.currentTarget.style.background =
+                    "var(--surfaceHover)";
+
+                  event.currentTarget.style.color =
+                    "var(--text)";
+                }}
+                onMouseLeave={(event) => {
+                  event.currentTarget.style.background =
+                    "transparent";
+
+                  event.currentTarget.style.color =
+                    "var(--muted)";
+                }}
               >
-
-                <Calendar size={13}/>
-
-
-                {new Date(
-                  quiz.createdAt,
-                ).toLocaleDateString()}
-
-
-              </div>
-
-
+                <X size={20} />
+              </button>
             </div>
 
+            {/* Description */}
 
-          </div>
+            <p
+              className="
+                mt-4
+                text-sm
+                leading-6
+              "
+              style={{
+                color:
+                  "var(--muted)",
+              }}
+            >
+              This quiz will be removed
+              from your library
+              permanently.
+            </p>
 
-
-        </div>
-
-
-
-
-        <div
-          className="
-            mt-5
-            flex
-            gap-3
-          "
-        >
-
-
-          <button
-            onClick={handleOpen}
-            className="
-              flex
-              flex-1
-              items-center
-              justify-center
-              gap-2
-              rounded-xl
-              bg-white/10
-              px-4
-              py-2.5
-              text-sm
-              font-medium
-              text-white
-              transition
-              hover:bg-white/20
-            "
-          >
-
-            <ExternalLink size={16}/>
-
-            Open Quiz
-
-          </button>
-
-
-
-
-
-          <button
-            onClick={() =>
-              setShowDeleteModal(true)
-            }
-            disabled={
-              deleteMutation.isPending
-            }
-            className="
-              flex
-              items-center
-              justify-center
-              rounded-xl
-              border
-              border-red-500/20
-              bg-red-500/10
-              px-4
-              text-red-400
-              transition
-              hover:bg-red-500/20
-              disabled:opacity-50
-            "
-          >
-
-            <Trash2 size={16}/>
-
-          </button>
-
-
-        </div>
-
-
-      </div>
-
-
-
-
-
-
-
-      {
-        showDeleteModal && (
-
-          <div
-            className="
-              fixed
-              inset-0
-              z-50
-              flex
-              items-center
-              justify-center
-              bg-black/60
-              backdrop-blur-sm
-              px-4
-            "
-          >
-
+            {/* Modal Actions */}
 
             <div
               className="
-                w-full
-                max-w-md
-                rounded-3xl
-                border
-                border-white/10
-                bg-[#111827]
-                p-6
+                mt-6
+                flex
+                justify-end
+                gap-3
               "
             >
-
-
-              <div
+              <button
+                type="button"
+                onClick={() =>
+                  setShowDeleteModal(
+                    false,
+                  )
+                }
                 className="
-                  flex
-                  items-center
-                  justify-between
-                "
-              >
-
-
-                <h2
-                  className="
-                    text-xl
-                    font-semibold
-                    text-white
-                  "
-                >
-
-                  Remove Quiz?
-
-                </h2>
-
-
-
-                <button
-                  onClick={() =>
-                    setShowDeleteModal(false)
-                  }
-                  className="
-                    text-slate-400
-                    hover:text-white
-                  "
-                >
-
-                  <X size={20}/>
-
-                </button>
-
-
-              </div>
-
-
-
-
-
-              <p
-                className="
-                  mt-4
+                  rounded-xl
+                  border
+                  px-5
+                  py-2.5
                   text-sm
-                  text-slate-400
+                  font-medium
+                  transition-all
+                  duration-200
+                  hover:-translate-y-0.5
                 "
+                style={{
+                  background:
+                    "var(--surfaceHover)",
+
+                  borderColor:
+                    "var(--border)",
+
+                  color:
+                    "var(--text)",
+                }}
               >
+                Cancel
+              </button>
 
-                This quiz will be removed from your
-                library permanently.
-
-              </p>
-
-
-
-
-
-              <div
+              <button
+                type="button"
+                onClick={
+                  handleDelete
+                }
+                disabled={
+                  deleteMutation.isPending
+                }
                 className="
-                  mt-6
-                  flex
-                  justify-end
-                  gap-3
+                  rounded-xl
+                  px-5
+                  py-2.5
+                  text-sm
+                  font-semibold
+                  text-white
+                  transition-all
+                  duration-200
+                  hover:-translate-y-0.5
+                  disabled:cursor-not-allowed
+                  disabled:opacity-50
                 "
+                style={{
+                  background:
+                    "var(--danger)",
+
+                  boxShadow:
+                    "0 8px 20px color-mix(in srgb,var(--danger) 18%,transparent)",
+                }}
               >
-
-
-                <button
-                  onClick={() =>
-                    setShowDeleteModal(false)
-                  }
-                  className="
-                    rounded-xl
-                    bg-white/10
-                    px-5
-                    py-2.5
-                    text-sm
-                    text-white
-                  "
-                >
-
-                  Cancel
-
-                </button>
-
-
-
-
-                <button
-                  onClick={handleDelete}
-                  disabled={
-                    deleteMutation.isPending
-                  }
-                  className="
-                    rounded-xl
-                    bg-red-500
-                    px-5
-                    py-2.5
-                    text-sm
-                    font-medium
-                    text-white
-                    disabled:opacity-50
-                  "
-                >
-
-                  {
-                    deleteMutation.isPending
-                    ? "Removing..."
-                    : "Remove"
-                  }
-
-
-                </button>
-
-
-              </div>
-
-
+                {deleteMutation.isPending
+                  ? "Removing..."
+                  : "Remove"}
+              </button>
             </div>
-
-
           </div>
-
-        )
-      }
-
-
+        </div>
+      )}
     </>
-
   );
-
 }

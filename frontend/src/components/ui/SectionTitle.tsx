@@ -1,10 +1,17 @@
+import { cn } from "@/lib/cn";
+
+
 interface Props {
 
   title: string;
 
   subtitle?: string;
 
+  className?: string;
+
 }
+
+
 
 export default function SectionTitle({
 
@@ -12,29 +19,120 @@ export default function SectionTitle({
 
   subtitle,
 
+  className,
+
 }: Props) {
+
 
   return (
 
-    <div className="mb-6">
+    <div
 
-      <h2 className="text-3xl font-bold text-white">
 
-        {title}
+      className={cn(
 
-      </h2>
+        "mb-7",
 
-      {subtitle && (
-
-        <p className="mt-2 text-slate-400">
-
-          {subtitle}
-
-        </p>
+        className,
 
       )}
 
+
+
+    >
+
+
+
+      <h2
+
+
+        className="
+
+          text-2xl
+
+          font-bold
+
+          tracking-tight
+
+          lg:text-3xl
+
+        "
+
+
+        style={{
+
+
+          color:
+
+            "var(--text)",
+
+
+        }}
+
+
+      >
+
+
+        {title}
+
+
+      </h2>
+
+
+
+
+
+
+
+      {subtitle && (
+
+
+        <p
+
+
+          className="
+
+            mt-2
+
+            max-w-2xl
+
+            text-sm
+
+            leading-6
+
+          "
+
+
+
+          style={{
+
+
+            color:
+
+              "var(--muted)",
+
+
+          }}
+
+
+
+        >
+
+
+          {subtitle}
+
+
+        </p>
+
+
+      )}
+
+
+
+
+
     </div>
+
 
   );
 

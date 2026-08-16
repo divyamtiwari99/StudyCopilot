@@ -1,5 +1,8 @@
+import {
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
 
-import { Sparkles, ArrowRight } from "lucide-react";
 
 const suggestions = [
   {
@@ -19,48 +22,304 @@ const suggestions = [
   },
 ];
 
+
+
 export default function AISuggestions() {
+
   return (
+
     <section className="mb-8">
-      <div className="mb-5 flex items-center justify-between">
+
+
+      <div
+
+        className="
+          mb-5
+          flex
+          items-center
+          justify-between
+        "
+
+      >
+
         <div>
-          <h2 className="text-2xl font-bold text-white">
+
+
+          <h2
+
+            className="
+              text-2xl
+              font-bold
+            "
+
+            style={{
+              color:"var(--text)",
+            }}
+
+          >
+
             AI Suggestions
+
+
           </h2>
 
-          <p className="text-sm text-slate-400">
+
+
+
+          <p
+
+            className="
+              text-sm
+            "
+
+            style={{
+
+              color:
+                "var(--muted)",
+
+            }}
+
+          >
+
             Personalized recommendations for you
+
+
           </p>
+
+
         </div>
 
-        <Sparkles className="text-indigo-500" />
+
+
+
+
+        <Sparkles
+
+          size={22}
+
+          style={{
+
+            color:
+              "var(--accent-color)",
+
+          }}
+
+        />
+
+
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        {suggestions.map((item) => (
+
+
+
+
+
+      <div
+
+        className="
+          grid
+          gap-5
+          lg:grid-cols-3
+        "
+
+      >
+
+        {suggestions.map((item)=>(
+
+
           <div
+
             key={item.id}
-            className="group rounded-3xl border border-slate-800 bg-slate-900 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500"
+
+            className="
+              group
+              rounded-3xl
+              border
+              p-6
+              backdrop-blur-xl
+              transition-all
+              duration-300
+              hover:-translate-y-1
+            "
+
+            style={{
+
+
+              background:
+                "var(--surface)",
+
+
+              borderColor:
+                "var(--border)",
+
+
+              boxShadow:
+                "var(--shadow-card)",
+
+
+            }}
+
+
+            onMouseEnter={(e)=>{
+
+              e.currentTarget.style.borderColor =
+                "var(--accent-color)";
+
+            }}
+
+
+            onMouseLeave={(e)=>{
+
+              e.currentTarget.style.borderColor =
+                "var(--border)";
+
+            }}
+
+
           >
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600/20">
-              <Sparkles className="text-indigo-400" size={22} />
+
+
+
+
+            <div
+
+              className="
+                mb-4
+                flex
+                h-12
+                w-12
+                items-center
+                justify-center
+                rounded-2xl
+              "
+
+              style={{
+
+
+                background:
+                  "color-mix(in srgb,var(--accent-color) 12%,transparent)",
+
+
+              }}
+
+            >
+
+
+              <Sparkles
+
+                size={22}
+
+                style={{
+
+                  color:
+                    "var(--accent-color)",
+
+                }}
+
+              />
+
+
             </div>
 
-            <h3 className="text-lg font-semibold text-white">
+
+
+
+
+            <h3
+
+              className="
+                text-lg
+                font-semibold
+              "
+
+              style={{
+
+                color:
+                  "var(--text)",
+
+              }}
+
+            >
+
               {item.title}
+
+
             </h3>
 
-            <p className="mt-2 text-sm text-slate-400">
+
+
+
+
+
+            <p
+
+              className="
+                mt-2
+                text-sm
+              "
+
+              style={{
+
+                color:
+                  "var(--muted)",
+
+              }}
+
+            >
+
               {item.description}
+
+
             </p>
 
-            <button className="mt-6 flex items-center gap-2 text-indigo-400 transition group-hover:gap-3">
+
+
+
+
+
+            <button
+
+              className="
+                mt-6
+                flex
+                items-center
+                gap-2
+                text-sm
+                font-semibold
+                transition-all
+                duration-300
+                group-hover:gap-3
+              "
+
+              style={{
+
+                color:
+                  "var(--accent-color)",
+
+              }}
+
+            >
+
               Open
-              <ArrowRight size={16} />
+
+              <ArrowRight size={16}/>
+
+
             </button>
+
+
+
           </div>
+
+
         ))}
+
+
       </div>
+
+
     </section>
+
   );
+
 }

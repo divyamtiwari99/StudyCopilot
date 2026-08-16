@@ -1,3 +1,5 @@
+import { queryKeys } from "@/lib/queryKeys";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { toast } from "sonner";
@@ -13,7 +15,7 @@ export function useDeleteDocument() {
 
     onSuccess() {
       queryClient.invalidateQueries({
-        queryKey: ["documents"],
+        queryKey: queryKeys.documents(),
       });
 
       toast.success(

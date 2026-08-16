@@ -1,3 +1,5 @@
+import { queryKeys } from "@/lib/queryKeys";
+
 import {
   useMutation,
   useQueryClient,
@@ -28,10 +30,7 @@ export function useDeleteNotes() {
 
       queryClient.invalidateQueries({
 
-        queryKey: [
-          "notes",
-          contentId,
-        ],
+        queryKey: queryKeys.notes(contentId),
 
       });
 
@@ -41,9 +40,7 @@ export function useDeleteNotes() {
 
       queryClient.invalidateQueries({
 
-        queryKey: [
-          "all-notes",
-        ],
+        queryKey: queryKeys.allNotes(),
 
       });
 

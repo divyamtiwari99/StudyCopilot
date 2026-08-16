@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
+import { queryKeys } from "@/lib/queryKeys";
+
 import {
   getAllQuiz,
 } from "../services/quiz.service";
@@ -9,10 +11,7 @@ export function useAllQuiz() {
 
   return useQuery({
 
-    queryKey: [
-      "quiz",
-      "all",
-    ],
+    queryKey: queryKeys.allQuiz(),
 
 
     queryFn:
@@ -25,9 +24,6 @@ export function useAllQuiz() {
 
     gcTime:
       1000 * 60 * 10,
-
-
-    retry: 1,
 
 
     refetchOnWindowFocus:

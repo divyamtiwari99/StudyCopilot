@@ -2,61 +2,195 @@ import {
   BookOpen,
   BrainCircuit,
   FileText,
-  Zap,
+  Users,
+
 } from "lucide-react";
 
+import { motion } from "framer-motion";
+
 import Section from "../../../components/ui/Section";
+
 
 const stats = [
   {
     icon: FileText,
-    value: "10M+",
-    label: "Pages Processed",
+    value: "1",
+    label: "Unified AI Workspace",
   },
+
   {
     icon: BrainCircuit,
-    value: "98%",
-    label: "AI Accuracy",
+    value: "8+",
+    label: "Learning Tools",
   },
+
   {
     icon: BookOpen,
-    value: "250K+",
-    label: "Notes Generated",
+    value: "4+",
+    label: "Study File Formats",
   },
+
   {
-    icon: Zap,
-    value: "<3 sec",
-    label: "Average Response",
+    icon: Users,
+    value: "1",
+    label: "Connected Study Flow",
   },
+
 ];
 
+
+
 export default function Stats() {
+
   return (
+
     <Section>
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
+
+
+      <div
+
+        className="
+          grid
+          gap-6
+          md:grid-cols-2
+          xl:grid-cols-4
+        "
+
+      >
+
+
+
+        {stats.map((stat,index)=>{
+
+
+          const Icon =
+            stat.icon;
+
+
 
           return (
-            <div
+
+            <motion.div
+
               key={stat.label}
-              className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 transition duration-300 hover:-translate-y-2 hover:border-violet-500/40"
+
+              initial={{
+                opacity:0,
+                y:25,
+              }}
+
+              whileInView={{
+                opacity:1,
+                y:0,
+              }}
+
+              viewport={{
+                once:true,
+              }}
+
+              transition={{
+                delay:index*0.1,
+              }}
+
+              className="
+                rounded-3xl
+                border
+                border-[var(--border)]
+                bg-[color-mix(in_srgb,var(--surface)_70%,transparent)]
+                p-8
+                backdrop-blur-xl
+                transition-all
+                duration-300
+                hover:-translate-y-2
+                hover:border-[color-mix(in_srgb,var(--accent-color)_40%,var(--border))]
+              "
+
             >
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/10">
-                <Icon className="h-7 w-7 text-violet-400" />
+
+
+
+              <div
+
+                className="
+                  mb-6
+                  flex
+                  h-14
+                  w-14
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  bg-[color-mix(in_srgb,var(--accent-color)_10%,transparent)]
+                "
+
+              >
+
+                <Icon
+
+                  className="
+                    h-7
+                    w-7
+                    text-[var(--accent-color)]
+                  "
+
+                />
+
               </div>
 
-              <h3 className="text-4xl font-bold text-white">
+
+
+
+
+              <h3
+
+                className="
+                  text-4xl
+                  font-bold
+                  text-[var(--text)]
+                "
+
+              >
+
                 {stat.value}
+
+
               </h3>
 
-              <p className="mt-3 text-zinc-400">
+
+
+
+              <p
+
+                className="
+                  mt-3
+                  text-[var(--muted)]
+                "
+
+              >
+
                 {stat.label}
+
+
               </p>
-            </div>
+
+
+
+
+            </motion.div>
+
+
           );
+
+
         })}
+
+
+
       </div>
+
+
+
     </Section>
+
   );
+
 }

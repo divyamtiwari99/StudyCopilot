@@ -52,118 +52,337 @@ export default function ChatEmptyState({
   onQuestion,
 }: Props) {
   return (
-    <div className="flex h-full items-center justify-center px-8 py-10">
-
+    <div
+      className="
+        flex
+        h-full
+        items-center
+        justify-center
+        px-6
+        py-10
+        sm:px-8
+      "
+    >
       <div className="w-full max-w-4xl">
-
         {/* Hero */}
 
         <div className="text-center">
+          <div
+            className="
+              group
+              mx-auto
+              flex
+              h-16
+              w-16
+              items-center
+              justify-center
+              rounded-2xl
+              border
+              transition-all
+              duration-300
+              hover:-translate-y-1
+              hover:scale-105
+            "
+            style={{
+              background:
+                "color-mix(in srgb,var(--accent-color) 10%,var(--surface))",
 
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20">
+              borderColor:
+                "color-mix(in srgb,var(--accent-color) 22%,var(--border))",
 
+              boxShadow:
+                "0 12px 30px color-mix(in srgb,var(--accent-color) 10%,transparent)",
+            }}
+          >
             <Sparkles
               size={30}
-              className="text-indigo-400"
+              strokeWidth={1.8}
+              className="
+                transition-transform
+                duration-500
+                group-hover:rotate-12
+              "
+              style={{
+                color:
+                  "var(--accent-color)",
+              }}
             />
-
           </div>
 
-          <h1 className="mt-5 text-4xl font-bold tracking-tight text-white">
-
+          <h1
+            className="
+              mt-5
+              text-3xl
+              font-bold
+              tracking-tight
+              sm:text-4xl
+            "
+            style={{
+              color:
+                "var(--text)",
+            }}
+          >
             Welcome to StudyCopilot
-
           </h1>
 
-          <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-slate-400">
-
-            Ask questions, create summaries,
-            notes, quizzes and learn faster
-            with AI.
-
+          <p
+            className="
+              mx-auto
+              mt-3
+              max-w-xl
+              text-base
+              leading-7
+            "
+            style={{
+              color:
+                "var(--muted)",
+            }}
+          >
+            Ask questions, create
+            summaries, notes, quizzes
+            and learn faster with AI.
           </p>
-
         </div>
 
-        {/* Cards */}
+        {/* Quick actions */}
 
-        <div className="mt-10 grid gap-4 md:grid-cols-2">
-
+        <div
+          className="
+            mt-10
+            grid
+            gap-4
+            md:grid-cols-2
+          "
+        >
           {actions.map(
             (action) => {
-
               const Icon =
                 action.icon;
 
               return (
-
                 <button
+                  type="button"
                   key={action.title}
                   onClick={() =>
                     onQuestion(
                       action.prompt,
                     )
                   }
-                  className="group rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-indigo-500/30 hover:bg-indigo-500/10"
+                  className="
+                    group
+                    relative
+                    overflow-hidden
+                    rounded-3xl
+                    border
+                    p-5
+                    text-left
+                    transition-all
+                    duration-300
+                    hover:-translate-y-1
+                  "
+                  style={{
+                    background:
+                      "var(--surface)",
+
+                    borderColor:
+                      "var(--border)",
+
+                    boxShadow:
+                      "var(--shadow-card)",
+                  }}
+                  onMouseEnter={(
+                    event,
+                  ) => {
+                    event.currentTarget.style.borderColor =
+                      "color-mix(in srgb,var(--accent-color) 30%,var(--border))";
+
+                    event.currentTarget.style.background =
+                      "color-mix(in srgb,var(--accent-color) 6%,var(--surface))";
+
+                    event.currentTarget.style.boxShadow =
+                      "var(--shadow-hover)";
+                  }}
+                  onMouseLeave={(
+                    event,
+                  ) => {
+                    event.currentTarget.style.borderColor =
+                      "var(--border)";
+
+                    event.currentTarget.style.background =
+                      "var(--surface)";
+
+                    event.currentTarget.style.boxShadow =
+                      "var(--shadow-card)";
+                  }}
                 >
+                  {/* Accent glow */}
 
-                  <div className="flex items-center justify-between">
+                  <span
+                    className="
+                      pointer-events-none
+                      absolute
+                      -right-12
+                      -top-12
+                      h-28
+                      w-28
+                      rounded-full
+                      blur-3xl
+                      opacity-0
+                      transition-opacity
+                      duration-500
+                      group-hover:opacity-20
+                    "
+                    style={{
+                      background:
+                        "var(--accent-color)",
+                    }}
+                  />
 
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/10">
+                  <div
+                    className="
+                      relative
+                      z-10
+                      flex
+                      items-center
+                      justify-between
+                    "
+                  >
+                    <div
+                      className="
+                        flex
+                        h-11
+                        w-11
+                        items-center
+                        justify-center
+                        rounded-xl
+                        border
+                        transition-all
+                        duration-300
+                        group-hover:scale-105
+                      "
+                      style={{
+                        background:
+                          "color-mix(in srgb,var(--accent-color) 10%,transparent)",
 
+                        borderColor:
+                          "color-mix(in srgb,var(--accent-color) 18%,var(--border))",
+                      }}
+                    >
                       <Icon
                         size={20}
-                        className="text-indigo-400"
+                        strokeWidth={1.9}
+                        className="
+                          transition-transform
+                          duration-300
+                          group-hover:scale-110
+                        "
+                        style={{
+                          color:
+                            "var(--accent-color)",
+                        }}
                       />
-
                     </div>
 
                     <ArrowRight
                       size={18}
-                      className="text-slate-500 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-indigo-400"
+                      className="
+                        transition-all
+                        duration-300
+                        group-hover:translate-x-1
+                      "
+                      style={{
+                        color:
+                          "var(--muted)",
+                      }}
                     />
-
                   </div>
 
-                  <h3 className="mt-4 text-lg font-semibold text-white">
+                  <div className="relative z-10">
+                    <h3
+                      className="
+                        mt-4
+                        text-lg
+                        font-semibold
+                      "
+                      style={{
+                        color:
+                          "var(--text)",
+                      }}
+                    >
+                      {action.title}
+                    </h3>
 
-                    {action.title}
-
-                  </h3>
-
-                  <p className="mt-2 text-sm leading-6 text-slate-400">
-
-                    {action.description}
-
-                  </p>
-
+                    <p
+                      className="
+                        mt-2
+                        text-sm
+                        leading-6
+                      "
+                      style={{
+                        color:
+                          "var(--muted)",
+                      }}
+                    >
+                      {action.description}
+                    </p>
+                  </div>
                 </button>
-
               );
-
             },
           )}
-
         </div>
 
         {/* Tip */}
 
-        <div className="mt-8 rounded-2xl border border-indigo-500/20 bg-indigo-500/10 px-5 py-4">
+        <div
+          className="
+            mt-8
+            rounded-2xl
+            border
+            px-5
+            py-4
+            transition-all
+            duration-300
+            hover:-translate-y-0.5
+          "
+          style={{
+            background:
+              "color-mix(in srgb,var(--accent-color) 7%,var(--surface))",
 
-          <p className="text-sm leading-6 text-indigo-100">
+            borderColor:
+              "color-mix(in srgb,var(--accent-color) 20%,var(--border))",
 
+            boxShadow:
+              "var(--shadow-card)",
+          }}
+        >
+          <p
+            className="
+              text-sm
+              leading-6
+            "
+            style={{
+              color:
+                "var(--muted)",
+            }}
+          >
             💡 Try asking:
-            <span className="font-medium text-white">
+            <span
+              className="
+                font-medium
+              "
+              style={{
+                color:
+                  "var(--text)",
+              }}
+            >
               {" "}
-              "Explain Binary Search with an example"
+              "Explain Binary Search
+              with an example"
             </span>
-
           </p>
-
         </div>
-
       </div>
-
     </div>
   );
 }

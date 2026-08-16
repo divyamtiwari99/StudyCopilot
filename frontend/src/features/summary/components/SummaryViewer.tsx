@@ -1,88 +1,118 @@
 import ReactMarkdown from "react-markdown";
 
-
 interface SummaryViewerProps {
-  markdown:string;
+  markdown: string;
 }
-
 
 export default function SummaryViewer({
   markdown,
-}:SummaryViewerProps){
+}: SummaryViewerProps) {
+  return (
+    <div className="space-y-6">
+      <div
+        className="
+          flex
+          items-center
+          justify-between
+        "
+      >
+        <div>
+          <h1
+            className="
+              text-3xl
+              font-bold
+            "
+            style={{
+              color: "var(--text)",
+            }}
+          >
+            AI Summary
+          </h1>
 
-return (
+          <p
+            className="
+              mt-2
+            "
+            style={{
+              color: "var(--muted)",
+            }}
+          >
+            AI-generated summary of your document.
+          </p>
+        </div>
+      </div>
 
-<div className="space-y-6">
+      <article
+        className="
+          prose
+          max-w-none
+          rounded-3xl
+          border
+          p-8
+        "
+        style={
+          {
+            borderColor:
+              "var(--border)",
+            backgroundColor:
+              "var(--surface)",
+            color:
+              "var(--text)",
 
+            "--tw-prose-body":
+              "var(--text)",
 
-<div
-className="
-flex
-items-center
-justify-between
-"
->
+            "--tw-prose-headings":
+              "var(--text)",
 
+            "--tw-prose-lead":
+              "var(--muted)",
 
-<div>
+            "--tw-prose-links":
+              "var(--accent-color)",
 
+            "--tw-prose-bold":
+              "var(--text)",
 
-<h1
-className="
-text-3xl
-font-bold
-text-white
-"
->
-AI Summary
-</h1>
+            "--tw-prose-counters":
+              "var(--muted)",
 
+            "--tw-prose-bullets":
+              "var(--accent-color)",
 
-<p
-className="
-mt-2
-text-zinc-400
-"
->
-AI-generated summary of your document.
-</p>
+            "--tw-prose-hr":
+              "var(--border)",
 
+            "--tw-prose-quotes":
+              "var(--text)",
 
-</div>
+            "--tw-prose-quote-borders":
+              "var(--border)",
 
+            "--tw-prose-captions":
+              "var(--muted)",
 
-</div>
+            "--tw-prose-code":
+              "var(--text)",
 
+            "--tw-prose-pre-code":
+              "var(--text)",
 
+            "--tw-prose-pre-bg":
+              "var(--surfaceHover)",
 
+            "--tw-prose-th-borders":
+              "var(--border)",
 
-<article
-className="
-prose
-prose-invert
-max-w-none
-rounded-3xl
-border
-border-white/10
-bg-white/[0.04]
-p-8
-"
-style={{
-"--tw-prose-links":
-"var(--accent-color)",
-} as React.CSSProperties}
->
-
-<ReactMarkdown>
-{markdown}
-</ReactMarkdown>
-
-
-</article>
-
-
-</div>
-
-);
-
+            "--tw-prose-td-borders":
+              "var(--border)",
+          } as React.CSSProperties
+        }
+      >
+        <ReactMarkdown>
+          {markdown}
+        </ReactMarkdown>
+      </article>
+    </div>
+  );
 }

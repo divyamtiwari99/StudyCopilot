@@ -10,7 +10,6 @@ import {
   Sparkles,
 } from "lucide-react";
 
-
 const actions = [
   {
     title: "Ask AI",
@@ -44,142 +43,182 @@ const actions = [
   },
 ];
 
-
 export default function AICommandCenter() {
-
   const navigate = useNavigate();
-
 
   return (
     <section
       className="
-        rounded-3xl
+        relative
+        overflow-hidden
+        rounded-[32px]
         border
-        border-white/10
-        bg-white/[0.04]
         p-6
-        backdrop-blur-3xl
+        backdrop-blur-xl
+        transition-all
+        duration-300
+        sm:p-7
       "
+      style={{
+        background:
+          "color-mix(in srgb,var(--surface) 96%,transparent)",
+        borderColor: "var(--border)",
+        boxShadow: "var(--shadow-soft)",
+      }}
     >
+      {/* Ambient glow */}
+      <div
+        className="
+          pointer-events-none
+          absolute
+          -right-24
+          -top-24
+          h-64
+          w-64
+          rounded-full
+          blur-3xl
+          opacity-10
+        "
+        style={{
+          background: "var(--accent-color)",
+        }}
+      />
 
-
-      <div className="mb-6">
-
-
+      <div className="relative z-10 mb-7">
         <div
           className="
             inline-flex
             items-center
             gap-2
             rounded-full
+            border
             px-4
             py-2
             text-sm
-            font-medium
+            font-semibold
           "
           style={{
-            color:
-              "var(--accent-color)",
-
-            backgroundColor:
+            color: "var(--accent-color)",
+            background:
               "color-mix(in srgb,var(--accent-color) 10%,transparent)",
-
-            border:
-              "1px solid color-mix(in srgb,var(--accent-color) 20%,transparent)",
+            borderColor:
+              "color-mix(in srgb,var(--accent-color) 20%,transparent)",
           }}
         >
-
           <Sparkles size={15} />
-
           Quick Actions
-
         </div>
-
-
 
         <h2
           className="
             mt-5
             text-2xl
             font-bold
-            text-white
+            tracking-tight
             lg:text-3xl
           "
+          style={{
+            color: "var(--text)",
+          }}
         >
           What would you like to do?
         </h2>
 
-
-
         <p
           className="
             mt-2
-            text-slate-400
+            text-sm
           "
+          style={{
+            color: "var(--muted)",
+          }}
         >
           Jump directly into your next learning task.
         </p>
-
-
       </div>
-
-
 
       <div
         className="
+          relative
+          z-10
           grid
           gap-4
           md:grid-cols-2
           xl:grid-cols-3
         "
       >
-
         {actions.map((action) => {
-
           const Icon = action.icon;
 
-
           return (
-
             <button
-
               key={action.title}
-
+              type="button"
               onClick={() =>
                 navigate(action.path)
               }
-
               className="
                 group
-                rounded-2xl
+                relative
+                overflow-hidden
+                rounded-3xl
                 border
-                border-white/10
-                bg-white/[0.03]
                 p-5
                 text-left
                 transition-all
                 duration-300
                 hover:-translate-y-1
-                hover:bg-white/[0.06]
               "
-
               style={{
-                borderColor:
-                  undefined,
+                background:
+                  "color-mix(in srgb,var(--surfaceHover) 42%,transparent)",
+                borderColor: "var(--border)",
+                boxShadow: "var(--shadow-card)",
               }}
-
+              onMouseEnter={(event) => {
+                event.currentTarget.style.borderColor =
+                  "color-mix(in srgb,var(--accent-color) 40%,var(--border))";
+                event.currentTarget.style.boxShadow =
+                  "var(--shadow-hover)";
+              }}
+              onMouseLeave={(event) => {
+                event.currentTarget.style.borderColor =
+                  "var(--border)";
+                event.currentTarget.style.boxShadow =
+                  "var(--shadow-card)";
+              }}
             >
-
+              {/* Card glow */}
+              <div
+                className="
+                  pointer-events-none
+                  absolute
+                  -right-10
+                  -top-10
+                  h-24
+                  w-24
+                  rounded-full
+                  blur-2xl
+                  opacity-0
+                  transition-opacity
+                  duration-300
+                  group-hover:opacity-20
+                "
+                style={{
+                  background:
+                    "var(--accent-color)",
+                }}
+              />
 
               <div
                 className="
+                  relative
+                  z-10
                   flex
                   items-center
                   justify-between
                 "
               >
-
-
                 <div
                   className="
                     flex
@@ -189,87 +228,85 @@ export default function AICommandCenter() {
                     justify-center
                     rounded-2xl
                     border
-                    border-white/10
-                    transition
+                    transition-all
                     duration-300
-                    group-hover:scale-105
+                    group-hover:scale-110
+                    group-hover:-rotate-2
                   "
                   style={{
-                    backgroundColor:
+                    background:
                       "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+                    borderColor:
+                      "color-mix(in srgb,var(--accent-color) 20%,var(--border))",
                   }}
                 >
-
                   <Icon
-
                     size={22}
-
                     style={{
                       color:
                         "var(--accent-color)",
                     }}
-
                   />
-
                 </div>
 
-
-
-                <ArrowRight
-
-                  size={18}
-
+                <span
                   className="
-                    text-slate-500
+                    flex
+                    h-9
+                    w-9
+                    items-center
+                    justify-center
+                    rounded-full
+                    border
                     transition-all
                     duration-300
                     group-hover:translate-x-1
-                    group-hover:text-white
                   "
-
-                />
-
-
+                  style={{
+                    borderColor:
+                      "var(--border)",
+                    backgroundColor:
+                      "var(--surface)",
+                    color: "var(--muted)",
+                  }}
+                >
+                  <ArrowRight size={17} />
+                </span>
               </div>
-
-
-
 
               <h3
                 className="
+                  relative
+                  z-10
                   mt-5
                   text-base
                   font-semibold
-                  text-white
                 "
+                style={{
+                  color: "var(--text)",
+                }}
               >
                 {action.title}
               </h3>
 
-
-
               <p
                 className="
+                  relative
+                  z-10
                   mt-2
                   text-sm
                   leading-6
-                  text-slate-400
                 "
+                style={{
+                  color: "var(--muted)",
+                }}
               >
                 {action.subtitle}
               </p>
-
-
             </button>
-
           );
-
         })}
-
-
       </div>
-
-
     </section>
   );
 }

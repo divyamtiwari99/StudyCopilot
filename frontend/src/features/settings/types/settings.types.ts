@@ -1,13 +1,34 @@
 export type ThemeMode =
-  | "dark"
-  | "oled";
+  | "arctic"
+  | "midnight"
+  | "forest"
+  | "sunset"
+  | "carbon";
+
+
+
+export type AccentColor =
+  | "teal"
+  | "indigo"
+  | "blue"
+  | "violet"
+  | "emerald"
+  | "orange"
+  | "rose"
+  | "cyan"
+  | "amber";
+
+
 
 export type AIMode =
   | "study"
   | "assistant"
   | "hybrid";
 
+
+
 export interface NotificationSettings {
+
   studyReminder: boolean;
 
   emailNotifications: boolean;
@@ -15,21 +36,29 @@ export interface NotificationSettings {
   aiUpdates: boolean;
 
   weeklyReport: boolean;
+
 }
 
+
+
 export interface AppearanceSettings {
+
   theme: ThemeMode;
 
   glassEffect: boolean;
 
-  accentColor: string;
+  accentColor: AccentColor;
 
   compactMode: boolean;
 
   animations: boolean;
+
 }
 
+
+
 export interface AISettings {
+
   defaultMode: AIMode;
 
   responseLength:
@@ -40,9 +69,13 @@ export interface AISettings {
   citations: boolean;
 
   deepReasoning: boolean;
+
 }
 
+
+
 export interface StorageSettings {
+
   used: number;
 
   total: number;
@@ -50,9 +83,13 @@ export interface StorageSettings {
   documents: number;
 
   chats: number;
+
 }
 
+
+
 export interface UserSettings {
+
   name: string;
 
   email: string;
@@ -62,9 +99,13 @@ export interface UserSettings {
   plan: string;
 
   joinedAt: string;
+
 }
 
+
+
 export interface SettingsState {
+
   user: UserSettings;
 
   ai: AISettings;
@@ -74,4 +115,5 @@ export interface SettingsState {
   notifications: NotificationSettings;
 
   storage: StorageSettings;
+
 }

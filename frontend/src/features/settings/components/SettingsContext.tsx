@@ -4,7 +4,7 @@ import {
 } from "react";
 
 import type {
-  
+  ReactNode,
 } from "react";
 
 import { useSettings } from "../hooks/useSettings";
@@ -20,8 +20,7 @@ const SettingsContext =
   >(null);
 
 interface Props {
-  children:
-    React.ReactNode;
+  children: ReactNode;
 }
 
 export function SettingsProvider({

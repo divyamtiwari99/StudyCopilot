@@ -22,20 +22,21 @@ export default function ChatWorkspace({
     messages,
     loading,
     sendMessage,
+    clearMessages,
   } = useChat(contentId);
 
-  const { data } =
-    useDocuments();
+  const {
+    data,
+    isLoading: documentsLoading,
+  } = useDocuments();
 
-  const document =
-    useMemo(
-      () =>
-        (data ?? []).find(
-          (doc: any) =>
-            doc.id === contentId,
-        ),
-      [data, contentId],
-    );
+  const document = useMemo(
+    () =>
+      (data ?? []).find(
+        (doc) => doc.id === contentId,
+      ),
+    [data, contentId],
+  );
 
   const title =
     document?.title ??
@@ -43,8 +44,7 @@ export default function ChatWorkspace({
     "Document";
 
   const size =
-    typeof document?.size ===
-    "number"
+    typeof document?.size === "number"
       ? `${(
           document.size /
           1024 /
@@ -53,51 +53,63 @@ export default function ChatWorkspace({
       : document?.size ?? "-";
 
   const status =
-    document?.status ??
-    "AI Ready";
+    document?.status === "ready"
+      ? "AI Ready"
+      : document?.status ?? "Unknown";
 
   return (
     <ChatLayout
       sidebar={
         <DocumentSidebar
           title={title}
-          pages={0}
+          pages={document?.pages ?? 0}
           size={size}
           status={status}
+          contentId={contentId}
         />
       }
       messages={
-        <div className="flex h-full min-h-0 flex-col">
-
+        <div
+          className="
+            flex
+            h-full
+            min-h-0
+            flex-col
+          "
+        >
           <ChatHeader
-            title={title}
+            title={
+              documentsLoading
+                ? "Loading document..."
+                : title
+            }
             status={status}
             chunks={undefined}
+            onNewChat={clearMessages}
           />
 
-          <div className="min-h-0 flex-1">
-
+          <div
+            className="
+              min-h-0
+              flex-1
+              overflow-hidden
+            "
+          >
             <ChatMessages
               messages={messages}
               loading={loading}
               onQuestion={(question) => {
-                void sendMessage(
-                  question,
-                );
+                void sendMessage(question);
               }}
             />
-
           </div>
-
         </div>
       }
       suggestions={
         !messages.length ? (
           <SuggestedQuestions
             onSelect={(question) => {
-              void sendMessage(
-                question,
-              );
+              void sendMessage(question);
             }}
           />
         ) : undefined

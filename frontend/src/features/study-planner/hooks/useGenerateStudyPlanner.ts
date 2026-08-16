@@ -41,10 +41,7 @@ export function useGenerateStudyPlanner() {
       variables,
     ) => {
       queryClient.invalidateQueries({
-        queryKey: [
-          "studyPlanner",
-          variables.contentId,
-        ],
+        queryKey: queryKeys.studyPlanner(variables.contentId),
       });
 
       queryClient.invalidateQueries({

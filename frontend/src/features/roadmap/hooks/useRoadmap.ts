@@ -10,7 +10,7 @@ export function useRoadmap(
   return useQuery({
     queryKey: contentId
       ? queryKeys.roadmap(contentId)
-      : ["roadmap"],
+      : queryKeys.roadmapRoot(),
 
     queryFn: () =>
       getRoadmap(contentId!),
@@ -22,8 +22,6 @@ export function useRoadmap(
 
     gcTime:
       1000 * 60 * 10,
-
-    retry: 1,
 
     refetchOnWindowFocus: false,
   });

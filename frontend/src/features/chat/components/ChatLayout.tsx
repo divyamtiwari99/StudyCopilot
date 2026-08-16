@@ -17,50 +17,89 @@ export default function ChatLayout({
   input,
 }: Props) {
   return (
-    <section className="flex gap-6">
-
+    <section
+      className="
+        flex
+        min-w-0
+        flex-col
+        gap-6
+        xl:flex-row
+      "
+    >
       {/* Sidebar */}
 
-      <aside className="w-[280px] shrink-0">
-
+      <aside
+        className="
+          w-full
+          shrink-0
+          xl:w-[280px]
+        "
+      >
         {sidebar}
-
       </aside>
 
-      {/* Chat */}
+      {/* Chat workspace */}
 
-      <div className="flex min-w-0 flex-1 flex-col">
-
+      <div
+        className="
+          flex
+          min-w-0
+          flex-1
+          flex-col
+        "
+      >
         {/* Messages */}
 
-        <div className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03]">
+        <div
+          className="
+            min-h-[520px]
+            overflow-hidden
+            rounded-[28px]
+            border
+            backdrop-blur-xl
+            transition-all
+            duration-300
+          "
+          style={{
+            background:
+              "var(--surfaceHover)",
 
+            borderColor:
+              "var(--border)",
+
+            boxShadow:
+              "var(--shadow-card)",
+          }}
+        >
           {messages}
-
         </div>
 
         {/* Suggestions */}
 
         {suggestions && (
-
-          <div className="mt-4">
-
+          <div
+            className="
+              mt-4
+              min-w-0
+              transition-all
+              duration-300
+            "
+          >
             {suggestions}
-
           </div>
-
         )}
 
         {/* Input */}
 
-        <div className="mt-4">
-
+        <div
+          className="
+            mt-4
+            min-w-0
+          "
+        >
           {input}
-
         </div>
-
       </div>
-
     </section>
   );
 }

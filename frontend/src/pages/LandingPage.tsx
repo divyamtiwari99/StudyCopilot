@@ -15,23 +15,62 @@ import {
   WorkspacePreview,
 } from "../features/landing";
 
+
+
 export default function LandingPage() {
+
   return (
-    <main className="min-h-screen bg-[#09090B]">
+
+    <main
+
+      className="
+        min-h-screen
+        transition-colors
+        duration-300
+      "
+
+      style={{
+
+        background:
+          "var(--background)",
+
+        color:
+          "var(--text)",
+
+      }}
+
+    >
+
       <Navbar />
+
       <Hero />
+
       <Stats />
+
       <WorkspacePreview />
+
       <HowItWorks />
+
       <AIDashboard />
+
       <KnowledgeGraph />
+
       <LearningTimeline />
+
       <Features />
+
       <Testimonials />
+
       <Pricing />
+
       <Faq />
+
       <Cta />
+
       <Footer />
+
     </main>
+
   );
+
 }

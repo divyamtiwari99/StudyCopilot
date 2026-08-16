@@ -1,26 +1,32 @@
-import { Quote } from "lucide-react";
+import {
+  BrainCircuit,
+  FileText,
+  Sparkles,
+} from "lucide-react";
+
+import { motion } from "framer-motion";
 
 import Section from "../../../components/ui/Section";
 import SectionHeading from "../../../components/ui/SectionHeading";
 
-const testimonials = [
+const highlights = [
   {
-    name: "Alex Johnson",
-    role: "Computer Science Student",
-    quote:
-      "StudyCopilot helped me prepare for finals in half the usual time. The AI explanations feel like having a personal tutor.",
+    title: "Understand your material",
+    description:
+      "Chat with uploaded documents and get contextual explanations from the study material in your workspace.",
+    icon: BrainCircuit,
   },
   {
-    name: "Sarah Lee",
-    role: "Medical Student",
-    quote:
-      "The quiz and flashcard generation saved me hours every week. Everything stays organized in one place.",
+    title: "Turn content into revision material",
+    description:
+      "Generate structured notes, summaries and flashcards from the documents you are already studying.",
+    icon: FileText,
   },
   {
-    name: "Rahul Sharma",
-    role: "Engineering Student",
-    quote:
-      "The knowledge graph makes it much easier to understand how concepts are connected instead of memorizing isolated topics.",
+    title: "Practice what you learned",
+    description:
+      "Use quizzes, knowledge graphs and learning plans to move from reading to active revision.",
+    icon: Sparkles,
   },
 ];
 
@@ -28,35 +34,94 @@ export default function Testimonials() {
   return (
     <Section>
       <SectionHeading
-        badge="Testimonials"
-        title="Loved by"
-        highlight="Students"
-        description="Built for learners who want to study smarter."
+        badge="Why StudyCopilot"
+        title="A workflow built"
+        highlight="for learning"
+        description="Understand, organize and practice your study material without switching between multiple tools."
       />
 
       <div className="mt-20 grid gap-8 lg:grid-cols-3">
-        {testimonials.map((item) => (
-          <div
-            key={item.name}
-            className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 transition hover:-translate-y-2 hover:border-violet-500/40"
-          >
-            <Quote className="mb-6 h-8 w-8 text-violet-400" />
+        {highlights.map((item, index) => {
+          const Icon = item.icon;
 
-            <p className="leading-8 text-zinc-300">
-              "{item.quote}"
-            </p>
+          return (
+            <motion.div
+              key={item.title}
+              initial={{
+                opacity: 0,
+                y: 30,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                delay: index * 0.1,
+              }}
+              className="
+                group
+                rounded-3xl
+                border
+                border-[var(--border)]
+                bg-[color-mix(in_srgb,var(--surface)_70%,transparent)]
+                p-8
+                backdrop-blur-xl
+                transition-all
+                duration-300
+                hover:-translate-y-2
+                hover:border-[color-mix(in_srgb,var(--accent-color)_40%,var(--border))]
+                hover:bg-[color-mix(in_srgb,var(--surface)_85%,transparent)]
+              "
+            >
+              <div
+                className="
+                  mb-6
+                  flex
+                  h-14
+                  w-14
+                  items-center
+                  justify-center
+                  rounded-2xl
+                "
+                style={{
+                  background:
+                    "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+                  color:
+                    "var(--accent-color)",
+                }}
+              >
+                <Icon size={26} />
+              </div>
 
-            <div className="mt-8">
-              <h3 className="font-semibold text-white">
-                {item.name}
+              <h3
+                className="
+                  text-2xl
+                  font-semibold
+                "
+                style={{
+                  color: "var(--text)",
+                }}
+              >
+                {item.title}
               </h3>
 
-              <p className="text-sm text-zinc-500">
-                {item.role}
+              <p
+                className="
+                  mt-4
+                  leading-7
+                "
+                style={{
+                  color: "var(--muted)",
+                }}
+              >
+                {item.description}
               </p>
-            </div>
-          </div>
-        ))}
+            </motion.div>
+          );
+        })}
       </div>
     </Section>
   );

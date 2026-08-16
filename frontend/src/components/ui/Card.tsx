@@ -1,24 +1,111 @@
-import type { ReactNode } from "react";
-import clsx from "clsx";
+import type {
+  ReactNode,
+} from "react";
+
+import { cn } from "../../lib/cn";
+
+
 
 interface CardProps {
+
   children: ReactNode;
+
   className?: string;
+
+  hover?: boolean;
+
+  padding?: boolean;
+
 }
 
+
+
+
+
 export default function Card({
+
   children,
+
   className,
+
+  hover = false,
+
+  padding = false,
+
 }: CardProps) {
+
+
   return (
+
     <div
-      className={clsx(
-        "rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl transition-all duration-300",
-        "hover:border-[var(--accent-color)]",
+
+
+      className={cn(
+
+        "rounded-[28px]",
+
+        "border",
+
+        "backdrop-blur-xl",
+
+        "transition-all",
+
+        "duration-300",
+
+
+        hover && [
+
+          "hover:-translate-y-1",
+
+        ],
+
+
+        padding && "p-6",
+
+
         className,
+
+
       )}
+
+
+
+      style={{
+
+
+
+        background:
+
+          "var(--surface)",
+
+
+
+        borderColor:
+
+          "var(--border)",
+
+
+
+        boxShadow:
+
+          "var(--shadow-card)",
+
+
+
+      }}
+
+
+
     >
+
+
       {children}
+
+
+
     </div>
+
+
   );
+
 }

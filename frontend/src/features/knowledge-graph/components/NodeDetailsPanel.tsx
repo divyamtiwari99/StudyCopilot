@@ -13,55 +13,140 @@ export default function NodeDetailsPanel({
   node,
 }: Props) {
   return (
-    <aside className="h-full w-[340px] border-l border-white/10 bg-[#0b1220] p-6">
-
+    <aside
+      className="
+        h-full
+        w-full
+      "
+    >
       {!node ? (
-        <div className="flex h-full items-center justify-center text-center text-zinc-500">
+        <div
+          className="
+            flex
+            h-full
+            items-center
+            justify-center
+            text-center
+          "
+          style={{
+            color:
+              "var(--muted)",
+          }}
+        >
           Select a node to view its details.
         </div>
       ) : (
         <div className="space-y-6">
-
           <div>
-
-            <h2 className="text-2xl font-bold text-white">
+            <h2
+              className="
+                text-2xl
+                font-bold
+              "
+              style={{
+                color:
+                  "var(--text)",
+              }}
+            >
               {node.label}
             </h2>
 
-            <span className="mt-3 inline-flex rounded-full bg-cyan-500/10 px-3 py-1 text-sm font-medium text-cyan-400">
+            <span
+              className="
+                mt-3
+                inline-flex
+                rounded-full
+                px-3
+                py-1
+                text-sm
+                font-medium
+              "
+              style={{
+                backgroundColor:
+                  "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+
+                color:
+                  "var(--accent-color)",
+              }}
+            >
               {node.category}
             </span>
-
           </div>
 
           <div>
-
-            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-500">
+            <h3
+              className="
+                mb-2
+                text-sm
+                font-semibold
+                uppercase
+                tracking-wide
+              "
+              style={{
+                color:
+                  "var(--muted)",
+              }}
+            >
               Description
             </h3>
 
-            <p className="leading-7 text-zinc-300">
+            <p
+              className="
+                leading-7
+              "
+              style={{
+                color:
+                  "var(--text)",
+              }}
+            >
               {node.description ||
                 "No description available."}
             </p>
-
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div
+            className="
+              rounded-2xl
+              border
+              p-4
+            "
+            style={{
+              borderColor:
+                "var(--border)",
 
-            <h3 className="mb-2 text-sm font-semibold text-white">
+              backgroundColor:
+                "var(--surfaceHover)",
+            }}
+          >
+            <h3
+              className="
+                mb-2
+                text-sm
+                font-semibold
+              "
+              style={{
+                color:
+                  "var(--text)",
+              }}
+            >
               Node ID
             </h3>
 
-            <p className="break-all text-xs text-zinc-400">
+            <p
+              className="
+                break-all
+                text-xs
+              "
+              style={{
+                color:
+                  "var(--muted)",
+              }}
+            >
               {node.id}
             </p>
-
           </div>
-
         </div>
       )}
-
     </aside>
   );
 }

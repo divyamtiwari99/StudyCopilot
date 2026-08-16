@@ -1,687 +1,589 @@
-import { useMemo, useState } from "react";
+import {
+  useMemo,
+  useState,
+} from "react";
+
+import {
+  Search,
+  SlidersHorizontal,
+  ArrowDownUp,
+} from "lucide-react";
 
 import UploadZone from "@/features/dashboard/components/UploadZone";
 import DocumentGrid from "@/components/documents/DocumentGrid";
 
-import { useDocuments } from "@/features/documents/hooks/useDocuments";
+import {
+  useDocuments,
+} from "@/features/documents/hooks/useDocuments";
 
 import type {
   Document,
 } from "@/components/documents/DocumentCard";
 
-import {
-  Search,
-  ArrowUpDown,
-  Filter,
-  FileText,
-} from "lucide-react";
-
-
-type StatusFilter =
+type FilterStatus =
   | "all"
-  | "ready"
+  | "uploading"
   | "processing"
+  | "ready"
   | "failed";
 
-
-type SortOption =
+type SortType =
   | "newest"
   | "oldest"
   | "name"
   | "size";
 
-
 export default function DocumentsPage() {
-
   const {
     data,
     isLoading,
     isError,
   } = useDocuments();
 
-
   const [
     search,
     setSearch,
   ] = useState("");
 
-
   const [
     status,
     setStatus,
-  ] = useState<StatusFilter>("all");
-
+  ] = useState<FilterStatus>("all");
 
   const [
     sort,
     setSort,
-  ] = useState<SortOption>("newest");
+  ] = useState<SortType>("newest");
 
+  const documents = data ?? [];
 
+  const filteredDocuments = useMemo(() => {
+    let list = [...documents];
 
-  const documents: Document[] =
-    (data ?? []).map((doc) => ({
-      id: doc.id,
+    const keyword = search
+      .trim()
+      .toLowerCase();
 
-      name: doc.title,
+    const normalizeStatus = (
+      documentStatus: Document["status"],
+    ): string => String(documentStatus);
 
-      pages: 0,
+    if (keyword) {
+      list = list.filter((doc) =>
+        (
+          doc.title ??
+          doc.originalName
+        )
+          .toLowerCase()
+          .includes(keyword),
+      );
+    }
 
-      size: `${(
-        doc.size /
-        1024 /
-        1024
-      ).toFixed(2)} MB`,
+    if (status !== "all") {
+      list = list.filter(
+        (doc) =>
+          normalizeStatus(
+            doc.status,
+          ) === status,
+      );
+    }
 
-      uploadedAt:
-        new Date(
-          doc.createdAt,
-        ).toLocaleDateString(),
+    switch (sort) {
+      case "oldest":
+        list.sort(
+          (a, b) =>
+            new Date(
+              a.createdAt,
+            ).getTime() -
+            new Date(
+              b.createdAt,
+            ).getTime(),
+        );
+        break;
 
-      status: doc.status,
-    }));
+      case "name":
+        list.sort((a, b) =>
+          (
+            a.title ??
+            a.originalName
+          ).localeCompare(
+            b.title ??
+            b.originalName,
+          ),
+        );
+        break;
 
+      case "size":
+        list.sort(
+          (a, b) =>
+            b.size -
+            a.size,
+        );
+        break;
 
+      default:
+        list.sort(
+          (a, b) =>
+            new Date(
+              b.createdAt,
+            ).getTime() -
+            new Date(
+              a.createdAt,
+            ).getTime(),
+        );
+    }
 
-  const filtered =
-    useMemo(() => {
+    return list;
+  }, [
+    documents,
+    search,
+    status,
+    sort,
+  ]);
 
-      let list =
-        [...documents];
+  const gridDocuments = useMemo<Document[]>(
+    () => {
+      return filteredDocuments.map(
+        (doc) => {
+          return {
+            id: doc.id,
 
+            name:
+              doc.title ||
+              doc.originalName,
 
-      if (search.trim()) {
+            pages: doc.pages ?? 0,
 
-        const keyword =
-          search.toLowerCase();
+            size: `${(
+              doc.size /
+              1024 /
+              1024
+            ).toFixed(2)} MB`,
 
+            uploadedAt:
+              new Date(
+                doc.createdAt,
+              ).toLocaleDateString(),
 
-        list =
-          list.filter((doc) =>
-            doc.name
-              .toLowerCase()
-              .includes(keyword),
-          );
+            status:
+              doc.status,
+          };
+        },
+      );
+    },
+    [filteredDocuments],
+  );
 
-      }
+  if (isLoading) {
+    return (
+      <div
+        className="space-y-6"
+        aria-busy="true"
+        aria-label="Loading documents"
+      >
+        <div
+          className="
+            h-64
+            animate-pulse
+            rounded-[32px]
+            border
+          "
+          style={{
+            background:
+              "var(--surfaceHover)",
+            borderColor:
+              "var(--border)",
+          }}
+        />
 
-
-      if (status !== "all") {
-
-        list =
-          list.filter(
-            (doc) =>
-              doc.status === status,
-          );
-
-      }
-
-
-      switch(sort) {
-
-        case "name":
-
-          list.sort(
-            (a,b) =>
-              a.name.localeCompare(
-                b.name,
-              ),
-          );
-
-          break;
-
-
-        case "oldest":
-
-          list.reverse();
-
-          break;
-
-
-        case "size":
-
-          list.sort(
-            (a,b) =>
-              parseFloat(b.size) -
-              parseFloat(a.size),
-          );
-
-          break;
-
-      }
-
-
-      return list;
-
-
-    },[
-      documents,
-      search,
-      status,
-      sort,
-    ]);
-
-
+        <div
+          className="
+            h-96
+            animate-pulse
+            rounded-[32px]
+            border
+          "
+          style={{
+            background:
+              "var(--surfaceHover)",
+            borderColor:
+              "var(--border)",
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
-    <main className="space-y-6">
-
-
+    <div className="space-y-8">
+      {/* Hero */}
       <section
         className="
-          flex
-          flex-col
-          gap-6
-          lg:flex-row
-          lg:items-end
-          lg:justify-between
+          relative
+          overflow-hidden
+          rounded-[32px]
+          border
+          p-7
+          sm:p-8
         "
+        style={{
+          background:
+            "color-mix(in srgb,var(--surface) 96%,transparent)",
+          borderColor:
+            "var(--border)",
+          boxShadow:
+            "var(--shadow-soft)",
+        }}
       >
+        <div
+          className="
+            pointer-events-none
+            absolute
+            -right-20
+            -top-24
+            h-64
+            w-64
+            rounded-full
+            blur-3xl
+            opacity-10
+          "
+          style={{
+            background:
+              "var(--accent-color)",
+          }}
+        />
 
-        <div>
+        <div className="relative z-10">
+          <div
+            className="
+              inline-flex
+              items-center
+              gap-2
+              rounded-full
+              border
+              px-4
+              py-2
+              text-sm
+              font-semibold
+            "
+            style={{
+              color:
+                "var(--accent-color)",
+              background:
+                "color-mix(in srgb,var(--accent-color) 10%,transparent)",
+              borderColor:
+                "color-mix(in srgb,var(--accent-color) 20%,transparent)",
+            }}
+          >
+            <SlidersHorizontal size={15} />
+
+            Study Library
+          </div>
 
           <h1
             className="
+              mt-5
               text-4xl
-              font-bold
-              text-white
+              font-black
+              tracking-tight
+              sm:text-5xl
             "
+            style={{
+              color:
+                "var(--text)",
+            }}
           >
             Documents
           </h1>
-
 
           <p
             className="
               mt-3
               max-w-2xl
-              text-slate-400
+              text-sm
+              leading-7
+              sm:text-base
             "
-          >
-            Manage your study material,
-            organize documents and
-            prepare them for AI.
-          </p>
-
-        </div>
-
-
-        <div
-          className="
-            rounded-2xl
-            border
-            border-white/10
-            bg-white/[0.04]
-            px-6
-            py-4
-          "
-        >
-
-          <p className="text-sm text-slate-400">
-            Total Documents
-          </p>
-
-
-          <h2
-            className="
-              mt-1
-              text-3xl
-              font-bold
-              text-white
-            "
-          >
-            {documents.length}
-          </h2>
-
-        </div>
-
-      </section>
-
-
-
-      <UploadZone />
-
-
-
-      <section
-        className="
-          flex
-          flex-col
-          gap-4
-          rounded-3xl
-          border
-          border-white/10
-          bg-white/[0.04]
-          p-5
-          xl:flex-row
-        "
-      >
-
-        <div className="relative flex-1">
-
-          <Search
-            size={18}
-            className="
-              absolute
-              left-4
-              top-1/2
-              -translate-y-1/2
-              text-slate-500
-            "
-          />
-
-
-          <input
-            value={search}
-            onChange={(e)=>
-              setSearch(e.target.value)
-            }
-            placeholder="Search documents..."
-            className="
-              h-12
-              w-full
-              rounded-2xl
-              border
-              border-white/10
-              bg-white/[0.04]
-              pl-11
-              pr-4
-              text-white
-              outline-none
-              transition
-              focus:border-[var(--accent-color)]
-            "
-          />
-
-        </div>
-                <div className="flex gap-4">
-
-          <div className="relative">
-
-            <Filter
-              size={16}
-              className="
-                pointer-events-none
-                absolute
-                left-4
-                top-1/2
-                -translate-y-1/2
-                text-slate-500
-              "
-            />
-
-
-            <select
-              value={status}
-              onChange={(e)=>
-                setStatus(
-                  e.target.value as StatusFilter,
-                )
-              }
-              className="
-                h-12
-                rounded-2xl
-                border
-                border-white/10
-                bg-black/30
-                pl-10
-                pr-8
-                text-white
-                outline-none
-              "
-            >
-
-              <option value="all">
-                All
-              </option>
-
-              <option value="ready">
-                Ready
-              </option>
-
-              <option value="processing">
-                Processing
-              </option>
-
-              <option value="failed">
-                Failed
-              </option>
-
-            </select>
-
-          </div>
-
-
-
-          <div className="relative">
-
-            <ArrowUpDown
-              size={16}
-              className="
-                pointer-events-none
-                absolute
-                left-4
-                top-1/2
-                -translate-y-1/2
-                text-slate-500
-              "
-            />
-
-
-            <select
-              value={sort}
-              onChange={(e)=>
-                setSort(
-                  e.target.value as SortOption,
-                )
-              }
-              className="
-                h-12
-                rounded-2xl
-                border
-                border-white/10
-                bg-black/30
-                pl-10
-                pr-8
-                text-white
-                outline-none
-              "
-            >
-
-              <option value="newest">
-                Newest
-              </option>
-
-              <option value="oldest">
-                Oldest
-              </option>
-
-              <option value="name">
-                Name
-              </option>
-
-              <option value="size">
-                Size
-              </option>
-
-            </select>
-
-          </div>
-
-
-        </div>
-
-
-      </section>
-
-
-
-
-      <div
-        className="
-          flex
-          items-center
-          gap-2
-          text-sm
-          text-slate-400
-        "
-      >
-
-        <FileText size={16}/>
-
-
-        <span>
-
-          Showing
-
-          <span
-            className="
-              mx-1
-              font-semibold
-              text-white
-            "
-          >
-            {filtered.length}
-          </span>
-
-          of
-
-          <span
-            className="
-              mx-1
-              font-semibold
-              text-white
-            "
-          >
-            {documents.length}
-          </span>
-
-          documents
-
-        </span>
-
-      </div>
-
-
-
-
-      {isLoading && (
-
-        <div
-          className="
-            rounded-3xl
-            border
-            border-white/10
-            bg-white/[0.04]
-            p-16
-            text-center
-          "
-        >
-
-          <div
-            className="
-              mx-auto
-              h-14
-              w-14
-              animate-spin
-              rounded-full
-              border-4
-              border-[var(--accent-color)]
-              border-t-transparent
-            "
-          />
-
-
-          <h2
-            className="
-              mt-6
-              text-2xl
-              font-semibold
-              text-white
-            "
-          >
-            Loading documents...
-          </h2>
-
-
-          <p
-            className="
-              mt-3
-              text-slate-400
-            "
-          >
-            Please wait while we fetch your study materials.
-          </p>
-
-
-        </div>
-
-      )}
-
-
-
-
-
-      {!isLoading && isError && (
-
-        <div
-          className="
-            rounded-3xl
-            border
-            border-red-500/20
-            bg-red-500/10
-            p-16
-            text-center
-          "
-        >
-
-          <h2
-            className="
-              text-2xl
-              font-semibold
-              text-red-300
-            "
-          >
-            Failed to load documents
-          </h2>
-
-
-          <p
-            className="
-              mt-3
-              text-red-400
-            "
-          >
-            Please refresh the page and try again.
-          </p>
-
-        </div>
-
-      )}
-            {!isLoading &&
-        !isError &&
-        documents.length === 0 && (
-
-        <div
-          className="
-            rounded-3xl
-            border
-            border-dashed
-            border-white/10
-            bg-white/[0.03]
-            p-16
-            text-center
-          "
-        >
-
-          <FileText
-            size={56}
-            className="mx-auto"
             style={{
               color:
-                "var(--accent-color)",
+                "var(--muted)",
             }}
-          />
-
-
-          <h2
-            className="
-              mt-6
-              text-3xl
-              font-bold
-              text-white
-            "
           >
-            No Documents Yet
-          </h2>
-
-
-          <p
-            className="
-              mx-auto
-              mt-3
-              max-w-xl
-              text-slate-400
-            "
-          >
-            Upload your first study material to unlock
-            AI Chat, Notes, Flashcards, Quiz and more.
+            Manage your study materials
+            and AI documents.
           </p>
-
-
         </div>
+      </section>
 
-      )}
+      {/* Upload */}
+      <UploadZone />
 
-
-
-
-      {!isLoading &&
-        !isError &&
-        documents.length > 0 &&
-        filtered.length === 0 && (
-
+      {/* Library */}
+      <section
+        className="
+          rounded-[32px]
+          border
+          p-5
+          sm:p-6
+        "
+        style={{
+          background:
+            "color-mix(in srgb,var(--surface) 96%,transparent)",
+          borderColor:
+            "var(--border)",
+          boxShadow:
+            "var(--shadow-soft)",
+        }}
+      >
+        {/* Toolbar */}
         <div
           className="
-            rounded-3xl
-            border
-            border-dashed
-            border-white/10
-            bg-white/[0.03]
-            p-16
-            text-center
+            mb-6
+            flex
+            flex-col
+            gap-4
+            lg:flex-row
+            lg:items-center
+            lg:justify-between
           "
         >
-
-          <Search
-            size={56}
+          {/* Search */}
+          <div
             className="
-              mx-auto
-              text-slate-500
-            "
-          />
-
-
-          <h2
-            className="
-              mt-6
-              text-2xl
-              font-semibold
-              text-white
+              relative
+              w-full
+              lg:max-w-md
             "
           >
-            No matching documents
-          </h2>
+            <Search
+              size={18}
+              className="
+                pointer-events-none
+                absolute
+                left-4
+                top-1/2
+                -translate-y-1/2
+              "
+              style={{
+                color:
+                  "var(--muted)",
+              }}
+            />
 
+            <input
+              value={search}
+              onChange={(event) =>
+                setSearch(
+                  event.target.value,
+                )
+              }
+              placeholder="Search documents..."
+              aria-label="Search documents"
+              className="
+                h-12
+                w-full
+                rounded-2xl
+                border
+                pl-11
+                pr-4
+                text-sm
+                outline-none
+                transition
+              "
+              style={{
+                background:
+                  "var(--surfaceHover)",
+                borderColor:
+                  "var(--border)",
+                color:
+                  "var(--text)",
+              }}
+              onFocus={(event) => {
+                event.currentTarget.style.borderColor =
+                  "var(--accent-color)";
 
-          <p
+                event.currentTarget.style.boxShadow =
+                  "0 0 0 3px color-mix(in srgb,var(--accent-color) 10%,transparent)";
+              }}
+              onBlur={(event) => {
+                event.currentTarget.style.borderColor =
+                  "var(--border)";
+
+                event.currentTarget.style.boxShadow =
+                  "none";
+              }}
+            />
+          </div>
+
+          {/* Filters */}
+          <div
             className="
-              mt-3
-              text-slate-400
+              flex
+              flex-wrap
+              gap-3
             "
           >
-            Try changing your search or filter.
-          </p>
+            {/* Status */}
+            <div className="relative">
+              <SlidersHorizontal
+                size={15}
+                className="
+                  pointer-events-none
+                  absolute
+                  left-3
+                  top-1/2
+                  z-10
+                  -translate-y-1/2
+                "
+                style={{
+                  color:
+                    "var(--muted)",
+                }}
+              />
 
+              <select
+                value={status}
+                onChange={(event) =>
+                  setStatus(
+                    event.target.value as FilterStatus,
+                  )
+                }
+                aria-label="Filter by status"
+                className="
+                  h-12
+                  rounded-2xl
+                  border
+                  pl-9
+                  pr-4
+                  text-sm
+                  outline-none
+                  transition
+                "
+                style={{
+                  background:
+                    "var(--surfaceHover)",
+                  borderColor:
+                    "var(--border)",
+                  color:
+                    "var(--text)",
+                }}
+              >
+                <option value="all">
+                  All
+                </option>
 
+                <option value="ready">
+                  Ready
+                </option>
+
+                <option value="processing">
+                  Processing
+                </option>
+
+                <option value="uploading">
+                  Uploading
+                </option>
+
+                <option value="failed">
+                  Failed
+                </option>
+              </select>
+            </div>
+
+            {/* Sort */}
+            <div className="relative">
+              <ArrowDownUp
+                size={15}
+                className="
+                  pointer-events-none
+                  absolute
+                  left-3
+                  top-1/2
+                  z-10
+                  -translate-y-1/2
+                "
+                style={{
+                  color:
+                    "var(--muted)",
+                }}
+              />
+
+              <select
+                value={sort}
+                onChange={(event) =>
+                  setSort(
+                    event.target.value as SortType,
+                  )
+                }
+                aria-label="Sort documents"
+                className="
+                  h-12
+                  rounded-2xl
+                  border
+                  pl-9
+                  pr-4
+                  text-sm
+                  outline-none
+                  transition
+                "
+                style={{
+                  background:
+                    "var(--surfaceHover)",
+                  borderColor:
+                    "var(--border)",
+                  color:
+                    "var(--text)",
+                }}
+              >
+                <option value="newest">
+                  Newest
+                </option>
+
+                <option value="oldest">
+                  Oldest
+                </option>
+
+                <option value="name">
+                  Name
+                </option>
+
+                <option value="size">
+                  Size
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
 
-      )}
+        {/* Error */}
+        {isError && (
+          <div
+            className="
+              mb-6
+              rounded-2xl
+              border
+              p-4
+              text-sm
+            "
+            style={{
+              background:
+                "color-mix(in srgb,var(--danger) 10%,transparent)",
+              borderColor:
+                "color-mix(in srgb,var(--danger) 30%,transparent)",
+              color:
+                "var(--danger)",
+            }}
+          >
+            Failed to load documents.
+            Please try again.
+          </div>
+        )}
 
-
-
-
-      {!isLoading &&
-        !isError &&
-        filtered.length > 0 && (
-
+        {/* Documents */}
         <DocumentGrid
-          documents={filtered}
+          documents={gridDocuments}
         />
-
-      )}
-
-
-    </main>
+      </section>
+    </div>
   );
 }

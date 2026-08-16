@@ -1,3 +1,5 @@
+import { queryKeys } from "@/lib/queryKeys";
+
 import {
   useMutation,
   useQueryClient,
@@ -32,10 +34,7 @@ export function useDeleteFlashcards() {
 
       queryClient.invalidateQueries({
 
-        queryKey: [
-          "flashcards",
-          contentId,
-        ],
+        queryKey: queryKeys.flashcards(contentId),
 
       });
 
@@ -44,10 +43,7 @@ export function useDeleteFlashcards() {
 
       queryClient.invalidateQueries({
 
-        queryKey: [
-          "flashcards",
-          "all",
-        ],
+        queryKey: queryKeys.allFlashcards(),
 
       });
 

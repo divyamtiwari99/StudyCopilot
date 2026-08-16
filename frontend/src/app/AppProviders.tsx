@@ -5,9 +5,12 @@ import { RouterProvider } from "react-router-dom";
 import { Toaster } from "sonner";
 
 import AuroraBackground from "../components/background/AuroraBackground";
+import AppErrorBoundary from "../components/system/AppErrorBoundary";
+import OfflineIndicator from "../components/system/OfflineIndicator";
 import { queryClient } from "../config/queryClient";
 import { router } from "../routes/AppRouter";
 import { useAuthStore } from "../store/auth.store";
+import storage from "../lib/storage";
 
 import AppearanceSync from "../features/settings/components/AppearanceSync";
 import {
@@ -20,7 +23,12 @@ function Bootstrap() {
   );
 
   useEffect(() => {
-    loadUser();
+    if (storage.getAccessToken()) {
+      void loadUser();
+      return;
+    }
+
+    useAuthStore.setState({ initialized: true });
   }, [loadUser]);
 
   return null;
@@ -28,8 +36,9 @@ function Bootstrap() {
 
 export default function AppProviders() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <SettingsProvider>
+    <AppErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <SettingsProvider>
         <AppearanceSync />
 
         <AuroraBackground>
@@ -43,9 +52,11 @@ export default function AppProviders() {
             duration={3000}
           />
 
-          <RouterProvider router={router} />
-        </AuroraBackground>
-      </SettingsProvider>
-    </QueryClientProvider>
+            <RouterProvider router={router} />
+            <OfflineIndicator />
+          </AuroraBackground>
+        </SettingsProvider>
+      </QueryClientProvider>
+    </AppErrorBoundary>
   );
 }
