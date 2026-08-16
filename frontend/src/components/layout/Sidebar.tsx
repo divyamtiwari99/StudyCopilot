@@ -11,6 +11,7 @@ import {
   CalendarDays,
   HardDrive,
   ChevronRight,
+  X,
 } from "lucide-react";
 
 const workspace = [
@@ -54,14 +55,21 @@ const aiTools = [
   },
 ];
 
-type NavItem = typeof workspace[number];
+type NavItem = (typeof workspace)[number];
+
+interface SidebarProps {
+  mobileOpen?: boolean;
+  onClose?: () => void;
+}
 
 function NavSection({
   title,
   items,
+  onNavigate,
 }: {
   title: string;
   items: NavItem[];
+  onNavigate?: () => void;
 }) {
   return (
     <section aria-label={title}>
@@ -99,6 +107,7 @@ function NavSection({
               to={item.path}
               end={item.path === "/dashboard"}
               aria-label={item.title}
+              onClick={onNavigate}
               className="
                 group
                 relative
@@ -124,27 +133,21 @@ function NavSection({
                 background: isActive
                   ? "color-mix(in srgb,var(--accent-color) 10%,var(--surface))"
                   : "transparent",
-
                 borderColor: isActive
                   ? "color-mix(in srgb,var(--accent-color) 22%,var(--border))"
                   : "transparent",
-
                 color: isActive
                   ? "var(--text)"
                   : "var(--muted)",
-
                 boxShadow: isActive
                   ? "0 8px 24px color-mix(in srgb,var(--accent-color) 7%,transparent)"
                   : "none",
-
                 ["--tw-ring-color" as string]:
                   "color-mix(in srgb,var(--accent-color) 40%,transparent)",
               })}
             >
               {({ isActive }) => (
                 <>
-                  {/* Active indicator */}
-
                   <span
                     aria-hidden="true"
                     className="
@@ -166,8 +169,6 @@ function NavSection({
                         "0 0 12px color-mix(in srgb,var(--accent-color) 65%,transparent)",
                     }}
                   />
-
-                  {/* Icon container */}
 
                   <span
                     className="
@@ -205,13 +206,9 @@ function NavSection({
                     />
                   </span>
 
-                  {/* Label */}
-
                   <span className="min-w-0 flex-1 truncate">
                     {item.title}
                   </span>
-
-                  {/* Arrow */}
 
                   <ChevronRight
                     size={15}
@@ -240,11 +237,16 @@ function NavSection({
   );
 }
 
-function SettingsLink() {
+function SettingsLink({
+  onNavigate,
+}: {
+  onNavigate?: () => void;
+}) {
   return (
     <NavLink
       to="/dashboard/settings"
       aria-label="Settings"
+      onClick={onNavigate}
       className="
         group
         relative
@@ -269,27 +271,21 @@ function SettingsLink() {
         background: isActive
           ? "color-mix(in srgb,var(--accent-color) 10%,var(--surface))"
           : "color-mix(in srgb,var(--surfaceHover) 55%,transparent)",
-
         borderColor: isActive
           ? "color-mix(in srgb,var(--accent-color) 22%,var(--border))"
           : "var(--border)",
-
         color: isActive
           ? "var(--text)"
           : "var(--muted)",
-
         boxShadow: isActive
           ? "0 8px 24px color-mix(in srgb,var(--accent-color) 7%,transparent)"
           : "none",
-
         ["--tw-ring-color" as string]:
           "color-mix(in srgb,var(--accent-color) 40%,transparent)",
       })}
     >
       {({ isActive }) => (
         <>
-          {/* Active indicator */}
-
           <span
             aria-hidden="true"
             className="
@@ -372,16 +368,20 @@ function SettingsLink() {
   );
 }
 
-export default function Sidebar() {
+export default function Sidebar({
+  mobileOpen = false,
+  onClose,
+}: SidebarProps) {
   return (
     <aside
       aria-label="Main navigation"
-      className="
+      aria-hidden={!mobileOpen}
+      className={`
         fixed
         left-4
         top-4
         bottom-4
-        z-40
+        z-50
         flex
         w-[280px]
         flex-col
@@ -390,25 +390,56 @@ export default function Sidebar() {
         rounded-[30px]
         border
         backdrop-blur-2xl
+        transition-transform
+        duration-300
+        ease-out
         [&::-webkit-scrollbar]:hidden
-      "
+
+        ${mobileOpen
+          ? "translate-x-0"
+          : "-translate-x-[calc(100%+1rem)]"}
+
+        lg:translate-x-0
+      `}
       style={{
         background:
           "color-mix(in srgb,var(--surface) 94%,transparent)",
-
         borderColor:
           "color-mix(in srgb,var(--border) 90%,transparent)",
-
         boxShadow:
           "0 24px 70px color-mix(in srgb,var(--text) 8%,transparent)",
-
         scrollbarWidth: "none",
       }}
     >
-      {/* =========================================================
-          BRAND
-      ========================================================= */}
+      {/* Mobile close button */}
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close navigation"
+        className="
+          absolute
+          right-4
+          top-4
+          z-20
+          flex
+          h-10
+          w-10
+          items-center
+          justify-center
+          rounded-xl
+          border
+          lg:hidden
+        "
+        style={{
+          backgroundColor: "var(--surface)",
+          borderColor: "var(--border)",
+          color: "var(--muted)",
+        }}
+      >
+        <X size={19} />
+      </button>
 
+      {/* Brand */}
       <header
         className="
           group
@@ -423,8 +454,6 @@ export default function Sidebar() {
           borderColor: "var(--border)",
         }}
       >
-        {/* Background glow */}
-
         <div
           aria-hidden="true"
           className="
@@ -449,8 +478,6 @@ export default function Sidebar() {
         />
 
         <div className="relative flex items-center gap-3">
-          {/* Logo */}
-
           <div
             className="
               flex
@@ -469,10 +496,8 @@ export default function Sidebar() {
             style={{
               borderColor:
                 "color-mix(in srgb,var(--accent-color) 25%,var(--border))",
-
               background:
                 "color-mix(in srgb,var(--accent-color) 8%,var(--surface))",
-
               boxShadow:
                 "0 8px 24px color-mix(in srgb,var(--accent-color) 10%,transparent)",
             }}
@@ -491,8 +516,6 @@ export default function Sidebar() {
               "
             />
           </div>
-
-          {/* Brand name */}
 
           <div className="min-w-0">
             <h1
@@ -516,7 +539,6 @@ export default function Sidebar() {
                 style={{
                   backgroundColor:
                     "var(--accent-color)",
-
                   boxShadow:
                     "0 0 8px color-mix(in srgb,var(--accent-color) 70%,transparent)",
                 }}
@@ -535,10 +557,7 @@ export default function Sidebar() {
         </div>
       </header>
 
-      {/* =========================================================
-          NAVIGATION
-      ========================================================= */}
-
+      {/* Navigation */}
       <nav
         className="
           flex-1
@@ -550,18 +569,17 @@ export default function Sidebar() {
         <NavSection
           title="Workspace"
           items={workspace}
+          onNavigate={onClose}
         />
 
         <NavSection
           title="AI Tools"
           items={aiTools}
+          onNavigate={onClose}
         />
       </nav>
 
-      {/* =========================================================
-          FOOTER
-      ========================================================= */}
-
+      {/* Footer */}
       <footer
         className="
           shrink-0
@@ -573,9 +591,7 @@ export default function Sidebar() {
           borderColor: "var(--border)",
         }}
       >
-        <SettingsLink />
-
-        {/* Storage */}
+        <SettingsLink onNavigate={onClose} />
 
         <div
           className="
@@ -590,9 +606,7 @@ export default function Sidebar() {
           style={{
             background:
               "color-mix(in srgb,var(--surfaceHover) 70%,transparent)",
-
-            borderColor:
-              "var(--border)",
+            borderColor: "var(--border)",
           }}
         >
           <div
@@ -663,7 +677,6 @@ export default function Sidebar() {
               style={{
                 color:
                   "var(--accent-color)",
-
                 background:
                   "color-mix(in srgb,var(--accent-color) 8%,transparent)",
               }}
@@ -671,8 +684,6 @@ export default function Sidebar() {
               38%
             </span>
           </div>
-
-          {/* Progress */}
 
           <div
             className="
@@ -698,7 +709,6 @@ export default function Sidebar() {
               style={{
                 background:
                   "linear-gradient(90deg,var(--accent-color),color-mix(in srgb,var(--accent-color) 65%,white))",
-
                 boxShadow:
                   "0 0 10px color-mix(in srgb,var(--accent-color) 30%,transparent)",
               }}

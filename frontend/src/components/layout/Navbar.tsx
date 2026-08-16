@@ -1,26 +1,29 @@
 import {
   Bell,
+  ChevronDown,
   Command,
+  LogOut,
+  Menu,
   Search,
+  Settings,
   Sparkles,
   UserCircle2,
-  LogOut,
-  Settings,
-  ChevronDown,
 } from "lucide-react";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useAuthStore } from "@/store/auth.store";
 import NotificationDropdown from "@/components/notifications/NotificationDropdown";
+import { useAuthStore } from "@/store/auth.store";
 
 interface NavbarProps {
   onSearch?: () => void;
+  onMenuOpen?: () => void;
 }
 
 export default function Navbar({
   onSearch,
+  onMenuOpen,
 }: NavbarProps) {
   const user = useAuthStore(
     (state) => state.user,
@@ -32,7 +35,9 @@ export default function Navbar({
 
   const navigate = useNavigate();
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] =
+    useState(false);
+
   const [
     notificationOpen,
     setNotificationOpen,
@@ -56,27 +61,31 @@ export default function Navbar({
           min-h-[76px]
           items-center
           justify-between
-          gap-4
+          gap-3
           rounded-[26px]
           border
-          px-4
+          px-3
           py-3
           backdrop-blur-2xl
           transition-all
           duration-300
+          sm:gap-4
           sm:px-5
           lg:px-6
         "
         style={{
           background:
             "color-mix(in srgb,var(--surface) 94%,transparent)",
+
           borderColor:
             "color-mix(in srgb,var(--border) 90%,transparent)",
+
           boxShadow:
             "0 16px 45px color-mix(in srgb,var(--text) 7%,transparent)",
         }}
       >
         {/* Subtle accent glow */}
+
         <div
           className="
             pointer-events-none
@@ -94,14 +103,81 @@ export default function Navbar({
           }}
         />
 
+        {/* Mobile menu */}
+
+        <button
+          type="button"
+          onClick={onMenuOpen}
+          aria-label="Open navigation"
+          aria-controls="mobile-navigation"
+          className="
+            relative
+            z-10
+            flex
+            h-11
+            w-11
+            shrink-0
+            items-center
+            justify-center
+            rounded-2xl
+            border
+            transition-all
+            duration-200
+            hover:-translate-y-0.5
+            lg:hidden
+          "
+          style={{
+            backgroundColor:
+              "var(--surface)",
+
+            borderColor:
+              "var(--border)",
+
+            color:
+              "var(--text)",
+          }}
+          onMouseEnter={(event) => {
+            event.currentTarget.style.borderColor =
+              "color-mix(in srgb,var(--accent-color) 35%,var(--border))";
+
+            event.currentTarget.style.backgroundColor =
+              "color-mix(in srgb,var(--accent-color) 7%,var(--surface))";
+          }}
+          onMouseLeave={(event) => {
+            event.currentTarget.style.borderColor =
+              "var(--border)";
+
+            event.currentTarget.style.backgroundColor =
+              "var(--surface)";
+          }}
+        >
+          <Menu
+            size={20}
+            strokeWidth={2}
+          />
+        </button>
+
         {/* Greeting */}
-        <div className="relative min-w-0">
+
+        <div
+          className="
+            relative
+            min-w-0
+            flex-1
+          "
+        >
           <div className="flex items-center gap-2">
             <span
-              className="h-2 w-2 shrink-0 rounded-full"
+              className="
+                h-2
+                w-2
+                shrink-0
+                rounded-full
+              "
               style={{
                 backgroundColor:
                   "var(--accent-color)",
+
                 boxShadow:
                   "0 0 10px color-mix(in srgb,var(--accent-color) 70%,transparent)",
               }}
@@ -110,13 +186,16 @@ export default function Navbar({
             <p
               className="
                 truncate
-                text-[10px]
+                text-[9px]
                 font-bold
                 uppercase
-                tracking-[0.2em]
+                tracking-[0.18em]
+                sm:text-[10px]
+                sm:tracking-[0.2em]
               "
               style={{
-                color: "var(--accent-color)",
+                color:
+                  "var(--accent-color)",
               }}
             >
               Study Workspace
@@ -127,13 +206,14 @@ export default function Navbar({
             className="
               mt-1
               truncate
-              text-lg
+              text-base
               font-bold
               tracking-tight
               sm:text-xl
             "
             style={{
-              color: "var(--text)",
+              color:
+                "var(--text)",
             }}
           >
             Good Morning 👋
@@ -147,7 +227,8 @@ export default function Navbar({
               sm:block
             "
             style={{
-              color: "var(--muted)",
+              color:
+                "var(--muted)",
             }}
           >
             Continue your learning journey.
@@ -155,17 +236,19 @@ export default function Navbar({
         </div>
 
         {/* Actions */}
+
         <div
           className="
             relative
             flex
             shrink-0
             items-center
-            gap-2
+            gap-1.5
             sm:gap-3
           "
         >
           {/* Search */}
+
           <button
             type="button"
             onClick={onSearch}
@@ -175,6 +258,7 @@ export default function Navbar({
               flex
               h-11
               w-11
+              shrink-0
               items-center
               justify-center
               rounded-2xl
@@ -189,18 +273,21 @@ export default function Navbar({
             style={{
               backgroundColor:
                 "var(--surfaceHover)",
+
               borderColor:
                 "var(--border)",
             }}
             onMouseEnter={(event) => {
               event.currentTarget.style.borderColor =
                 "color-mix(in srgb,var(--accent-color) 35%,var(--border))";
+
               event.currentTarget.style.boxShadow =
                 "0 8px 24px color-mix(in srgb,var(--accent-color) 8%,transparent)";
             }}
             onMouseLeave={(event) => {
               event.currentTarget.style.borderColor =
                 "var(--border)";
+
               event.currentTarget.style.boxShadow =
                 "none";
             }}
@@ -215,7 +302,8 @@ export default function Navbar({
               <Search
                 size={17}
                 style={{
-                  color: "var(--muted)",
+                  color:
+                    "var(--muted)",
                 }}
               />
 
@@ -226,7 +314,8 @@ export default function Navbar({
                   lg:inline
                 "
                 style={{
-                  color: "var(--muted)",
+                  color:
+                    "var(--muted)",
                 }}
               >
                 Search anything...
@@ -249,9 +338,12 @@ export default function Navbar({
               style={{
                 backgroundColor:
                   "var(--surface)",
+
                 borderColor:
                   "var(--border)",
-                color: "var(--muted)",
+
+                color:
+                  "var(--muted)",
               }}
             >
               <Command size={11} />
@@ -260,6 +352,7 @@ export default function Navbar({
           </button>
 
           {/* AI shortcut */}
+
           <button
             type="button"
             onClick={() =>
@@ -283,29 +376,38 @@ export default function Navbar({
             style={{
               background:
                 "color-mix(in srgb,var(--accent-color) 9%,var(--surface))",
+
               borderColor:
                 "color-mix(in srgb,var(--accent-color) 20%,var(--border))",
             }}
             onMouseEnter={(event) => {
               event.currentTarget.style.background =
                 "color-mix(in srgb,var(--accent-color) 15%,var(--surface))";
+
               event.currentTarget.style.borderColor =
                 "color-mix(in srgb,var(--accent-color) 38%,var(--border))";
+
               event.currentTarget.style.boxShadow =
                 "0 8px 24px color-mix(in srgb,var(--accent-color) 12%,transparent)";
             }}
             onMouseLeave={(event) => {
               event.currentTarget.style.background =
                 "color-mix(in srgb,var(--accent-color) 9%,var(--surface))";
+
               event.currentTarget.style.borderColor =
                 "color-mix(in srgb,var(--accent-color) 20%,var(--border))";
+
               event.currentTarget.style.boxShadow =
                 "none";
             }}
           >
             <Sparkles
               size={18}
-              className="transition-transform duration-200 group-hover:scale-110"
+              className="
+                transition-transform
+                duration-200
+                group-hover:scale-110
+              "
               style={{
                 color:
                   "var(--accent-color)",
@@ -314,13 +416,17 @@ export default function Navbar({
           </button>
 
           {/* Notifications */}
+
           <div className="relative">
             <button
               type="button"
               aria-label="Notifications"
-              aria-expanded={notificationOpen}
+              aria-expanded={
+                notificationOpen
+              }
               onClick={() => {
                 setOpen(false);
+
                 setNotificationOpen(
                   !notificationOpen,
                 );
@@ -342,6 +448,7 @@ export default function Navbar({
               style={{
                 backgroundColor:
                   "var(--surface)",
+
                 borderColor:
                   "var(--border)",
               }}
@@ -357,7 +464,8 @@ export default function Navbar({
               <Bell
                 size={18}
                 style={{
-                  color: "var(--text)",
+                  color:
+                    "var(--text)",
                 }}
               />
 
@@ -374,20 +482,25 @@ export default function Navbar({
                 style={{
                   backgroundColor:
                     "var(--accent-color)",
+
                   boxShadow:
                     "0 0 8px color-mix(in srgb,var(--accent-color) 75%,transparent)",
-                  ringColor:
-                    "var(--surface)",
-                } as React.CSSProperties}
+
+                  // ringColor was invalid CSS-in-JS.
+                  // The ring is kept visually via box-shadow.
+                }}
               />
             </button>
 
             <NotificationDropdown
-              open={notificationOpen}
+              open={
+                notificationOpen
+              }
             />
           </div>
 
           {/* Profile */}
+
           <div className="relative">
             <button
               type="button"
@@ -414,6 +527,7 @@ export default function Navbar({
               style={{
                 backgroundColor:
                   "var(--surface)",
+
                 borderColor:
                   "var(--border)",
               }}
@@ -429,7 +543,10 @@ export default function Navbar({
               {user?.avatar ? (
                 <img
                   src={user.avatar}
-                  alt={user.name}
+                  alt={
+                    user.name ??
+                    "User avatar"
+                  }
                   className="
                     h-8
                     w-8
@@ -438,9 +555,9 @@ export default function Navbar({
                     ring-2
                   "
                   style={{
-                    ringColor:
-                      "color-mix(in srgb,var(--accent-color) 20%,transparent)",
-                  } as React.CSSProperties}
+                    boxShadow:
+                      "0 0 0 2px color-mix(in srgb,var(--accent-color) 20%,transparent)",
+                  }}
                 />
               ) : (
                 <span
@@ -483,10 +600,12 @@ export default function Navbar({
                     font-semibold
                   "
                   style={{
-                    color: "var(--text)",
+                    color:
+                      "var(--text)",
                   }}
                 >
-                  {user?.name ?? "User"}
+                  {user?.name ??
+                    "User"}
                 </p>
 
                 <p
@@ -496,10 +615,12 @@ export default function Navbar({
                     text-[10px]
                   "
                   style={{
-                    color: "var(--muted)",
+                    color:
+                      "var(--muted)",
                   }}
                 >
-                  {user?.plan ?? "Free"}
+                  {user?.plan ??
+                    "Free"}
                 </p>
               </div>
 
@@ -510,10 +631,15 @@ export default function Navbar({
                   transition-transform
                   duration-200
                   sm:block
-                  ${open ? "rotate-180" : ""}
+                  ${
+                    open
+                      ? "rotate-180"
+                      : ""
+                  }
                 `}
                 style={{
-                  color: "var(--muted)",
+                  color:
+                    "var(--muted)",
                 }}
               />
             </button>
@@ -534,8 +660,10 @@ export default function Navbar({
                 style={{
                   background:
                     "color-mix(in srgb,var(--surface) 96%,transparent)",
+
                   borderColor:
                     "var(--border)",
+
                   boxShadow:
                     "0 20px 50px color-mix(in srgb,var(--text) 12%,transparent)",
                 }}
@@ -553,21 +681,33 @@ export default function Navbar({
                   }}
                 >
                   <p
-                    className="truncate text-sm font-semibold"
+                    className="
+                      truncate
+                      text-sm
+                      font-semibold
+                    "
                     style={{
-                      color: "var(--text)",
+                      color:
+                        "var(--text)",
                     }}
                   >
-                    {user?.name ?? "User"}
+                    {user?.name ??
+                      "User"}
                   </p>
 
                   <p
-                    className="mt-1 text-xs"
+                    className="
+                      mt-1
+                      text-xs
+                    "
                     style={{
-                      color: "var(--muted)",
+                      color:
+                        "var(--muted)",
                     }}
                   >
-                    {user?.plan ?? "Free"} plan
+                    {user?.plan ??
+                      "Free"}{" "}
+                    plan
                   </p>
                 </div>
 
@@ -575,6 +715,7 @@ export default function Navbar({
                   type="button"
                   onClick={() => {
                     setOpen(false);
+
                     navigate(
                       "/dashboard/settings",
                     );
@@ -591,7 +732,8 @@ export default function Navbar({
                     transition-colors
                   "
                   style={{
-                    color: "var(--text)",
+                    color:
+                      "var(--text)",
                   }}
                   onMouseEnter={(event) => {
                     event.currentTarget.style.backgroundColor =
@@ -602,7 +744,10 @@ export default function Navbar({
                       "transparent";
                   }}
                 >
-                  <Settings size={16} />
+                  <Settings
+                    size={16}
+                  />
+
                   Settings
                 </button>
 
@@ -610,7 +755,9 @@ export default function Navbar({
                   type="button"
                   onClick={async () => {
                     setOpen(false);
+
                     await logout();
+
                     navigate("/login");
                   }}
                   className="
@@ -626,7 +773,8 @@ export default function Navbar({
                     transition-colors
                   "
                   style={{
-                    color: "#DC2626",
+                    color:
+                      "#DC2626",
                   }}
                   onMouseEnter={(event) => {
                     event.currentTarget.style.backgroundColor =
@@ -637,7 +785,10 @@ export default function Navbar({
                       "transparent";
                   }}
                 >
-                  <LogOut size={16} />
+                  <LogOut
+                    size={16}
+                  />
+
                   Logout
                 </button>
               </div>

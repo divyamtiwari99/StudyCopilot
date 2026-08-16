@@ -6,34 +6,134 @@ import Navbar from "../components/layout/Navbar";
 import CommandPalette from "../components/command/CommandPalette";
 
 export default function WorkspaceLayout() {
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchOpen, setSearchOpen] =
+    useState(false);
+
+  const [
+    mobileSidebarOpen,
+    setMobileSidebarOpen,
+  ] = useState(false);
 
   useEffect(() => {
-    function handleShortcut(event: KeyboardEvent) {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+    function handleShortcut(
+      event: KeyboardEvent,
+    ) {
+      if (
+        (event.ctrlKey ||
+          event.metaKey) &&
+        event.key.toLowerCase() === "k"
+      ) {
         event.preventDefault();
         setSearchOpen(true);
       }
 
       if (event.key === "Escape") {
         setSearchOpen(false);
+        setMobileSidebarOpen(false);
       }
     }
 
-    window.addEventListener("keydown", handleShortcut);
-    return () => window.removeEventListener("keydown", handleShortcut);
+    window.addEventListener(
+      "keydown",
+      handleShortcut,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleShortcut,
+      );
+    };
   }, []);
+
+  useEffect(() => {
+    if (!mobileSidebarOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
+
+    const mediaQuery =
+      window.matchMedia(
+        "(max-width: 1023px)",
+      );
+
+    if (mediaQuery.matches) {
+      document.body.style.overflow =
+        "hidden";
+    }
+
+    const handleResize = () => {
+      if (
+        window.matchMedia(
+          "(min-width: 1024px)",
+        ).matches
+      ) {
+        setMobileSidebarOpen(false);
+        document.body.style.overflow =
+          "";
+      } else if (mobileSidebarOpen) {
+        document.body.style.overflow =
+          "hidden";
+      }
+    };
+
+    window.addEventListener(
+      "resize",
+      handleResize,
+    );
+
+    return () => {
+      document.body.style.overflow =
+        "";
+
+      window.removeEventListener(
+        "resize",
+        handleResize,
+      );
+    };
+  }, [mobileSidebarOpen]);
+
+  const closeMobileSidebar = () => {
+    setMobileSidebarOpen(false);
+  };
 
   return (
     <div
       className="
         min-h-screen
+        overflow-x-hidden
         bg-[var(--background)]
         text-[var(--text)]
       "
     >
+      {/* Mobile sidebar overlay */}
+      {mobileSidebarOpen && (
+        <button
+          type="button"
+          aria-label="Close navigation overlay"
+          className="
+            fixed
+            inset-0
+            z-40
+            bg-black/20
+            backdrop-blur-[2px]
+            lg:hidden
+          "
+          onClick={
+            closeMobileSidebar
+          }
+        />
+      )}
+
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar
+        mobileOpen={
+          mobileSidebarOpen
+        }
+        onClose={
+          closeMobileSidebar
+        }
+      />
 
       {/* Main Workspace */}
       <main
@@ -45,6 +145,9 @@ export default function WorkspaceLayout() {
       >
         {/* Top Navigation */}
         <Navbar
+          onMenuOpen={() =>
+            setMobileSidebarOpen(true)
+          }
           onSearch={() => {
             setSearchOpen(true);
           }}
