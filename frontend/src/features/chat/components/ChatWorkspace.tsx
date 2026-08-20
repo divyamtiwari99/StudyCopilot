@@ -22,6 +22,7 @@ export default function ChatWorkspace({
     messages,
     loading,
     sendMessage,
+    retryMessage,
     clearMessages,
   } = useChat(contentId);
 
@@ -100,6 +101,9 @@ export default function ChatWorkspace({
               loading={loading}
               onQuestion={(question) => {
                 void sendMessage(question);
+              }}
+              onRetry={(messageId) => {
+                void retryMessage(messageId);
               }}
             />
           </div>

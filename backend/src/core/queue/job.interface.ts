@@ -4,3 +4,9 @@ export interface Job<T = unknown> {
   payload: T;
   attempts: number;
 }
+
+export interface QueueDispatchOptions {
+  maxAttempts?: number;
+  dedupeKey?: string;
+  delayMs?: number;
+}

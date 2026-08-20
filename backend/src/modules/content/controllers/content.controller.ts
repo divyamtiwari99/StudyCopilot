@@ -17,6 +17,7 @@ export class ContentController {
     res: Response,
     next: NextFunction,
   ) {
+    let handedOff = false;
     try {
       if (!req.user) {
         return res.status(401).json({
@@ -43,6 +44,7 @@ export class ContentController {
           title: payload.title,
           file: req.file,
         });
+      handedOff = true;
 
       return res.status(201).json({
         success: true,
@@ -50,6 +52,11 @@ export class ContentController {
       });
     } catch (error) {
       next(error);
+    } finally {
+      if (!handedOff && req.file?.path) {
+        const fs = await import("fs/promises");
+        await fs.unlink(req.file.path).catch(() => undefined);
+      }
     }
   }
 

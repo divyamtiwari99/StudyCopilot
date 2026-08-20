@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
+import { AppError } from "../../../core/errors/app.error.js";
 
 import { quizService } from "../services/quiz.service.js";
+import { AIProviderError } from "../providers/provider.error.js";
 
 class QuizController {
   async generate(
@@ -38,6 +40,19 @@ class QuizController {
         data: artifact,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({
@@ -79,7 +94,8 @@ class QuizController {
 
       const quiz =
         await quizService.get(
-          contentId
+          contentId,
+          req.user.id,
         );
 
       if (!quiz) {
@@ -95,6 +111,19 @@ class QuizController {
         data: quiz,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({
@@ -137,9 +166,22 @@ data: quizzes,
 
 
 } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
 
 
-console.error(error);
+if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
+      console.error(error);
 
 
 return res.status(500).json({
@@ -205,6 +247,7 @@ message:
 
 await quizService.delete(
 contentId,
+req.user.id,
 );
 
 
@@ -223,7 +266,11 @@ message:
 } catch(error) {
 
 
-console.error(error);
+if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
+      console.error(error);
 
 
 

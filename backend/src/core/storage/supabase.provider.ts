@@ -67,30 +67,21 @@ export class SupabaseStorageProvider
   async exists(
     key: string,
   ): Promise<boolean> {
-    const folder =
-      key.includes("/")
-        ? key.substring(
-            0,
-            key.lastIndexOf("/"),
-          )
-        : "";
+    const { data, error } = await client.storage
+      .from(env.SUPABASE_BUCKET)
+      .exists(key);
 
-    const filename =
-      key.split("/").pop() ?? key;
+    if (error) return false;
+    return data;
+  }
 
-    const { data, error } =
-      await client.storage
-        .from(env.SUPABASE_BUCKET)
-        .list(folder);
+  async download(key: string): Promise<Buffer> {
+    const { data, error } = await client.storage
+      .from(env.SUPABASE_BUCKET)
+      .download(key);
 
-    if (error) {
-      return false;
-    }
-
-    return data.some(
-      (file) =>
-        file.name === filename,
-    );
+    if (error) throw error;
+    return Buffer.from(await data.arrayBuffer());
   }
 
   async getSignedUrl(

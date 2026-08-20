@@ -9,15 +9,14 @@ export type ProcessingStage =
   | "flashcards"
   | "quiz"
   | "notes"
+  | "studyPlanner"
   | "completed"
   | "failed";
 
 export interface ProcessingJob {
+  userId: string;
   contentId: string;
-
-  filePath: string;
-
+  storageKey: string;
   mimeType: string;
-
   stage: ProcessingStage;
 }

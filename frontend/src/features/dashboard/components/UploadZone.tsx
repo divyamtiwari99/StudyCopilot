@@ -92,10 +92,11 @@ export default function UploadZone() {
       ],
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
         [".docx"],
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-        [".pptx"],
       "text/plain": [
         ".txt",
+      ],
+      "text/markdown": [
+        ".md",
       ],
     },
   });
@@ -419,7 +420,7 @@ export default function UploadZone() {
                     "var(--text)",
                 }}
               >
-                PDF · DOCX · PPTX · TXT
+                PDF · DOCX · TXT · Markdown
               </span>
             </div>
 

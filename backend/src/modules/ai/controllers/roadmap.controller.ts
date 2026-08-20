@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
+import { AppError } from "../../../core/errors/app.error.js";
 
 import { roadmapService } from "../services/roadmap.service.js";
+import { AIProviderError } from "../providers/provider.error.js";
 
 class RoadmapController {
   async generate(
@@ -38,6 +40,19 @@ class RoadmapController {
         data: artifact,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({
@@ -85,6 +100,19 @@ class RoadmapController {
         data: artifact,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({
@@ -127,6 +155,7 @@ class RoadmapController {
       const roadmap =
         await roadmapService.get(
           contentId,
+          req.user.id,
         );
 
       if (!roadmap) {
@@ -142,6 +171,19 @@ class RoadmapController {
         data: roadmap,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({

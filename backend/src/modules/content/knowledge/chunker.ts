@@ -7,7 +7,7 @@ import { ContentChunk } from "./chunk.types.js";
 function buildParagraphs(text: string): string[] {
   const lines = text
     .split("\n")
-    .map((l) => l.trim())
+    .map((line) => line.trim())
     .filter(Boolean);
 
   const paragraphs: string[] = [];
@@ -45,68 +45,41 @@ function buildParagraphs(text: string): string[] {
       continue;
     }
 
-    if (!current) {
-      current = line;
-    } else {
-      current += " " + line;
-    }
+    current = current ? `${current} ${line}` : line;
 
-    if (
-      line.endsWith(".") ||
-      line.endsWith("?") ||
-      line.endsWith("!")
-    ) {
+    if (line.endsWith(".") || line.endsWith("?") || line.endsWith("!")) {
       flush();
     }
   }
 
   flush();
-
   return paragraphs;
 }
 
-export function createChunks(
-  text: string
-): ContentChunk[] {
-  const paragraphs = buildParagraphs(text);
+function splitOversizedParagraph(paragraph: string): string[] {
+  if (estimateTokens(paragraph) <= PROCESSING.MAX_CHUNK_TOKENS) {
+    return [paragraph];
+  }
 
-  console.log("Paragraphs Found:", paragraphs.length);
+  const maxWords = Math.max(1, Math.floor(PROCESSING.MAX_CHUNK_TOKENS * 0.72));
+  const words = paragraph.split(/\s+/).filter(Boolean);
+  const parts: string[] = [];
 
+  for (let index = 0; index < words.length; index += maxWords) {
+    parts.push(words.slice(index, index + maxWords).join(" "));
+  }
+
+  return parts;
+}
+
+export function createChunks(text: string): ContentChunk[] {
+  const paragraphs = buildParagraphs(text).flatMap(splitOversizedParagraph);
   const chunks: ContentChunk[] = [];
-
   let current = "";
   let order = 0;
 
-  for (const paragraph of paragraphs) {
-    const candidate =
-      current === ""
-        ? paragraph
-        : current + "\n\n" + paragraph;
-
-    if (
-      estimateTokens(candidate) >
-      PROCESSING.MAX_CHUNK_TOKENS
-    ) {
-      if (current.trim()) {
-        chunks.push({
-          id: crypto.randomUUID(),
-          title: `Chunk ${order + 1}`,
-          order,
-          text: current,
-          tokens: estimateTokens(current),
-          blocks: [],
-        });
-
-        order++;
-      }
-
-      current = paragraph;
-    } else {
-      current = candidate;
-    }
-  }
-
-  if (current.trim()) {
+  const pushCurrent = () => {
+    if (!current.trim()) return;
     chunks.push({
       id: crypto.randomUUID(),
       title: `Chunk ${order + 1}`,
@@ -115,9 +88,21 @@ export function createChunks(
       tokens: estimateTokens(current),
       blocks: [],
     });
+    order += 1;
+    current = "";
+  };
+
+  for (const paragraph of paragraphs) {
+    const candidate = current ? `${current}\n\n${paragraph}` : paragraph;
+
+    if (estimateTokens(candidate) > PROCESSING.MAX_CHUNK_TOKENS) {
+      pushCurrent();
+      current = paragraph;
+    } else {
+      current = candidate;
+    }
   }
 
-  console.log("Chunks Generated:", chunks.length);
-
+  pushCurrent();
   return chunks;
 }

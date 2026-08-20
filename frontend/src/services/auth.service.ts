@@ -154,6 +154,17 @@ class AuthService {
 
 
 
+
+  async uploadAvatar(file: File) {
+    const formData = new FormData();
+    formData.append("avatar", file);
+    const response = await api.post("/auth/profile/avatar", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      timeout: 30_000,
+    });
+    return response.data;
+  }
+
   async logout() {
 
   const response =

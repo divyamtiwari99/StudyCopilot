@@ -13,22 +13,32 @@ import { useAuthStore } from "../store/auth.store";
 import storage from "../lib/storage";
 
 import AppearanceSync from "../features/settings/components/AppearanceSync";
-import {
-  SettingsProvider,
-} from "../features/settings/components/SettingsContext";
+import { SettingsProvider } from "../features/settings/components/SettingsContext";
 
 function Bootstrap() {
-  const loadUser = useAuthStore(
-    (state) => state.loadUser,
-  );
+  const loadUser = useAuthStore((state) => state.loadUser);
 
   useEffect(() => {
-    if (storage.getAccessToken()) {
-      void loadUser();
+    if (!storage.getAccessToken()) {
+      useAuthStore.setState({ initialized: true, loading: false });
       return;
     }
 
-    useAuthStore.setState({ initialized: true });
+    const timeout = window.setTimeout(() => {
+      useAuthStore.setState({
+        initialized: true,
+        loading: false,
+        isAuthenticated: false,
+        user: null,
+      });
+      storage.clear();
+    }, 12_000);
+
+    void loadUser().finally(() => {
+      window.clearTimeout(timeout);
+    });
+
+    return () => window.clearTimeout(timeout);
   }, [loadUser]);
 
   return null;
@@ -39,19 +49,16 @@ export default function AppProviders() {
     <AppErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <SettingsProvider>
-        <AppearanceSync />
-
-        <AuroraBackground>
-          <Bootstrap />
-
-          <Toaster
-            richColors
-            position="top-right"
-            closeButton
-            expand
-            duration={3000}
-          />
-
+          <AppearanceSync />
+          <AuroraBackground>
+            <Bootstrap />
+            <Toaster
+              richColors
+              position="top-right"
+              closeButton
+              expand
+              duration={3000}
+            />
             <RouterProvider router={router} />
             <OfflineIndicator />
           </AuroraBackground>

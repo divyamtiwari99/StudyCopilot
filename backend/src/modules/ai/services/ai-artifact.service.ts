@@ -1,186 +1,81 @@
+import { Types } from "mongoose";
 import { AIArtifactModel } from "../models/ai-artifact.model.js";
+import { ValidationError } from "../../../core/errors/validation.error.js";
 
 export interface SaveArtifactInput {
   contentId: string;
-
   userId: string;
-
-  type:
-    | "notes"
-    | "summary"
-    | "flashcards"
-    | "quiz"
-    | "knowledgeGraph"
-    | "roadmap"
-    | "studyPlanner";
-
+  type: "notes" | "summary" | "flashcards" | "quiz" | "knowledgeGraph" | "roadmap" | "studyPlanner";
   title: string;
-
   markdown?: string;
-
   json?: unknown;
-
   model?: string;
-
   promptVersion?: string;
-
   tokens?: number;
-
   generationTime?: number;
 }
 
 export class AIArtifactService {
-  async save(
-    input: SaveArtifactInput,
-  ) {
-    const existing =
-      await AIArtifactModel.findOne({
-        contentId: input.contentId,
-        type: input.type,
-      });
+  async save(input: SaveArtifactInput) {
+    if (!Types.ObjectId.isValid(input.contentId)) throw new ValidationError("Invalid content ID.");
+    const filter = { contentId: input.contentId, userId: input.userId, type: input.type };
+    const values = {
+      title: input.title.slice(0, 200),
+      markdown: input.markdown ?? "",
+      json: input.json ?? null,
+      metadata: {
+        model: input.model ?? "",
+        promptVersion: input.promptVersion ?? "v1",
+        tokens: input.tokens ?? 0,
+        generationTime: input.generationTime ?? 0,
+      },
+    };
 
+    const existing = await AIArtifactModel.exists(filter);
     if (existing) {
-      existing.version += 1;
-
-      existing.title = input.title;
-
-      existing.markdown =
-        input.markdown ?? "";
-
-      existing.json =
-        input.json ?? null;
-
-      const metadata =
-        existing.metadata ?? {
-          model: "",
-          promptVersion: "v1",
-          tokens: 0,
-          generationTime: 0,
-        };
-
-      existing.metadata = {
-        model:
-          input.model ??
-          metadata.model,
-
-        promptVersion:
-          input.promptVersion ??
-          metadata.promptVersion,
-
-        tokens:
-          input.tokens ??
-          metadata.tokens,
-
-        generationTime:
-          input.generationTime ??
-          metadata.generationTime,
-      };
-
-      await existing.save();
-
-      return existing;
+      return AIArtifactModel.findOneAndUpdate(
+        filter,
+        { $set: values, $inc: { version: 1 } },
+        { new: true, runValidators: true },
+      );
     }
 
-    return AIArtifactModel.create({
-      contentId:
-        input.contentId,
-
-      userId: input.userId,
-
-      type: input.type,
-
-      title: input.title,
-
-      markdown:
-        input.markdown ?? "",
-
-      json:
-        input.json ?? null,
-
-      metadata: {
-        model:
-          input.model ??
-          "gemini-3.6-flash",
-
-        promptVersion:
-          input.promptVersion ??
-          "v1",
-
-        tokens:
-          input.tokens ?? 0,
-
-        generationTime:
-          input.generationTime ??
-          0,
-      },
-    });
+    try {
+      return await AIArtifactModel.create({ ...filter, ...values, version: 1 });
+    } catch (error) {
+      if (!(typeof error === "object" && error !== null && "code" in error && error.code === 11000)) throw error;
+      return AIArtifactModel.findOneAndUpdate(
+        filter,
+        { $set: values, $inc: { version: 1 } },
+        { new: true, runValidators: true },
+      );
+    }
   }
 
-  async get(
-    contentId: string,
-    type: SaveArtifactInput["type"],
-  ) {
-    return AIArtifactModel.findOne({
-      contentId,
-      type,
-    }).lean();
+  async get(contentId: string, type: SaveArtifactInput["type"], userId: string) {
+    return AIArtifactModel.findOne({ contentId, userId, type }).lean();
   }
 
-  async getAll(
-    contentId: string,
-  ) {
-    return AIArtifactModel.find({
-      contentId,
-    })
-      .sort({
-        updatedAt: -1,
-      })
-      .lean();
-  }
-  async getAllByUser(
-  userId: string,
-  type: SaveArtifactInput["type"],
-) {
-  return AIArtifactModel.find({
-    userId,
-    type,
-  })
-    .sort({
-      updatedAt: -1,
-    })
-    .lean();
-}
-
-  async delete(id: string) {
-    return AIArtifactModel.findByIdAndDelete(
-      id,
-    );
+  async getAll(contentId: string, userId: string) {
+    return AIArtifactModel.find({ contentId, userId }).sort({ updatedAt: -1 }).lean();
   }
 
-  async deleteByContent(
-    contentId: string,
-    type: SaveArtifactInput["type"],
-  ) {
-    return AIArtifactModel.findOneAndDelete({
-      contentId,
-      type,
-    });
+  async getAllByUser(userId: string, type: SaveArtifactInput["type"]) {
+    return AIArtifactModel.find({ userId, type }).sort({ updatedAt: -1 }).lean();
   }
 
-  // ==========================
-  // NEW
-  // Delete every AI artifact
-  // of a document
-  // ==========================
+  async delete(id: string, userId: string) {
+    if (!Types.ObjectId.isValid(id)) throw new ValidationError("Invalid artifact ID.");
+    return AIArtifactModel.findOneAndDelete({ _id: id, userId });
+  }
 
-  async deleteAllByContent(
-    contentId: string,
-  ) {
-    return AIArtifactModel.deleteMany({
-      contentId,
-    });
+  async deleteByContent(contentId: string, type: SaveArtifactInput["type"], userId: string) {
+    return AIArtifactModel.findOneAndDelete({ contentId, userId, type });
+  }
+
+  async deleteAllByContent(userId: string, contentId: string) {
+    return AIArtifactModel.deleteMany({ contentId, userId });
   }
 }
 
-export const aiArtifactService =
-  new AIArtifactService();
+export const aiArtifactService = new AIArtifactService();

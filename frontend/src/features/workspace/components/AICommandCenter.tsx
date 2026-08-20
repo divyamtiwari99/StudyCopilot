@@ -9,6 +9,7 @@ import {
 
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { getApiErrorMessage } from "@/lib/api";
 
 import CommandCard from "./CommandCard";
 
@@ -100,9 +101,7 @@ export default function AICommandCenter({
       console.error(error);
 
 
-      toast.error(
-        "Failed to generate notes.",
-      );
+      toast.error(getApiErrorMessage(error, "Failed to generate notes."));
 
     }
 
@@ -136,9 +135,7 @@ export default function AICommandCenter({
       console.error(error);
 
 
-      toast.error(
-        "Failed to generate summary.",
-      );
+      toast.error(getApiErrorMessage(error, "Failed to generate summary."));
 
     }
 
@@ -172,9 +169,7 @@ export default function AICommandCenter({
       console.error(error);
 
 
-      toast.error(
-        "Failed to generate flashcards.",
-      );
+      toast.error(getApiErrorMessage(error, "Failed to generate flashcards."));
 
     }
 
@@ -208,9 +203,7 @@ export default function AICommandCenter({
       console.error(error);
 
 
-      toast.error(
-        "Failed to generate quiz.",
-      );
+      toast.error(getApiErrorMessage(error, "Failed to generate quiz."));
 
     }
 
@@ -254,9 +247,7 @@ export default function AICommandCenter({
       console.error(error);
 
 
-      toast.error(
-        "Failed to generate Knowledge Graph.",
-      );
+      toast.error(getApiErrorMessage(error, "Failed to generate Knowledge Graph."));
 
     }
 
@@ -300,9 +291,7 @@ export default function AICommandCenter({
       console.error(error);
 
 
-      toast.error(
-        "Failed to generate Roadmap.",
-      );
+      toast.error(getApiErrorMessage(error, "Failed to generate Roadmap."));
 
     }
 

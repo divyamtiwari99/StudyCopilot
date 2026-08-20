@@ -39,4 +39,6 @@ export interface StorageProvider {
     key: string,
     expiresIn?: number,
   ): Promise<string>;
+
+  download(key: string): Promise<Buffer>;
 }

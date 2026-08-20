@@ -1,12 +1,21 @@
 import { performance } from "node:perf_hooks";
 
-import { ChunkModel } from "../../content/models/chunk.model.js";
 import { ContentModel } from "../../content/models/content.model.js";
 
 import { aiService } from "./ai.service.js";
+
 import { aiArtifactService } from "./ai-artifact.service.js";
 
 import { knowledgeGraphPromptBuilder } from "../prompts/knowledge-graph.prompt.js";
+
+import {
+  artifactModel,
+  getOwnedContent,
+  getOwnedDocumentText,
+  knowledgeGraphSchema,
+  parseAiJson,
+  withGenerationLock,
+} from "./ai-generation.helpers.js";
 
 export interface GenerateKnowledgeGraphInput {
   contentId: string;
@@ -14,133 +23,166 @@ export interface GenerateKnowledgeGraphInput {
 }
 
 export class KnowledgeGraphService {
-  async generate({
-    contentId,
-    userId,
-  }: GenerateKnowledgeGraphInput) {
-    const content =
-      await ContentModel.findById(contentId);
-
-    if (!content) {
-      throw new Error(
-        "Content not found."
-      );
-    }
-
-    const existing =
-      await aiArtifactService.get(
-        contentId,
-        "knowledgeGraph"
-      );
-
-    if (existing) {
-      return existing;
-    }
-
-    const chunks =
-      await ChunkModel.find({
-        contentId,
-      })
-        .sort({
-          order: 1,
-        })
-        .lean();
-
-    if (chunks.length === 0) {
-      throw new Error(
-        "Document has not been processed yet."
-      );
-    }
-
-    const document =
-      chunks
-        .map((chunk) => chunk.text)
-        .join("\n\n");
-
-    const prompt =
-      knowledgeGraphPromptBuilder.build({
-        title: content.title,
-        content: document,
-      });
-
-    const started =
-      performance.now();
-
-    const response =
-      await aiService.generateText({
-        prompt,
-        temperature: 0.2,
-      });
-
-    const generationTime =
-      Math.round(
-        performance.now() - started
-      );
-
-    let graph: unknown = {
-      nodes: [],
-      edges: [],
-    };
-
-    try {
-      graph =
-        JSON.parse(response);
-    } catch {
-      graph = {
-        nodes: [],
-        edges: [],
-      };
-    }
-
-    const artifact =
-      await aiArtifactService.save({
-        contentId,
-        userId,
-
-        type:
-          "knowledgeGraph",
-
-        title: `${content.title} Knowledge Graph`,
-
-        markdown: response,
-
-        json: graph,
-
-        model:
-          "gemini-3.6-flash",
-
-        generationTime,
-      });
-
-    await ContentModel.findByIdAndUpdate(
+  async generate(
+    {
       contentId,
-      {
-        $set: {
-          "processing.knowledgeGraph": true,
-        },
-      }
-    );
+      userId,
+    }: GenerateKnowledgeGraphInput,
+    force = false,
+  ) {
+    return withGenerationLock(
+      `knowledge-graph:${userId}:${contentId}`,
+      async () => {
+        const content =
+          await getOwnedContent(
+            contentId,
+            userId,
+          );
 
-    return artifact;
+        const existing = force
+          ? null
+          : await aiArtifactService.get(
+              contentId,
+              "knowledgeGraph",
+              userId,
+            );
+
+        if (existing) {
+          return existing;
+        }
+
+        const document =
+          await getOwnedDocumentText(
+            contentId,
+            userId,
+          );
+
+        /*
+         * Keep the knowledge graph request
+         * bounded.
+         *
+         * The graph only needs representative
+         * concepts and relationships. Sending
+         * the complete document can create
+         * unnecessarily large AI requests.
+         */
+        const graphContext =
+          document.slice(0, 16_000);
+
+        const prompt =
+          knowledgeGraphPromptBuilder.build({
+            title: content.title,
+            content: graphContext,
+          });
+
+        const started =
+          performance.now();
+
+        const result =
+          await aiService.generateTextDetailed(
+            {
+              prompt,
+
+              temperature: 0.2,
+
+              maxOutputTokens: 1600,
+
+              userId,
+
+              /*
+               * IMPORTANT:
+               *
+               * Tell the provider that this
+               * request MUST return JSON.
+               *
+               * Groq:
+               * response_format:
+               * { type: "json_object" }
+               *
+               * Gemini:
+               * responseMimeType:
+               * "application/json"
+               */
+              jsonMode: true,
+            },
+          );
+
+        const graph =
+          parseAiJson(
+            result.text,
+            knowledgeGraphSchema,
+            "Knowledge graph",
+          );
+
+        const generationTime =
+          Math.round(
+            performance.now() - started,
+          );
+
+        const artifact =
+          await aiArtifactService.save({
+            contentId,
+
+            userId,
+
+            type: "knowledgeGraph",
+
+            title: `${content.title} Knowledge Graph`,
+
+            markdown: result.text,
+
+            json: graph,
+
+            model: artifactModel(result),
+
+            generationTime,
+          });
+
+        await ContentModel.findOneAndUpdate(
+          {
+            _id: contentId,
+            userId,
+          },
+          {
+            $set: {
+              "processing.knowledgeGraph":
+                true,
+            },
+          },
+        );
+
+        return artifact;
+      },
+    );
   }
 
   async regenerate(
-    input: GenerateKnowledgeGraphInput
+    input: GenerateKnowledgeGraphInput,
   ) {
-    await aiArtifactService.deleteByContent(
+    await getOwnedContent(
       input.contentId,
-      "knowledgeGraph"
+      input.userId,
     );
 
-    return this.generate(input);
+    return this.generate(
+      input,
+      true,
+    );
   }
 
   async get(
-    contentId: string
+    contentId: string,
+    userId: string,
   ) {
+    await getOwnedContent(
+      contentId,
+      userId,
+    );
+
     return aiArtifactService.get(
       contentId,
-      "knowledgeGraph"
+      "knowledgeGraph",
+      userId,
     );
   }
 }

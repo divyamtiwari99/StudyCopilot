@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import Settings from "../models/settings.model.js";
 
 import UserModel from "../../auth/models/user.model.js";
@@ -5,6 +6,7 @@ import UserModel from "../../auth/models/user.model.js";
 import { ContentModel } from "../../content/models/content.model.js";
 
 import { ChatSessionModel } from "../../chat/models/chat-session.model.js";
+import { env } from "../../../config/env.js";
 
 
 
@@ -80,7 +82,7 @@ class SettingsService {
 
           $match: {
 
-            userId,
+            userId: new Types.ObjectId(userId),
 
           },
 
@@ -177,7 +179,7 @@ class SettingsService {
 
 
         plan:
-          "Premium",
+          env.DEFAULT_PLAN_NAME,
 
 
 
@@ -221,7 +223,7 @@ class SettingsService {
 
 
         total:
-          5,
+          env.STORAGE_LIMIT_GB,
 
 
 
@@ -252,109 +254,49 @@ class SettingsService {
 
 
   async updateSettings(
-
     userId: string,
-
-    data: Record<string, any>,
-
+    data: {
+      ai?: { defaultMode?: "study" | "assistant" | "hybrid"; responseLength?: "short" | "balanced" | "detailed"; citations?: boolean; deepReasoning?: boolean };
+      appearance?: { theme?: "arctic" | "midnight" | "forest" | "sunset" | "carbon"; glassEffect?: boolean; accentColor?: string; compactMode?: boolean; animations?: boolean };
+      notifications?: { studyReminder?: boolean; emailNotifications?: boolean; aiUpdates?: boolean; weeklyReport?: boolean };
+    },
   ) {
+    const $set: Record<string, unknown> = {};
 
+    if (data.ai) {
+      if (data.ai.defaultMode !== undefined) $set["ai.defaultMode"] = data.ai.defaultMode;
+      if (data.ai.responseLength !== undefined) $set["ai.responseLength"] = data.ai.responseLength;
+      if (data.ai.citations !== undefined) $set["ai.citations"] = data.ai.citations;
+      if (data.ai.deepReasoning !== undefined) $set["ai.deepReasoning"] = data.ai.deepReasoning;
+    }
 
+    if (data.appearance) {
+      if (data.appearance.theme !== undefined) $set["appearance.theme"] = data.appearance.theme;
+      if (data.appearance.glassEffect !== undefined) $set["appearance.glassEffect"] = data.appearance.glassEffect;
+      if (data.appearance.accentColor !== undefined) $set["appearance.accentColor"] = data.appearance.accentColor;
+      if (data.appearance.compactMode !== undefined) $set["appearance.compactMode"] = data.appearance.compactMode;
+      if (data.appearance.animations !== undefined) $set["appearance.animations"] = data.appearance.animations;
+    }
 
+    if (data.notifications) {
+      if (data.notifications.studyReminder !== undefined) $set["notifications.studyReminder"] = data.notifications.studyReminder;
+      if (data.notifications.emailNotifications !== undefined) $set["notifications.emailNotifications"] = data.notifications.emailNotifications;
+      if (data.notifications.aiUpdates !== undefined) $set["notifications.aiUpdates"] = data.notifications.aiUpdates;
+      if (data.notifications.weeklyReport !== undefined) $set["notifications.weeklyReport"] = data.notifications.weeklyReport;
+    }
 
-    const allowedData = {
+    if (Object.keys($set).length) {
+      await Settings.findOneAndUpdate(
+        { userId },
+        { $set },
+        { new: true, upsert: true, setDefaultsOnInsert: true, runValidators: true },
+      );
+    }
 
-
-
-      ...(data.ai && {
-
-        ai:
-          data.ai,
-
-      }),
-
-
-
-
-
-
-      ...(data.appearance && {
-
-        appearance:
-          data.appearance,
-
-      }),
-
-
-
-
-
-
-      ...(data.notifications && {
-
-        notifications:
-          data.notifications,
-
-      }),
-
-
-
-    };
-
-
-
-
-
-
-
-    await Settings.findOneAndUpdate(
-
-
-      {
-
-        userId,
-
-      },
-
-
-      {
-
-        $set:
-          allowedData,
-
-      },
-
-
-      {
-
-        new: true,
-
-        upsert: true,
-
-      },
-
-
-    );
-
-
-
-
-
-
-
-    return await this.getSettings(
-
-      userId,
-
-    );
-
-
+    return this.getSettings(userId);
   }
 
 
-
 }
-
-
 
 export default new SettingsService();

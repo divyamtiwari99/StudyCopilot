@@ -1,6 +1,8 @@
 import { Router } from "express";
 
 import { authMiddleware } from "../../auth/middleware/auth.middleware.js";
+import { rateLimit } from "../../../middleware/rate-limit.middleware.js";
+import { env } from "../../../config/env.js";
 
 import { uploadMiddleware } from "../upload/upload.middleware.js";
 
@@ -39,6 +41,12 @@ router.get(
 router.post(
   "/upload",
   authMiddleware,
+  rateLimit({
+    name: "content-upload",
+    windowMs: 10 * 60_000,
+    max: env.UPLOAD_RATE_LIMIT_PER_10_MINUTES,
+    key: (req) => req.user?.id || req.ip || "unknown",
+  }),
   uploadMiddleware.single("file"),
   contentController.upload.bind(
     contentController,

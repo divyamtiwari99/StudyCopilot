@@ -1,9 +1,4 @@
-import {
-  Schema,
-  model,
-  Types,
-  InferSchemaType,
-} from "mongoose";
+import { Schema, model, InferSchemaType } from "mongoose";
 
 const StorageSchema = new Schema(
   {
@@ -39,7 +34,7 @@ const StorageSchema = new Schema(
 
     provider: {
       type: String,
-      default: "local",
+      default: "supabase",
     },
 
     bucket: {
@@ -122,7 +117,7 @@ const ProcessingSchema = new Schema(
 const ContentSchema = new Schema(
   {
     userId: {
-      type: Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
       index: true,
@@ -139,9 +134,17 @@ const ContentSchema = new Schema(
       required: true,
     },
 
+    pages: {
+      type: Number,
+      required: false,
+      default: undefined,
+    },
+
     status: {
       type: String,
+      enum: ["uploading", "processing", "completed", "failed"],
       default: "uploading",
+      index: true,
     },
 
     storage: {
@@ -162,7 +165,4 @@ const ContentSchema = new Schema(
 export type ContentDocument =
   InferSchemaType<typeof ContentSchema>;
 
-export const ContentModel = model(
-  "Content",
-  ContentSchema,
-);
+export const ContentModel = model<ContentDocument>("Content", ContentSchema);

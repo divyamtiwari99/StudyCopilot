@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
+import { AppError } from "../../../core/errors/app.error.js";
 
 import { summaryService } from "../services/summary.service.js";
+import { AIProviderError } from "../providers/provider.error.js";
 
 class SummaryController {
   async generate(
@@ -38,6 +40,19 @@ class SummaryController {
         data: artifact,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({
@@ -79,7 +94,8 @@ class SummaryController {
 
       const summary =
         await summaryService.get(
-          contentId
+          contentId,
+          req.user.id,
         );
 
       if (!summary) {
@@ -95,6 +111,19 @@ class SummaryController {
         data: summary,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({

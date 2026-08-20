@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
+import { AppError } from "../../../core/errors/app.error.js";
 
 import { studyPlannerService } from "../services/study-planner.service.js";
+import { AIProviderError } from "../providers/provider.error.js";
 
 class StudyPlannerController {
   async generate(
@@ -38,6 +40,19 @@ class StudyPlannerController {
         data: artifact,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({
@@ -85,6 +100,19 @@ class StudyPlannerController {
         data: artifact,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({
@@ -127,6 +155,7 @@ class StudyPlannerController {
       const planner =
         await studyPlannerService.get(
           contentId,
+          req.user.id,
         );
 
       // Planner abhi generate nahi hua
@@ -142,6 +171,19 @@ class StudyPlannerController {
         data: planner,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({

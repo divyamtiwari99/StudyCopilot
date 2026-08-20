@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
+import { AppError } from "../../../core/errors/app.error.js";
 
 import { knowledgeGraphService } from "../services/knowledge-graph.service.js";
+import { AIProviderError } from "../providers/provider.error.js";
 
 class KnowledgeGraphController {
   async generate(
@@ -38,6 +40,19 @@ class KnowledgeGraphController {
         data: artifact,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({
@@ -85,6 +100,19 @@ class KnowledgeGraphController {
         data: artifact,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({
@@ -126,7 +154,8 @@ class KnowledgeGraphController {
 
       const graph =
         await knowledgeGraphService.get(
-          contentId
+          contentId,
+          req.user.id,
         );
 
       if (!graph) {
@@ -142,6 +171,19 @@ class KnowledgeGraphController {
         data: graph,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({

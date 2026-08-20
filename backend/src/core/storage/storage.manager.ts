@@ -53,12 +53,11 @@ export class StorageManager {
     key: string,
     expiresIn?: number,
   ): Promise<string> {
+    return this.provider.getSignedUrl(key, expiresIn);
+  }
 
-    return this.provider.getSignedUrl(
-      key,
-      expiresIn,
-    );
-
+  async download(key: string): Promise<Buffer> {
+    return this.provider.download(key);
   }
 
 }

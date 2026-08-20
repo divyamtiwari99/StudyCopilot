@@ -97,6 +97,8 @@ export default function ProfileSection(){
     setErrors,
   ] = useState<ValidationErrors>({});
 
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreviewUrl, setAvatarPreviewUrl] = useState<string | undefined>(settings.user.avatar);
 
   const inputRef =
     useRef<HTMLInputElement>(null);
@@ -124,6 +126,12 @@ export default function ProfileSection(){
 
 
 
+
+  useEffect(() => {
+    return () => {
+      if (avatarPreviewUrl?.startsWith("blob:")) URL.revokeObjectURL(avatarPreviewUrl);
+    };
+  }, [avatarPreviewUrl]);
 
   const initials =
     useMemo(()=>{
@@ -261,128 +269,48 @@ export default function ProfileSection(){
 
 
 
-  function onAvatarChange(
-    event:ChangeEvent<HTMLInputElement>,
-  ){
-
-    const file =
-      event.target.files?.[0];
-
-
-    if(!file)
-      return;
-
-
-
-    const reader =
-      new FileReader();
-
-
-
-    reader.onload=()=>{
-
-      setForm(previous=>({
-        ...previous,
-        avatar:
-          reader.result as string,
-      }));
-
-    };
-
-
-    reader.readAsDataURL(file);
-
-
-    event.target.value="";
-
+  function onAvatarChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) { toast.error("Use PNG, JPEG or WebP for your profile image."); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error("Profile images must be smaller than 5 MB."); return; }
+    if (avatarPreviewUrl?.startsWith("blob:")) URL.revokeObjectURL(avatarPreviewUrl);
+    setAvatarFile(file);
+    setAvatarPreviewUrl(URL.createObjectURL(file));
   }
-    async function handleSave(){
 
-    if(!validate())
-      return;
+  async function handleSave(){
+    if (!validate()) return;
 
-
-    try{
-
+    try {
       setSaving(true);
-
-
-      const response =
-        await authService.updateProfile({
-
-          name:
-            form.name.trim(),
-
-          email:
-            form.email.trim(),
-
-          avatar:
-            form.avatar,
-
-        });
-
-
-
-      const updatedUser =
-        response.data;
-
-
-
-      updateUser({
-
-        name:
-          updatedUser.name,
-
-        email:
-          updatedUser.email,
-
-        avatar:
-          updatedUser.avatar,
-
+      const response = await authService.updateProfile({
+        name: form.name.trim(),
+        email: form.email.trim(),
       });
+      let updatedUser = response.data;
 
+      if (avatarFile) {
+        const avatarResponse = await authService.uploadAvatar(avatarFile);
+        updatedUser = avatarResponse.data;
+      }
 
+      updateUser({ name: updatedUser.name, email: updatedUser.email, avatar: updatedUser.avatar });
+      updateAuthUser({ name: updatedUser.name, email: updatedUser.email, avatar: updatedUser.avatar });
 
-      updateAuthUser({
-
-        name:
-          updatedUser.name,
-
-        email:
-          updatedUser.email,
-
-        avatar:
-          updatedUser.avatar,
-
-      });
-
-
-
-      setEditing(false);
-
-
-    }
-    catch(error){
-
-      console.error(
-        "Profile update failed",
-        error,
-      );
-
-      toast.error(
-        "Failed to update your profile. Please try again.",
-      );
-
-    }
-    finally{
-
+      if (avatarPreviewUrl?.startsWith("blob:")) URL.revokeObjectURL(avatarPreviewUrl);
+      setAvatarFile(null);
+      setAvatarPreviewUrl(updatedUser.avatar);
       setSaving(false);
-
+      setEditing(false);
+      toast.success("Profile updated successfully.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to update profile.";
+      toast.error(message);
+      setSaving(false);
     }
-
   }
-
-
 
 
   function handleCancel(){

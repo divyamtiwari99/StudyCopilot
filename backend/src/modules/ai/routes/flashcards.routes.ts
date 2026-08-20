@@ -1,14 +1,11 @@
 import { Router } from "express";
 
-import { authMiddleware } from "../../auth/middleware/auth.middleware.js";
-
 import { flashcardsController } from "../controllers/flashcards.controller.js";
 
 const router = Router();
 
 router.post(
   "/generate",
-  authMiddleware,
   flashcardsController.generate.bind(
     flashcardsController
   )
@@ -18,7 +15,6 @@ router.post(
 
 router.get(
   "/",
-  authMiddleware,
   flashcardsController.getAll.bind(
     flashcardsController
   )
@@ -28,7 +24,6 @@ router.get(
 
 router.get(
   "/:contentId",
-  authMiddleware,
   flashcardsController.get.bind(
     flashcardsController
   )
@@ -38,7 +33,6 @@ router.get(
 
 router.delete(
   "/:contentId",
-  authMiddleware,
   flashcardsController.delete.bind(
     flashcardsController
   )

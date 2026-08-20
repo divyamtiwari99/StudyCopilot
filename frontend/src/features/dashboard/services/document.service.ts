@@ -54,7 +54,7 @@ interface ApiResponse<T> {
 }
 
 type ApiUploadedDocument = Omit<UploadedDocument, "status"> & {
-  status: DocumentStatus;
+  status: DocumentStatus | string;
 };
 
 function normalizeUploadedDocument(
@@ -92,11 +92,6 @@ export async function uploadDocument(
       "/content/upload",
       formData,
       {
-        headers: {
-          "Content-Type":
-            "multipart/form-data",
-        },
-
         onUploadProgress(
           event,
         ) {

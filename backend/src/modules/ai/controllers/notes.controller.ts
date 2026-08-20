@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
+import { AppError } from "../../../core/errors/app.error.js";
 
 import { notesService } from "../services/notes.service.js";
+import { AIProviderError } from "../providers/provider.error.js";
 
 
 class NotesController {
@@ -59,9 +61,22 @@ data: artifact,
 
 
 } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
 
 
-console.error(error);
+if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
+      console.error(error);
 
 
 return res.status(500).json({
@@ -139,6 +154,7 @@ message:
 const notes =
 await notesService.get(
 contentId,
+req.user.id,
 );
 
 
@@ -171,9 +187,22 @@ data: notes,
 
 
 } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
 
 
-console.error(error);
+if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
+      console.error(error);
 
 
 
@@ -243,9 +272,22 @@ data: notes,
 
 
 } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
 
 
-console.error(error);
+if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
+      console.error(error);
 
 
 
@@ -336,9 +378,22 @@ message:
 
 
 } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
 
 
-console.error(error);
+if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
+      console.error(error);
 
 
 

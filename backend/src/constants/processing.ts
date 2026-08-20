@@ -1,7 +1,7 @@
 export const PROCESSING = {
   MAX_CHUNK_TOKENS: 700,
 
-  MAX_UPLOAD_SIZE: 250 * 1024 * 1024,
+  MAX_UPLOAD_SIZE: 50 * 1024 * 1024,
 
   MAX_RETRIES: 3,
 } as const;

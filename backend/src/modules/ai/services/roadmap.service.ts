@@ -1,151 +1,39 @@
 import { performance } from "node:perf_hooks";
-
-import { ChunkModel } from "../../content/models/chunk.model.js";
 import { ContentModel } from "../../content/models/content.model.js";
-
 import { aiService } from "./ai.service.js";
 import { aiArtifactService } from "./ai-artifact.service.js";
-
 import { roadmapPromptBuilder } from "../prompts/roadmap.prompt.js";
+import { artifactModel, getOwnedContent, getOwnedDocumentText, parseAiJson, roadmapSchema, withGenerationLock } from "./ai-generation.helpers.js";
 
-export interface GenerateRoadmapInput {
-  contentId: string;
-  userId: string;
-}
+export interface GenerateRoadmapInput { contentId: string; userId: string; }
 
 export class RoadmapService {
-  async generate({
-    contentId,
-    userId,
-  }: GenerateRoadmapInput) {
-    const content =
-      await ContentModel.findById(
-        contentId,
-      );
-
-    if (!content) {
-      throw new Error(
-        "Content not found.",
-      );
-    }
-
-    const existing =
-      await aiArtifactService.get(
-        contentId,
-        "roadmap",
-      );
-
-    if (existing) {
-      return existing;
-    }
-
-    const chunks =
-      await ChunkModel.find({
-        contentId,
-      })
-        .sort({
-          order: 1,
-        })
-        .lean();
-
-    if (!chunks.length) {
-      throw new Error(
-        "Document has not been processed yet.",
-      );
-    }
-
-    const document =
-      chunks
-        .map(
-          (chunk) => chunk.text,
-        )
-        .join("\n\n");
-
-    const prompt =
-      roadmapPromptBuilder.build({
-        title: content.title,
-        content: document,
-      });
-
-    const started =
-      performance.now();
-
-    const response =
-      await aiService.generateText({
-        prompt,
-        temperature: 0.2,
-      });
-
-    const generationTime =
-      Math.round(
-        performance.now() -
-          started,
-      );
-
-    let roadmap: unknown = {
-      phases: [],
-    };
-
-    try {
-      roadmap =
-        JSON.parse(response);
-    } catch {
-      roadmap = {
-        phases: [],
-      };
-    }
-
-    const artifact =
-      await aiArtifactService.save({
-        contentId,
-        userId,
-
-        type: "roadmap",
-
-        title: `${content.title} Roadmap`,
-
-        markdown: response,
-
-        json: roadmap,
-
-        model:
-          "gemini-3.6-flash",
-
-        generationTime,
-      });
-
-    await ContentModel.findByIdAndUpdate(
-      contentId,
-      {
-        $set: {
-          "processing.roadmap": true,
-        },
-      },
-    );
-
-    return artifact;
+  async generate({ contentId, userId }: GenerateRoadmapInput, force = false) {
+    return withGenerationLock(`roadmap:${userId}:${contentId}`, async () => {
+      const content = await getOwnedContent(contentId, userId);
+      const existing = force ? null : await aiArtifactService.get(contentId, "roadmap", userId);
+      if (existing) return existing;
+      const document = await getOwnedDocumentText(contentId, userId);
+      const prompt = roadmapPromptBuilder.build({ title: content.title, content: document });
+      const started = performance.now();
+      const result = await aiService.generateTextDetailed({ prompt, temperature: 0.2, maxOutputTokens: 1800, userId });
+      const roadmap = parseAiJson(result.text, roadmapSchema, "Roadmap");
+      const generationTime = Math.round(performance.now() - started);
+      const artifact = await aiArtifactService.save({ contentId, userId, type: "roadmap", title: `${content.title} Roadmap`, markdown: result.text, json: roadmap, model: artifactModel(result), generationTime });
+      await ContentModel.findOneAndUpdate({ _id: contentId, userId }, { $set: { "processing.roadmap": true } });
+      return artifact;
+    });
   }
 
-  async regenerate(
-    input: GenerateRoadmapInput,
-  ) {
-    await aiArtifactService.deleteByContent(
-      input.contentId,
-      "roadmap",
-    );
-
-    return this.generate(input);
+  async regenerate(input: GenerateRoadmapInput) {
+    await getOwnedContent(input.contentId, input.userId);
+    return this.generate(input, true);
   }
 
-  async get(
-    contentId: string,
-  ) {
-    return aiArtifactService.get(
-      contentId,
-      "roadmap",
-    );
+  async get(contentId: string, userId: string) {
+    await getOwnedContent(contentId, userId);
+    return aiArtifactService.get(contentId, "roadmap", userId);
   }
 }
 
-export const roadmapService =
-  new RoadmapService();
+export const roadmapService = new RoadmapService();

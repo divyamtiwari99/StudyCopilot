@@ -4,6 +4,7 @@ import type {
 } from "express";
 
 import settingsService from "../services/settings.service.js";
+import { settingsUpdateSchema } from "../validation/settings.validation.js";
 
 
 
@@ -59,7 +60,7 @@ class SettingsController {
 
         userId,
 
-        req.body,
+        settingsUpdateSchema.parse(req.body),
 
       );
 

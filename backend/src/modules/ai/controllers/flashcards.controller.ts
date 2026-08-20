@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
+import { AppError } from "../../../core/errors/app.error.js";
 
 import { flashcardsService } from "../services/flashcards.service.js";
+import { AIProviderError } from "../providers/provider.error.js";
 
 class FlashcardsController {
   async generate(
@@ -38,6 +40,19 @@ class FlashcardsController {
         data: artifact,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({
@@ -79,7 +94,8 @@ class FlashcardsController {
 
       const flashcards =
         await flashcardsService.get(
-          contentId
+          contentId,
+          req.user.id,
         );
 
       if (!flashcards) {
@@ -95,6 +111,19 @@ class FlashcardsController {
         data: flashcards,
       });
     } catch (error) {
+      if (error instanceof AIProviderError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+          code: error.code,
+          provider: error.provider,
+          attemptedProviders: error.attemptedProviders,
+        });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
       console.error(error);
 
       return res.status(500).json({
@@ -138,7 +167,11 @@ data:flashcards,
 
 } catch(error) {
 
-console.error(error);
+if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
+      console.error(error);
 
 
 return res.status(500).json({
@@ -205,6 +238,7 @@ message:
 
 await flashcardsService.delete(
 contentId,
+req.user.id,
 );
 
 
@@ -221,7 +255,11 @@ message:
 
 }catch(error){
 
-console.error(error);
+if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ success: false, message: error.message });
+      }
+
+      console.error(error);
 
 
 

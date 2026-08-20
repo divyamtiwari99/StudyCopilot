@@ -1,130 +1,40 @@
 import { performance } from "node:perf_hooks";
-
-import { ChunkModel } from "../../content/models/chunk.model.js";
 import { ContentModel } from "../../content/models/content.model.js";
-
 import { aiService } from "./ai.service.js";
 import { aiArtifactService } from "./ai-artifact.service.js";
-
 import { quizPromptBuilder } from "../prompts/quiz.prompt.js";
+import { artifactModel, getOwnedContent, getOwnedDocumentText, parseAiJson, quizSchema, withGenerationLock } from "./ai-generation.helpers.js";
 
-export interface GenerateQuizInput {
-  contentId: string;
-  userId: string;
-}
+export interface GenerateQuizInput { contentId: string; userId: string; }
 
 export class QuizService {
-  async generate({
-    contentId,
-    userId,
-  }: GenerateQuizInput) {
-    const content =
-      await ContentModel.findById(contentId);
-
-    if (!content) {
-      throw new Error("Content not found.");
-    }
-
-    const chunks =
-      await ChunkModel.find({
-        contentId,
-      })
-        .sort({
-          order: 1,
-        })
-        .lean();
-
-    const document =
-      chunks
-        .map((chunk) => chunk.text)
-        .join("\n\n");
-
-    const prompt =
-      quizPromptBuilder.build({
-        title: content.title,
-        content: document,
+  async generate({ contentId, userId }: GenerateQuizInput) {
+    return withGenerationLock(`quiz:${userId}:${contentId}`, async () => {
+      const content = await getOwnedContent(contentId, userId);
+      const document = await getOwnedDocumentText(contentId, userId);
+      const prompt = quizPromptBuilder.build({ title: content.title, content: document });
+      const started = performance.now();
+      const result = await aiService.generateTextDetailed({ prompt, temperature: 0.2, maxOutputTokens: 2200, userId });
+      const questions = parseAiJson(result.text, quizSchema, "Quiz");
+      const generationTime = Math.round(performance.now() - started);
+      const artifact = await aiArtifactService.save({
+        contentId, userId, type: "quiz", title: `${content.title} Quiz`, markdown: result.text,
+        json: questions, model: artifactModel(result), generationTime,
       });
-
-    const started =
-      performance.now();
-
-    const response =
-      await aiService.generateText({
-        prompt,
-        temperature: 0.2,
-      });
-
-    const generationTime =
-      Math.round(
-        performance.now() -
-          started
-      );
-
-    let questions: unknown = [];
-
-    try {
-      questions = JSON.parse(
-        response
-      );
-    } catch {
-      questions = [];
-    }
-
-    const artifact =
-      await aiArtifactService.save({
-        contentId,
-        userId,
-
-        type: "quiz",
-
-        title: `${content.title} Quiz`,
-
-        markdown: response,
-
-        json: questions,
-
-        model: "gemini-3.6-flash",
-
-        generationTime,
-      });
-
-    await ContentModel.findByIdAndUpdate(
-      contentId,
-      {
-        $set: {
-          "processing.quiz": true,
-        },
-      }
-    );
-
-    return artifact;
+      await ContentModel.findOneAndUpdate({ _id: contentId, userId }, { $set: { "processing.quiz": true } });
+      return artifact;
+    });
   }
 
-  async get(
-    contentId: string
-  ) {
-    return aiArtifactService.get(
-      contentId,
-      "quiz"
-    );
+  async get(contentId: string, userId: string) { await getOwnedContent(contentId, userId); return aiArtifactService.get(contentId, "quiz", userId); }
+  async getAll(userId: string) { return aiArtifactService.getAllByUser(userId, "quiz"); }
+
+  async delete(contentId: string, userId: string) {
+    await getOwnedContent(contentId, userId);
+    await aiArtifactService.deleteByContent(contentId, "quiz", userId);
+    await ContentModel.findOneAndUpdate({ _id: contentId, userId }, { $set: { "processing.quiz": false } });
+    return { success: true };
   }
-  async getAll(
-  userId: string,
-) {
-  return aiArtifactService.getAllByUser(
-    userId,
-    "quiz",
-  );
-}
-async delete(
-  contentId: string,
-) {
-  return aiArtifactService.deleteByContent(
-    contentId,
-    "quiz",
-  );
-}
 }
 
-export const quizService =
-  new QuizService();
+export const quizService = new QuizService();

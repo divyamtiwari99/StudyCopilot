@@ -1,240 +1,94 @@
-import { Request, Response } from "express";
-
+import type { Request, Response, NextFunction } from "express";
+import { ZodError } from "zod";
 import { sessionService } from "../services/session.service.js";
+import { sessionContextSchema, sessionCreateSchema, sessionRenameSchema } from "../validation.js";
+
+function paramId(value: string | string[] | undefined) { return Array.isArray(value) ? value[0] : value; }
 
 class SessionController {
-  // ----------------------------------
-  // Create Session
-  // ----------------------------------
-
-  async create(
-    req: Request,
-    res: Response,
-  ) {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.user) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized",
-        });
-      }
-
-      const {
-        contentId,
-        title,
-      } = req.body;
-
-      if (!contentId) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "contentId is required",
-        });
-      }
-
-      const session =
-        await sessionService.create({
-          userId: req.user.id,
-          contentId,
-          title,
-        });
-
-      return res.status(201).json({
-        success: true,
-        data: session,
-      });
+      if (!req.user) return res.status(401).json({ success: false, message: "Unauthorized" });
+      const input = sessionCreateSchema.parse(req.body ?? {});
+      const session = await sessionService.create({ ...input, userId: req.user.id });
+      return res.status(201).json({ success: true, data: session });
     } catch (error) {
-      console.error(error);
-
-      return res.status(500).json({
-        success: false,
-        message:
-          "Internal Server Error",
-      });
+      if (error instanceof ZodError) return res.status(400).json({ success: false, message: "Invalid session data." });
+      next(error);
     }
   }
 
-  // ----------------------------------
-  // Get Sessions
-  // ----------------------------------
-
-  async getAll(
-    req: Request,
-    res: Response,
-  ) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.user) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized",
-        });
-      }
-
-      const contentId =
-        typeof req.query.contentId ===
-        "string"
-          ? req.query.contentId
-          : undefined;
-
-      const sessions =
-        await sessionService.getSessions(
-          req.user.id,
-          contentId,
-        );
-
-      return res.json({
-        success: true,
-        data: sessions,
-      });
+      if (!req.user) return res.status(401).json({ success: false, message: "Unauthorized" });
+      const contentId = typeof req.query.contentId === "string" ? req.query.contentId : undefined;
+      const scope = req.query.scope === "document" ? "document" : "tutor";
+      return res.json({ success: true, data: await sessionService.getSessions(req.user.id, contentId, scope) });
     } catch (error) {
-      console.error(error);
-
-      return res.status(500).json({
-        success: false,
-        message:
-          "Internal Server Error",
-      });
+      next(error);
     }
   }
 
-  // ----------------------------------
-  // Get Messages
-  // ----------------------------------
-
-  async getMessages(
-    req: Request,
-    res: Response,
-  ) {
+  async getMessages(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.user) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized",
-        });
-      }
-
-      const sessionId =
-        Array.isArray(req.params.id)
-          ? req.params.id[0]
-          : req.params.id;
-
-      const messages =
-        await sessionService.getMessages(
-          req.user.id,
-          sessionId,
-        );
-
-      if (!messages) {
-        return res.status(404).json({
-          success: false,
-          message:
-            "Session not found",
-        });
-      }
-
-      return res.json({
-        success: true,
-        data: messages,
-      });
+      if (!req.user) return res.status(401).json({ success: false, message: "Unauthorized" });
+      const sessionId = paramId(req.params.id);
+      if (!sessionId) return res.status(400).json({ success: false, message: "Session ID is required." });
+      const rawLimit = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
+      const limit = Number.isFinite(rawLimit) ? rawLimit : undefined;
+      const before = typeof req.query.before === "string" ? req.query.before : undefined;
+      const page = await sessionService.getMessagesPage(req.user.id, sessionId, { limit, before });
+      if (!page) return res.status(404).json({ success: false, message: "Session not found." });
+      res.setHeader("X-Chat-Has-More", page.hasMore ? "true" : "false");
+      if (page.nextCursor) res.setHeader("X-Chat-Next-Cursor", page.nextCursor);
+      return res.json({ success: true, data: page.messages });
     } catch (error) {
-      console.error(error);
-
-      return res.status(500).json({
-        success: false,
-        message:
-          "Internal Server Error",
-      });
+      next(error);
     }
   }
 
-  // ----------------------------------
-  // Rename Session
-  // ----------------------------------
-
-  async rename(
-    req: Request,
-    res: Response,
-  ) {
+  async updateContext(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.user) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized",
-        });
-      }
-
-      const sessionId =
-        Array.isArray(req.params.id)
-          ? req.params.id[0]
-          : req.params.id;
-
-      const title =
-        req.body?.title;
-
-      const session =
-        await sessionService.rename(
-          req.user.id,
-          sessionId,
-          title,
-        );
-
-      return res.json({
-        success: true,
-        data: session,
-      });
+      if (!req.user) return res.status(401).json({ success: false, message: "Unauthorized" });
+      const sessionId = paramId(req.params.id);
+      if (!sessionId) return res.status(400).json({ success: false, message: "Session ID is required." });
+      const { documentIds } = sessionContextSchema.parse(req.body ?? {});
+      const session = await sessionService.updateContext(req.user.id, sessionId, documentIds);
+      if (!session) return res.status(404).json({ success: false, message: "Session not found." });
+      return res.json({ success: true, data: session });
     } catch (error) {
-      console.error(error);
-
-      return res.status(500).json({
-        success: false,
-        message:
-          "Internal Server Error",
-      });
+      if (error instanceof ZodError) return res.status(400).json({ success: false, message: "Invalid document context." });
+      next(error);
     }
   }
 
-  // ----------------------------------
-  // Delete Session
-  // ----------------------------------
-
-  async delete(
-    req: Request,
-    res: Response,
-  ) {
+  async rename(req: Request, res: Response, next: NextFunction) {
     try {
-      if (!req.user) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized",
-        });
-      }
-
-      const sessionId =
-        Array.isArray(req.params.id)
-          ? req.params.id[0]
-          : req.params.id;
-
-      const result =
-        await sessionService.delete(
-          req.user.id,
-          sessionId,
-        );
-
-      return res.json({
-        success: true,
-        data: result,
-      });
+      if (!req.user) return res.status(401).json({ success: false, message: "Unauthorized" });
+      const sessionId = paramId(req.params.id);
+      if (!sessionId) return res.status(400).json({ success: false, message: "Session ID is required." });
+      const { title } = sessionRenameSchema.parse(req.body ?? {});
+      const session = await sessionService.rename(req.user.id, sessionId, title);
+      if (!session) return res.status(404).json({ success: false, message: "Session not found." });
+      return res.json({ success: true, data: session });
     } catch (error) {
-      console.error(error);
+      if (error instanceof ZodError) return res.status(400).json({ success: false, message: "Invalid title." });
+      next(error);
+    }
+  }
 
-      return res.status(500).json({
-        success: false,
-        message:
-          "Internal Server Error",
-      });
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) return res.status(401).json({ success: false, message: "Unauthorized" });
+      const sessionId = paramId(req.params.id);
+      if (!sessionId) return res.status(400).json({ success: false, message: "Session ID is required." });
+      const result = await sessionService.delete(req.user.id, sessionId);
+      if (!result) return res.status(404).json({ success: false, message: "Session not found." });
+      return res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
     }
   }
 }
 
-export const sessionController =
-  new SessionController();
+export const sessionController = new SessionController();

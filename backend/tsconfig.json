@@ -3,26 +3,14 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-
-    "rootDir": "./src",
-    "outDir": "./dist",
-
+    "rootDir": "src",
+    "outDir": "dist",
     "strict": true,
-
     "esModuleInterop": true,
-
-    "allowSyntheticDefaultImports": true,
-
-    "forceConsistentCasingInFileNames": true,
-
     "skipLibCheck": true,
-
+    "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-
-    "isolatedModules": true,
-
-    "verbatimModuleSyntax": false
+    "noEmitOnError": true
   },
-
-  "include": ["src"]
+  "include": ["src/**/*.ts"]
 }

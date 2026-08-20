@@ -1,4 +1,4 @@
-import { Schema, Types, model } from "mongoose";
+import { Schema, model } from "mongoose";
 
 export type AIArtifactType =
   | "notes"
@@ -7,99 +7,33 @@ export type AIArtifactType =
   | "quiz"
   | "knowledgeGraph"
   | "roadmap"
-  | "studyPlanner"
-  ;
+  | "studyPlanner";
 
 const AIArtifactSchema = new Schema(
   {
-    contentId: {
-      type: Types.ObjectId,
-      ref: "Content",
-      required: true,
-      index: true,
-    },
-
-    userId: {
-      type: Types.ObjectId,
-      ref: "User",
-      required: true,
-      index: true,
-    },
-
+    contentId: { type: Schema.Types.ObjectId, ref: "Content", required: true, index: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     type: {
       type: String,
       required: true,
-      enum: [
-        "notes",
-        "summary",
-        "flashcards",
-        "quiz",
-        "knowledgeGraph",
-        "roadmap",
-        "studyPlanner",
-      ],
+      enum: ["notes", "summary", "flashcards", "quiz", "knowledgeGraph", "roadmap", "studyPlanner"],
       index: true,
     },
-
-    version: {
-      type: Number,
-      default: 1,
-    },
-
-    title: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    markdown: {
-      type: String,
-      default: "",
-    },
-
-    json: {
-      type: Schema.Types.Mixed,
-      default: null,
-    },
-
+    version: { type: Number, default: 1 },
+    title: { type: String, default: "", trim: true },
+    markdown: { type: String, default: "" },
+    json: { type: Schema.Types.Mixed, default: null },
     metadata: {
-      model: {
-        type: String,
-        default: "",
-      },
-
-      promptVersion: {
-        type: String,
-        default: "v1",
-      },
-
-      tokens: {
-        type: Number,
-        default: 0,
-      },
-
-      generationTime: {
-        type: Number,
-        default: 0,
-      },
+      model: { type: String, default: "" },
+      promptVersion: { type: String, default: "v1" },
+      tokens: { type: Number, default: 0 },
+      generationTime: { type: Number, default: 0 },
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true },
 );
 
-AIArtifactSchema.index({
-  contentId: 1,
-  type: 1,
-});
+AIArtifactSchema.index({ contentId: 1, type: 1 }, { unique: true });
+AIArtifactSchema.index({ userId: 1, type: 1, updatedAt: -1 });
 
-AIArtifactSchema.index({
-  userId: 1,
-  type: 1,
-});
-
-export const AIArtifactModel = model(
-  "AIArtifact",
-  AIArtifactSchema
-);
+export const AIArtifactModel = model("AIArtifact", AIArtifactSchema);
